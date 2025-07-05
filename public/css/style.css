@@ -1,0 +1,112 @@
+/* reset basico para eliminar margenes y paddings por defecto */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    height: 100%; /* para que body ocupe toda la altura de la ventana */
+    overflow: hidden;  /* Evita scrolls no deseados si el contenido se desborda */
+}
+
+/* contenedor principal para el layout de dos columnas */
+.main-container {
+    display: flex; /* Habilita Flexbox para colocar los hijos en fila */
+    height: 100%;/* Ocupa el 100% del alto de la ventana */
+    background-color: #f0f2f5; /* Un gris claro para el fondo general */
+}
+
+/* Estilos de la Barra Lateral */
+.sidebar {
+    width: 250px; /* Ancho fijo de la barra lateral */
+    background-color: #2c3e50;/* Color de fondo oscuro */
+    color: #ecf0f1; /* Color de texto general para la barra lateral */
+    display: flex;
+    flex-direction: column;  /* Organiza los elementos en columna (header, nav, footer) */
+    padding: 20px 0; /* Espaciado interno superior e inferior */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Sombra sutil a la derecha */
+
+}
+
+/* Encabezado de la barra lateral (logo y nombre) */
+
+.sidebar-header {
+    text-align: center; /* Centra el contenido */
+    padding: 0 20px 20px; /* Espaciado inferior */
+    border-bottom: 1px solid rgb(255, 255, 255 0.1); /* Línea divisoria sutil */
+    margin-bottom: 20px; /* Espacio debajo del encabezado */
+}
+
+.sidebar-header .logo{
+    width: 80%;/* tamaño del logo */
+    height: auto; /* Mantiene la proporción del logo */
+    margin-bottom: 10px; /* Espacio debajo del logo */
+    border-radius: 50%; /* Hace que el logo sea circular */
+    background-color: #fff; /* Fondo blanco para el logo */
+    padding: 5px; /* Espacio interno para el logo */
+}
+
+/* Navegación principal de la barra lateral */
+
+.sidebar-nav{
+    flex-grow: 1; /* Permite que la navegación ocupe el espacio restante */
+}
+
+.sidebar-nav ul {
+    list-style: none; /* Elimina los puntos de la lista */
+    padding: 0; /* Elimina el padding por defecto */
+    margin: 0; /* Elimina el margen por defecto */
+}
+
+.nav-item{
+    display: flex;/* Para alinear ícono y texto */
+    align-items: center; /* Centra verticalmente el contenido */
+    padding: 12px 20px; /* Espaciado interno */
+    color: #ecf0f1; /* Color de texto */
+    text-decoration: none; /* Elimina el subrayado de los enlaces */
+    transition: background-color 0.3s ease, color 0.3s ease;    /* Transición suave al pasar el mouse */
+    position: relative; /* Para posicionar el '+' */
+}
+
+.nav-item:hover {
+    background-color: #34495e; /* Color de fondo al pasar el mouse */
+    color: #ffffff; /* Color de texto al pasar el mouse */
+}
+
+.nav-item.active {
+    background-color: #34495e; /* Color de fondo para el elemento activo */
+    color: #ffffff; /* Color de texto para el elemento activo */
+    border-left: 4px solid #3498db; /* Barra azul a la izquierda del activo */
+    padding-left: 16px; /* Aumenta el padding izquierdo para compensar la barra */
+}
+
+/* Estilos para los íconos SVG */
+
+.nav-item svg {
+    width: 20px; /* Ancho del ícono */
+    height: 20px; /* Alto del ícono */
+    margin-right: 10px; /* Espacio entre el ícono y el texto */
+    fill: currentColor; /* Hereda el color del texto */
+}
+
+/* Estilos para el signo '+' */
+
+.add-icon{
+    margin-left: auto; /* Mueve el '+' al final del elemento */
+    font-size: 1.2em; /* Tamaño del ícono '+' */
+    font-weight: bold; /* Negrita para el ícono '+' */
+    color: #ecf0f1; /* Color azul para el ícono '+' */
+}
+
+/* Pie de la barra lateral (configuración) */
+.sidebar-footer{
+    padding: 20px 0 0; /* Espaciado interno superior */
+    border-top: 1px solid rgb(255, 255, 255 0.1); /* Línea divisoria sutil */
+    margin-top: 20px; /* Espacio encima del pie de página */
+}
+
+/* Contenido Principal (lo haremos después) */
+.content-area {
+    flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
+    padding: 20px;
+    /* Otros estilos de fondo, etc. */
+}
+
