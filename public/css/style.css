@@ -17,7 +17,7 @@ body, html {
 /* Estilos de la Barra Lateral */
 .sidebar {
     width: 250px; /* Ancho fijo de la barra lateral */
-    background-color: #2c3e50;/* Color de fondo oscuro */
+    background-color: #1E293B;/* Color de fondo oscuro */
     color: #ecf0f1; /* Color de texto general para la barra lateral */
     display: flex;
     flex-direction: column;  /* Organiza los elementos en columna (header, nav, footer) */
@@ -72,8 +72,8 @@ body, html {
 }
 
 .nav-item.active {
-    background-color: #34495e; /* Color de fondo para el elemento activo */
-    color: #ffffff; /* Color de texto para el elemento activo */
+    background-color: #D9D9D9; /* Color de fondo para el elemento activo */
+    color: #0C0C0C; /* Color de texto para el elemento activo */
     border-left: 4px solid #3498db; /* Barra azul a la izquierda del activo */
     padding-left: 16px; /* Aumenta el padding izquierdo para compensar la barra */
 }
