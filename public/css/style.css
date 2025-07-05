@@ -26,20 +26,19 @@ body, html {
 
 }
 
-/* Encabezado de la barra lateral (logo y nombre) */
+/* Encabezado de la barra lateral (logo) */
 
 .sidebar-header {
-    text-align: center; /* Centra el contenido */
-    padding: 0 20px 20px; /* Espaciado inferior */
+   padding: 0 20px 20px; /* Espaciado inferior */
     border-bottom: 1px solid rgb(255, 255, 255 0.1); /* Línea divisoria sutil */
-    margin-bottom: 20px; /* Espacio debajo del encabezado */
+    margin-bottom: 15px; /* Espacio debajo del encabezado */
 }
 
 .sidebar-header .logo{
     width: 80%;/* tamaño del logo */
     height: auto; /* Mantiene la proporción del logo */
     margin-bottom: 10px; /* Espacio debajo del logo */
-    border-radius: 50%; /* Hace que el logo sea circular */
+    border-radius: 40%; /* Hace que el logo sea circular */
     background-color: #fff; /* Fondo blanco para el logo */
     padding: 5px; /* Espacio interno para el logo */
 }
