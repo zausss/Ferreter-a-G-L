@@ -4,37 +4,36 @@ body, html {
     padding: 0;
     font-family: Arial, sans-serif;
     height: 100%; /* para que body ocupe toda la altura de la ventana */
-    overflow: hidden;  /* Evita scrolls no deseados si el contenido se desborda */
+    overflow: hidden; /* Evita scrolls no deseados si el contenido se desborda */
 }
 
 /* contenedor principal para el layout de dos columnas */
-.main-container {
+.contenedor-principal { /* CAMBIADO: de .main-container a .contenedor-principal */
     display: flex; /* Habilita Flexbox para colocar los hijos en fila */
     height: 100%;/* Ocupa el 100% del alto de la ventana */
     background-color: #f0f2f5; /* Un gris claro para el fondo general */
 }
 
 /* Estilos de la Barra Lateral */
-.sidebar {
+.barra-lateral { /* CAMBIADO: de .sidebar a .barra-lateral */
     width: 250px; /* Ancho fijo de la barra lateral */
     background-color: #1E293B;/* Color de fondo oscuro */
     color: #ecf0f1; /* Color de texto general para la barra lateral */
     display: flex;
-    flex-direction: column;  /* Organiza los elementos en columna (header, nav, footer) */
+    flex-direction: column; /* Organiza los elementos en columna (header, nav, footer) */
     padding: 20px 0; /* Espaciado interno superior e inferior */
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Sombra sutil a la derecha */
-
 }
 
 /* Encabezado de la barra lateral (logo) */
-
-.sidebar-header {
-   padding: 0 20px 20px; /* Espaciado inferior */
-    border-bottom: 1px solid rgb(255, 255, 255 0.1); /* Línea divisoria sutil */
+.encabezado-barra-lateral { /* CAMBIADO: de .sidebar-header a .encabezado-barra-lateral */
+    padding: 0 20px 20px; /* Espaciado inferior */
+    /* Corrección de sintaxis en border-bottom: rgba(255, 255, 255 0.1) debería ser rgba(255, 255, 255, 0.1) */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Línea divisoria sutil */
     margin-bottom: 15px; /* Espacio debajo del encabezado */
 }
 
-.sidebar-header .logo{
+.encabezado-barra-lateral .logo{ /* CAMBIADO: de .sidebar-header a .encabezado-barra-lateral */
     width: 80%;/* tamaño del logo */
     height: auto; /* Mantiene la proporción del logo */
     margin-bottom: 10px; /* Espacio debajo del logo */
@@ -44,33 +43,32 @@ body, html {
 }
 
 /* Navegación principal de la barra lateral */
-
-.sidebar-nav{
+.navegacion-barra-lateral{ /* CAMBIADO: de .sidebar-nav a .navegacion-barra-lateral */
     flex-grow: 1; /* Permite que la navegación ocupe el espacio restante */
 }
 
-.sidebar-nav ul {
+.navegacion-barra-lateral ul { /* CAMBIADO: de .sidebar-nav a .navegacion-barra-lateral */
     list-style: none; /* Elimina los puntos de la lista */
     padding: 0; /* Elimina el padding por defecto */
     margin: 0; /* Elimina el margen por defecto */
 }
 
-.nav-item{
+.item-navegacion{ /* CAMBIADO: de .nav-item a .item-navegacion */
     display: flex;/* Para alinear ícono y texto */
     align-items: center; /* Centra verticalmente el contenido */
     padding: 12px 20px; /* Espaciado interno */
     color: #ecf0f1; /* Color de texto */
     text-decoration: none; /* Elimina el subrayado de los enlaces */
-    transition: background-color 0.3s ease, color 0.3s ease;    /* Transición suave al pasar el mouse */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave al pasar el mouse */
     position: relative; /* Para posicionar el '+' */
 }
 
-.nav-item:hover {
+.item-navegacion:hover { /* CAMBIADO: de .nav-item a .item-navegacion */
     background-color: #34495e; /* Color de fondo al pasar el mouse */
     color: #ffffff; /* Color de texto al pasar el mouse */
 }
 
-.nav-item.active {
+.item-navegacion.activo { /* CAMBIADO: de .nav-item.active a .item-navegacion.activo */
     background-color: #D9D9D9; /* Color de fondo para el elemento activo */
     color: #0C0C0C; /* Color de texto para el elemento activo */
     border-left: 4px solid #3498db; /* Barra azul a la izquierda del activo */
@@ -78,8 +76,7 @@ body, html {
 }
 
 /* Estilos para los íconos SVG */
-
-.nav-item svg {
+.item-navegacion svg { /* CAMBIADO: de .nav-item svg a .item-navegacion svg */
     width: 20px; /* Ancho del ícono */
     height: 20px; /* Alto del ícono */
     margin-right: 10px; /* Espacio entre el ícono y el texto */
@@ -87,8 +84,7 @@ body, html {
 }
 
 /* Estilos para el signo '+' */
-
-.add-icon{
+.icono-adicional{ /* CAMBIADO: de .add-icon a .icono-adicional */
     margin-left: auto; /* Mueve el '+' al final del elemento */
     font-size: 1.2em; /* Tamaño del ícono '+' */
     font-weight: bold; /* Negrita para el ícono '+' */
@@ -96,16 +92,36 @@ body, html {
 }
 
 /* Pie de la barra lateral (configuración) */
-.sidebar-footer{
+.pie-barra-lateral{ /* CAMBIADO: de .sidebar-footer a .pie-barra-lateral */
     padding: 20px 0 0; /* Espaciado interno superior */
-    border-top: 1px solid rgb(255, 255, 255 0.1); /* Línea divisoria sutil */
+    /* Corrección de sintaxis en border-top: rgb(255, 255, 255 0.1) debería ser rgba(255, 255, 255, 0.1) */
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Línea divisoria sutil */
     margin-top: 20px; /* Espacio encima del pie de página */
 }
 
-/* Contenido Principal (lo haremos después) */
-.content-area {
+
+/* ---------------------------doto el contenido de la parte derecha tarjetas,barras de busqueda*/
+/* Estilos para el área de contenido principal */
+
+.encabezado-principal {
+  position: relative; /* necesario para que el hijo absoluto se ubique dentro */
+}
+
+
+.area-contenido { /* CAMBIADO: de .content-area a .area-contenido */
     flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
     padding: 20px;
     /* Otros estilos de fondo, etc. */
+    background-color: #87878B; /* Fondo gris para el contenido principal */
+    font-weight: 600;  /* Negrita para el texto del contenido principal */
 }
 
+.informacion-usuario {
+position: absolute; /* Posiciona el elemento de forma absoluta */
+   top: 0px; /* Espacio desde la parte superior */
+   right: 0px; /* Espacio desde la derecha */
+   display: flex; /* Para alinear el texto y el ícono */
+   align-items: center; /* Centra verticalmente el contenido */
+   gap: 8px; /* Espacio entre el texto y el ícono */
+   font-size: 14px; /* Tamaño de fuente del texto */
+}
