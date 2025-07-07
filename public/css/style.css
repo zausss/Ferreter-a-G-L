@@ -8,7 +8,7 @@ body, html {
 }
 
 /* contenedor principal para el layout de dos columnas */
-.contenedor-principal { /* CAMBIADO: de .main-container a .contenedor-principal */
+.contenedor-principal { 
     display: flex; /* Habilita Flexbox para colocar los hijos en fila */
     height: 100%;/* Ocupa el 100% del alto de la ventana */
     background-color: #f0f2f5; /* Un gris claro para el fondo general */
@@ -26,20 +26,18 @@ body, html {
 }
 
 /* Encabezado de la barra lateral (logo) */
-.encabezado-barra-lateral { /* CAMBIADO: de .sidebar-header a .encabezado-barra-lateral */
-    padding: 0 20px 20px; /* Espaciado inferior */
-    /* Corrección de sintaxis en border-bottom: rgba(255, 255, 255 0.1) debería ser rgba(255, 255, 255, 0.1) */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Línea divisoria sutil */
+.encabezado-barra-lateral {
+    padding: 10px 25px; /* Espaciado inferior */
     margin-bottom: 15px; /* Espacio debajo del encabezado */
 }
 
-.encabezado-barra-lateral .logo{ /* CAMBIADO: de .sidebar-header a .encabezado-barra-lateral */
+.encabezado-barra-lateral .logo{
     width: 80%;/* tamaño del logo */
     height: auto; /* Mantiene la proporción del logo */
     margin-bottom: 10px; /* Espacio debajo del logo */
-    border-radius: 40%; /* Hace que el logo sea circular */
+    border-radius: 45%; /* Hace que el logo sea circular */
     background-color: #fff; /* Fondo blanco para el logo */
-    padding: 5px; /* Espacio interno para el logo */
+    padding: 5px 15px; /* Espacio interno para el logo */
 }
 
 /* Navegación principal de la barra lateral */
@@ -53,7 +51,7 @@ body, html {
     margin: 0; /* Elimina el margen por defecto */
 }
 
-.item-navegacion{ /* CAMBIADO: de .nav-item a .item-navegacion */
+.item-navegacion{
     display: flex;/* Para alinear ícono y texto */
     align-items: center; /* Centra verticalmente el contenido */
     padding: 12px 20px; /* Espaciado interno */
@@ -76,7 +74,7 @@ body, html {
 }
 
 /* Estilos para los íconos SVG */
-.item-navegacion svg { /* CAMBIADO: de .nav-item svg a .item-navegacion svg */
+.item-navegacion svg { 
     width: 20px; /* Ancho del ícono */
     height: 20px; /* Alto del ícono */
     margin-right: 10px; /* Espacio entre el ícono y el texto */
@@ -95,7 +93,7 @@ body, html {
 .pie-barra-lateral{ /* CAMBIADO: de .sidebar-footer a .pie-barra-lateral */
     padding: 20px 0 0; /* Espaciado interno superior */
     /* Corrección de sintaxis en border-top: rgb(255, 255, 255 0.1) debería ser rgba(255, 255, 255, 0.1) */
-    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Línea divisoria sutil */
+    
     margin-top: 20px; /* Espacio encima del pie de página */
 }
 
@@ -112,7 +110,7 @@ body, html {
     flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
     padding: 20px;
     /* Otros estilos de fondo, etc. */
-    background-color: #87878B; /* Fondo gris para el contenido principal */
+    background-color: #c1c1c2; /* Fondo gris para el contenido principal */
     font-weight: 600;  /* Negrita para el texto del contenido principal */
 }
 
@@ -124,4 +122,76 @@ position: absolute; /* Posiciona el elemento de forma absoluta */
    align-items: center; /* Centra verticalmente el contenido */
    gap: 8px; /* Espacio entre el texto y el ícono */
    font-size: 14px; /* Tamaño de fuente del texto */
+}
+
+/* -----------------------------------contendor de la tajetas----------------------------- */
+
+.tarjetas-resumen {
+    display: flex; /* Usar flexbox para mejor distribución */
+    flex-wrap: nowrap; /* Mantiene las tarjetas en una sola línea horizontal */
+    gap: 20px; /* Espacio entre las tarjetas */
+    margin-bottom: 30px;
+    justify-content: space-evenly; /* Distribuye las 3 tarjetas uniformemente */
+}
+
+.tarjeta {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    padding: 30px; /* Aumentar padding para más espacio interno */
+    display: flex;
+    flex-direction: column; /* Cambiar a columna para poner icono arriba */
+    align-items: center; /* Centrar contenido horizontalmente */
+    transition: transform 0.3s ease;
+    flex: 1; /* Cada tarjeta ocupa el mismo espacio disponible */
+    width: calc(33.33% - 13px); /* Ancho exacto para 3 tarjetas en horizontal */
+}
+
+.tarjeta:hover {
+    transform: translateY(-5px); /* Efecto de elevación al pasar el mouse */
+}
+
+.icono-tarjeta {
+    width: 50px;
+    height: 50px;
+    min-width: 50px; /* Asegura que el icono no se encoja */
+    background-color: #ecf0f1;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px; /* Cambiar margin-right por margin-bottom */
+}
+
+
+
+.icono-tarjeta svg {
+    width: 28px;
+    height: 28px;
+    fill: #3498db; /* Color del icono */
+}
+
+.tarjeta.alerta .icono-tarjeta svg {
+    fill: #e74c3c; /* Color del icono de alerta */
+}
+
+.contenido-tarjeta {
+    display: flex;
+    flex-direction: column;
+    text-align: center; /* Centrar el texto */
+}
+
+.titulo-tarjeta {
+    font-size: 0.9em;
+    color: #000000;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600; /* Negrita para el título */
+}
+
+.valor-tarjeta {
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
 }
