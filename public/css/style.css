@@ -193,5 +193,40 @@ position: absolute; /* Posiciona el elemento de forma absoluta */
 .valor-tarjeta {
     font-size: 2em;
     font-weight: bold;
-    color: #333;
+    color: #333; 
+}
+
+/* -----------------------------------barra de busqueda----------------------------- */
+
+.barra-busqueda{
+    display: flex; /* se usa el flexbox para alinear el input y el icono */
+    align-items: center; /* centra verticalmente el contenido */
+    background-color: #ffffff; /* Fondo blanco para la barra de búsqueda */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra sutil */
+    padding: 15px 15px; /* Espacio interno */
+    margin-bottom: 30px; /* Espacio abajo de la barra de búsqueda */
+    max-width: 98.3%; /* Ancho máximo para la barra de búsqueda */
+    align-self: center; /* Centra la barra de búsqueda en el contenedor */
+
+}
+
+.campo-busqueda {
+    flex-grow: 1; /* Ocupa todo el espacio disponible */
+    border: none; /* Sin borde */
+    outline: none; /* Sin contorno al hacer foco */
+    font-size: 16px; /* Tamaño de fuente del input */
+    color: #333; /* Color del texto */
+    padding: 8px 10px; /* Espacio interno */
+}
+
+.campo-busqueda::placeholder {
+    color: #999; /* Color del placeholder */   
+}
+
+.barra-busqueda svg {
+    width: 22px;
+    height: 22px;
+    fill: #777;
+    margin-left: 10px;
 }
