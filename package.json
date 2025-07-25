@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "ferreteria-jyl",
   "version": "1.0.0",
@@ -21,3 +22,36 @@
     "nodemon": "^3.1.10"
   }
 }
+=======
+{
+  "name": "ferreteria-jyl",
+  "version": "1.0.0",
+  "description": "Proyecto de ferretería J&L con Node.js y Express",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "Danie",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zausss/Ferreter-a-G-L.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zausss/Ferreter-a-G-L/issues"
+  },
+  "homepage": "https://github.com/zausss/Ferreter-a-G-L#readme"
+}
+>>>>>>> origin/main
