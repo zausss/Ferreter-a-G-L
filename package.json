@@ -8,12 +8,20 @@
     "dev": "nodemon app.js"
   },
   "keywords": [],
-  "author": "Danie ",
+  "author": "Danie",
   "license": "ISC",
   "dependencies": {
     "express": "^5.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zausss/Ferreter-a-G-L.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zausss/Ferreter-a-G-L/issues"
+  },
+  "homepage": "https://github.com/zausss/Ferreter-a-G-L#readme"
 }
