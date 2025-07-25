@@ -8,7 +8,7 @@
     "dev": "nodemon app.js"
   },
   "keywords": [],
-  "author": "Danie ",
+  "author": "Danie",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.2",
