@@ -1,0 +1,415 @@
+/* ======================================================================
+   RESPONSIVE DESIGN - Dashboard Ferretería J&L
+   Media Queries para diferentes dispositivos y resoluciones
+   ====================================================================== */
+
+/* ============================== TABLETS ============================== */
+/* Pantallas medianas - Tablets en modo landscape y desktop pequeño */
+@media (max-width: 1024px) {
+    .contenedor-principal {
+        flex-direction: column;
+    }
+    
+    .barra-lateral {
+        width: 100%;
+        height: auto;
+        padding: 15px 0;
+    }
+    
+    .encabezado-barra-lateral {
+        padding: 10px 20px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    
+    .encabezado-barra-lateral .logo {
+        width: 60px; /* Tamaño fijo más pequeño para tablets */
+        height: 60px;
+        margin: 0 auto 10px auto;
+        padding: 3px 8px;
+    }
+    
+    .navegacion-barra-lateral ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+    
+    .navegacion-barra-lateral li {
+        flex: 1;
+        min-width: 150px;
+    }
+    
+    .area-contenido {
+        max-height: none;
+        padding: 15px;
+    }
+    
+    .tarjetas-resumen {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .tarjeta {
+        width: 100%;
+        padding: 20px;
+    }
+    
+    .secciones-inferiores {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+}
+
+/* ============================== MÓVILES ============================== */
+/* Pantallas pequeñas - Móviles en modo landscape y tablets pequeños */
+@media (max-width: 768px) {
+    .encabezado-barra-lateral {
+        padding: 8px 15px;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+    
+    .encabezado-barra-lateral .logo {
+        width: 45px; /* Tamaño más pequeño para móviles */
+        height: 45px;
+        margin: 0 auto 8px auto;
+        padding: 2px 6px;
+    }
+    
+    .encabezado-principal {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .informacion-usuario {
+        position: static;
+        margin-top: 10px;
+    }
+    
+    .barra-busqueda {
+        margin: 15px 0;
+    }
+    
+    /* ====== ENCABEZADOS DE TABLA RESPONSIVE ====== */
+    .encabezado-tabla {
+        display: none; /* Ocultar encabezados en móviles */
+    }
+    
+    .contenido-seccion {
+        border: 1px solid #e1e5e9;
+        border-radius: 8px;
+        border-top: 1px solid #e1e5e9;
+    }
+    
+    .fila-datos {
+        display: block;
+        background: white;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #e1e5e9;
+        padding: 15px;
+    }
+    
+    .fila-datos .celda {
+        display: block;
+        border-right: none;
+        border-bottom: 1px solid #f0f2f5;
+        padding: 8px 0;
+        position: relative;
+        padding-left: 90px;
+    }
+    
+    .fila-datos .celda:last-child {
+        border-bottom: none;
+    }
+    
+    /* ====== ETIQUETAS AUTOMÁTICAS PARA PEDIDOS ====== */
+    .fila-datos .celda:nth-child(1)::before {
+        content: "Producto: ";
+        font-weight: 600;
+        color: #667eea;
+        position: absolute;
+        left: 0;
+        width: 80px;
+    }
+    
+    .fila-datos .celda:nth-child(2)::before {
+        content: "Cantidad: ";
+        font-weight: 600;
+        color: #667eea;
+        position: absolute;
+        left: 0;
+        width: 80px;
+    }
+    
+    .fila-datos .celda:nth-child(3)::before {
+        content: "Precio: ";
+        font-weight: 600;
+        color: #667eea;
+        position: absolute;
+        left: 0;
+        width: 80px;
+    }
+    
+    /* ====== ETIQUETAS PARA ACTIVIDADES ====== */
+    .caja-seccion:nth-child(2) .fila-datos .celda:nth-child(1)::before {
+        content: "Actividad: ";
+    }
+    
+    .caja-seccion:nth-child(2) .fila-datos .celda:nth-child(2)::before {
+        content: "Hora: ";
+    }
+    
+    .caja-seccion:nth-child(2) .fila-datos .celda:nth-child(3)::before {
+        content: "Estado: ";
+    }
+    
+    .celda.estado {
+        padding-left: 90px;
+    }
+    
+    .celda.estado span {
+        display: inline-block;
+    }
+    
+    /* ====== AJUSTES GENERALES MÓVILES ====== */
+    .item-resumen {
+        padding: 10px 15px;
+    }
+    
+    .icono-resumen {
+        width: 35px;
+        height: 35px;
+        margin-right: 10px;
+    }
+    
+    .titulo-resumen {
+        font-size: 0.8em;
+    }
+    
+    .valor-resumen {
+        font-size: 1em;
+    }
+    
+    .caja-seccion {
+        padding: 15px;
+        min-height: 250px;
+    }
+    
+    .contenido-seccion {
+        max-height: 150px;
+    }
+    
+    .boton-accion {
+        padding: 10px 15px;
+        font-size: 0.8em;
+    }
+}
+
+/* ============================== MÓVILES PEQUEÑOS ============================== */
+/* Pantallas muy pequeñas - Móviles en modo portrait */
+@media (max-width: 480px) {
+    .encabezado-barra-lateral {
+        padding: 5px 10px;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+    
+    .encabezado-barra-lateral .logo {
+        width: 35px; /* Tamaño muy pequeño para móviles pequeños */
+        height: 35px;
+        margin: 0 auto 5px auto;
+        padding: 2px 4px;
+    }
+    
+    .area-contenido {
+        padding: 10px;
+    }
+    
+    .tarjeta {
+        padding: 15px;
+    }
+    
+    .encabezado-principal h2 {
+        font-size: 1.2em;
+    }
+    
+    .caja-seccion {
+        padding: 10px;
+        min-height: 200px;
+    }
+    
+    .encabezado-seccion h3 {
+        font-size: 1.1em;
+    }
+    
+    .fila-datos {
+        padding: 8px 10px;
+        margin-bottom: 8px;
+    }
+    
+    .fila-datos .celda {
+        padding: 6px 0;
+        padding-left: 75px;
+    }
+    
+    /* ====== AJUSTE DE ETIQUETAS PARA PANTALLAS PEQUEÑAS ====== */
+    .fila-datos .celda:nth-child(1)::before,
+    .fila-datos .celda:nth-child(2)::before,
+    .fila-datos .celda:nth-child(3)::before,
+    .caja-seccion:nth-child(2) .fila-datos .celda:nth-child(1)::before,
+    .caja-seccion:nth-child(2) .fila-datos .celda:nth-child(2)::before,
+    .caja-seccion:nth-child(2) .fila-datos .celda:nth-child(3)::before {
+        width: 70px;
+        font-size: 0.8em;
+    }
+    
+    .item-resumen {
+        padding: 8px 10px;
+    }
+    
+    .icono-resumen {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .navegacion-barra-lateral li {
+        min-width: 120px;
+    }
+    
+    .item-navegacion {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+}
+
+/* ============================== MÓVILES ESPECÍFICOS ============================== */
+/* Pantallas móviles específicas como 393x852 */
+@media (max-width: 400px) {
+    .encabezado-barra-lateral {
+        padding: 5px 8px;
+        margin-bottom: 5px;
+    }
+    
+    .encabezado-barra-lateral .logo {
+        width: 30px; /* Tamaño aún más pequeño para pantallas muy estrechas */
+        height: 30px;
+        margin: 0 auto 3px auto;
+        padding: 1px 3px;
+        border-radius: 50%; /* Más circular para tamaños pequeños */
+    }
+    
+    .barra-lateral {
+        padding: 10px 0;
+    }
+    
+    .navegacion-barra-lateral ul {
+        gap: 5px;
+    }
+    
+    .item-navegacion {
+        padding: 6px 10px;
+        font-size: 0.85em;
+    }
+    
+    .area-contenido {
+        padding: 8px;
+    }
+    
+    /* ====== AJUSTES ULTRA PEQUEÑOS ====== */
+    .fila-datos .celda {
+        padding: 5px 0;
+        padding-left: 65px;
+        font-size: 0.85em;
+    }
+    
+    .fila-datos .celda:nth-child(1)::before,
+    .fila-datos .celda:nth-child(2)::before,
+    .fila-datos .celda:nth-child(3)::before,
+    .caja-seccion:nth-child(2) .fila-datos .celda:nth-child(1)::before,
+    .caja-seccion:nth-child(2) .fila-datos .celda:nth-child(2)::before,
+    .caja-seccion:nth-child(2) .fila-datos .celda:nth-child(3)::before {
+        width: 60px;
+        font-size: 0.75em;
+    }
+    
+    .celda.estado {
+        padding-left: 65px;
+    }
+}
+
+/* ============================== MEJORAS ADICIONALES ============================== */
+
+/* Optimización para dispositivos táctiles */
+@media (hover: none) and (pointer: coarse) {
+    .boton-accion {
+        min-height: 44px; /* Tamaño mínimo recomendado para touch */
+        min-width: 44px;
+    }
+    
+    .item-navegacion {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .tarjeta:hover {
+        transform: none; /* Desactiva hover en dispositivos táctiles */
+    }
+}
+
+/* Modo landscape para móviles */
+@media (max-width: 768px) and (orientation: landscape) {
+    .barra-lateral {
+        padding: 8px 0;
+    }
+    
+    .navegacion-barra-lateral ul {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 0 10px;
+    }
+    
+    .navegacion-barra-lateral li {
+        min-width: 120px;
+        flex-shrink: 0;
+    }
+    
+    .area-contenido {
+        padding: 10px;
+    }
+    
+    .tarjetas-resumen {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .tarjeta {
+        flex: 1 1 calc(50% - 10px);
+        min-width: 200px;
+    }
+}
+
+/* ============================== DEBUGGING HELPERS ============================== */
+/* Descomenta estas líneas para debug de responsive design */
+
+/*
+@media (max-width: 1024px) {
+    body::before { content: "TABLET MODE"; position: fixed; top: 0; left: 0; background: blue; color: white; padding: 5px; z-index: 9999; }
+}
+
+@media (max-width: 768px) {
+    body::before { content: "MOBILE MODE"; background: red; }
+}
+
+@media (max-width: 480px) {
+    body::before { content: "SMALL MOBILE"; background: orange; }
+}
+
+@media (max-width: 400px) {
+    body::before { content: "TINY MOBILE"; background: purple; }
+}
+*/
