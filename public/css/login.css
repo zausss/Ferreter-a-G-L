@@ -1,0 +1,184 @@
+
+/* CSS para el login */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contenedor-login {
+    max-width: 400px;
+    width: 90%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    text-align: center;
+}
+
+/* Encabezado del login */
+.encabezado-login {
+    margin-bottom: 30px;
+}
+
+.logo-login {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    padding: 5px;
+    margin-bottom: 15px;
+    border: 3px solid #3498db;
+    object-fit: cover;
+}
+
+.encabezado-login h2 {
+    color: #333;
+    font-size: 1.5em;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.encabezado-login p {
+    color: #666;
+    font-size: 0.9em;
+    margin: 0;
+}
+
+/* Formulario */
+.formulario-login {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.grupo-entrada {
+    margin-bottom: 20px;
+}
+
+.grupo-entrada p {
+    padding-top: 20px;
+    color: #666; 
+    font-size: 0.9em;
+    margin: 0;
+}
+
+.grupo-entrada a {
+    color: #3498db; 
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;    
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333; 
+    font-weight: 600; 
+    font-size: 0.9em;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #3498db;
+    outline: none;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Botón */
+.boton-login {
+    width: 100%;
+    padding: 12px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.boton-login:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+}
+
+/* Pie del login */
+.pie-login {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.pie-login p {
+    color: #666;
+    font-size: 0.9em;
+    margin: 0;
+}
+
+.pie-login a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.pie-login a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .contenedor-login {
+        max-width: 350px;
+        padding: 25px;
+    }
+    
+    .logo-login {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .encabezado-login h2 {
+        font-size: 1.3em;
+    }
+}
+
+@media (max-width: 480px) {
+    .contenedor-login {
+        max-width: 300px;
+        padding: 20px;
+    }
+    
+    .logo-login {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .encabezado-login h2 {
+        font-size: 1.2em;
+    }
+}

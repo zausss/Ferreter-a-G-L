@@ -4,6 +4,8 @@ const path = require('path');
 
 // Sirve archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'views')));
+
 
 // Define una ruta para tu página principal
 app.get('/', (req, res) => {

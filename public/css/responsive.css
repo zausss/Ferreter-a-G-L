@@ -396,6 +396,208 @@
 /* ============================== DEBUGGING HELPERS ============================== */
 /* Descomenta estas líneas para debug de responsive design */
 
+/* ======================================================================
+   RESPONSIVE DESIGN PARA LOGIN - FERRETERÍA G&L
+   ====================================================================== */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 1024px) {
+    .login-container {
+        max-width: 450px;
+        padding: 15px;
+    }
+    
+    .login-card {
+        padding: 35px 30px;
+    }
+    
+    .login-header .logo {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .login-header h1 {
+        font-size: 1.7rem;
+    }
+}
+
+/* Móviles grandes */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+    
+    .login-container {
+        max-width: 380px;
+    }
+    
+    .login-card {
+        padding: 30px 25px;
+        border-radius: 15px;
+    }
+    
+    .login-header .logo {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .login-header h1 {
+        font-size: 1.6rem;
+    }
+    
+    .input-field input {
+        padding: 14px 0;
+        font-size: 16px; /* Evita zoom en iOS */
+    }
+    
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .forgot-password {
+        align-self: flex-end;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+    .login-container {
+        max-width: 320px;
+    }
+    
+    .login-card {
+        padding: 25px 20px;
+        border-radius: 12px;
+    }
+    
+    .login-header .logo {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .login-header h1 {
+        font-size: 1.4rem;
+    }
+    
+    .login-header p {
+        font-size: 0.85rem;
+    }
+    
+    .input-field {
+        border-radius: 10px;
+    }
+    
+    .input-field input {
+        font-size: 16px;
+        padding: 12px 0;
+    }
+    
+    .login-btn {
+        padding: 14px;
+        border-radius: 10px;
+        font-size: 0.95rem;
+    }
+    
+    .form-options {
+        gap: 10px;
+    }
+    
+    .remember-checkbox,
+    .forgot-password {
+        font-size: 0.85rem;
+    }
+}
+
+/* Móviles muy pequeños */
+@media (max-width: 400px) {
+    body {
+        padding: 10px;
+    }
+    
+    .login-container {
+        max-width: 280px;
+    }
+    
+    .login-card {
+        padding: 20px 15px;
+    }
+    
+    .login-header .logo {
+        width: 55px;
+        height: 55px;
+    }
+    
+    .login-header h1 {
+        font-size: 1.3rem;
+    }
+    
+    .input-field i.fas {
+        margin: 0 12px;
+        font-size: 0.9rem;
+    }
+    
+    .input-field input {
+        font-size: 16px;
+    }
+    
+    .input-field label {
+        left: 42px;
+    }
+    
+    .input-field:focus-within label,
+    .input-field input:not(:placeholder-shown) + label {
+        left: 38px;
+    }
+}
+
+/* Landscape en móviles */
+@media (max-height: 600px) and (orientation: landscape) {
+    body {
+        padding: 10px;
+    }
+    
+    .login-card {
+        padding: 20px 25px;
+    }
+    
+    .login-header {
+        margin-bottom: 20px;
+    }
+    
+    .login-header .logo {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 10px;
+    }
+    
+    .login-header h1 {
+        font-size: 1.3rem;
+        margin-bottom: 3px;
+    }
+    
+    .input-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-options {
+        margin-bottom: 20px;
+    }
+    
+    .login-btn {
+        margin-bottom: 15px;
+    }
+}
+
+/* Ajustes para pantallas de alta densidad */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .login-header .logo {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
 /*
 @media (max-width: 1024px) {
     body::before { content: "TABLET MODE"; position: fixed; top: 0; left: 0; background: blue; color: white; padding: 5px; z-index: 9999; }
