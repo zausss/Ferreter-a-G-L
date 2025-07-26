@@ -97,6 +97,144 @@ body, html {
     margin-top: 20px; /* Espacio encima del pie de página */
 }
 
+/* ================================
+   ESTILOS PARA SUBMENÚS DESPLEGABLES
+   ================================ */
+
+/* Contenedor del submenú */
+.submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: #2C3E50; /* Un poco más claro que la barra lateral */
+    border-left: 3px solid #3498db; /* Borde azul para identificar submenú */
+    animation: slideDown 0.3s ease-out;
+    overflow: hidden;
+}
+
+/* Elementos del submenú */
+.submenu li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.submenu li:last-child {
+    border-bottom: none;
+}
+
+/* Enlaces del submenú */
+.submenu-item {
+    display: block;
+    padding: 10px 20px 10px 40px; /* Más padding izquierdo para indentación */
+    color: #bdc3c7; /* Color más tenue que el menú principal */
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.submenu-item:hover {
+    background-color: #34495e;
+    color: #ffffff;
+    padding-left: 45px; /* Efecto de desplazamiento al hover */
+}
+
+.submenu-item:before {
+    content: "›";
+    position: absolute;
+    left: 25px;
+    color: #3498db;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.submenu-item:hover:before {
+    opacity: 1;
+}
+
+/* Animación de despliegue */
+@keyframes slideDown {
+    from {
+        max-height: 0;
+        opacity: 0;
+    }
+    to {
+        max-height: 200px;
+        opacity: 1;
+    }
+}
+
+/* Transición suave para el ícono '+' */
+.icono-adicional {
+    transition: transform 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+}
+
+/* Estado activo del ícono '+' cuando el submenú está abierto */
+.icono-adicional.active {
+    transform: rotate(45deg);
+    color: #3498db;
+}
+
+/* Mejorar el hover del elemento principal cuando tiene submenú */
+.item-navegacion:has(.submenu) {
+    position: relative;
+}
+
+/* Espaciado adicional para elementos con submenú */
+.navegacion-barra-lateral li:has(.submenu) {
+    margin-bottom: 5px;
+}
+
+/* ================================
+   ESTILOS PARA .SUB-MENU (ESPECÍFICO)
+   ================================ */
+
+.sub-menu {
+    display: none;
+    background-color: #2C3E50; /* Un poco más claro que la barra lateral */
+    border-left: 3px solid #3498db; /* Borde azul para identificar submenú */
+    margin-top: 5px;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+    animation: slideDown 0.3s ease-out;
+}
+
+.sub-menu a {
+    display: block;
+    padding: 10px 20px 10px 40px; /* Más padding izquierdo para indentación */
+    color: #bdc3c7; /* Color más tenue que el menú principal */
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sub-menu a:last-child {
+    border-bottom: none;
+}
+
+.sub-menu a:hover {
+    background-color: #34495e;
+    color: #ffffff;
+    padding-left: 45px; /* Efecto de desplazamiento al hover */
+}
+
+.sub-menu a:before {
+    content: "›";
+    position: absolute;
+    left: 25px;
+    color: #3498db;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sub-menu a:hover:before {
+    opacity: 1;
+}
+
 
 /* ---------------------------doto el contenido de la parte derecha tarjetas,barras de busqueda*/
 /* Estilos para el área de contenido principal */
