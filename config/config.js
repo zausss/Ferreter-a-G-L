@@ -21,13 +21,13 @@ const config = {
     
     // Configuración de JWT
     jwt: {
-        secret: process.env.JWT_SECRET || 'default_jwt_secret_change_in_production',
+        secret: process.env.JWT_SECRET || 'clave secreta_jwt',
         expiresIn: process.env.JWT_EXPIRES_IN || '24h'
     },
     
     // Configuración de Sesiones
     session: {
-        secret: process.env.SESSION_SECRET || 'default_session_secret_change_in_production'
+        secret: process.env.SESSION_SECRET || 'clave secreta_session',
     }
 };
 
