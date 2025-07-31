@@ -1,0 +1,29 @@
+# Archivos de configuración sensibles
+.env
+.env.local
+.env.production
+
+# Dependencias
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Archivos temporales
+.DS_Store
+Thumbs.db
+
+# Archivos de editor
+.vscode/
+.idea/
+
+# Archivos de base de datos locales
+*.db
+*.sqlite
+*.sqlite3
+
+# Archivos de respaldo
+*.backup
+*.bak
