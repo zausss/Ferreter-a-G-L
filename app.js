@@ -1,19 +1,76 @@
 const express = require('express');
-const app = express();
 const path = require('path');
+const cookieParser = require('cookie-parser');
+const { conectarDB } = require('./config/database');
+const config = require('./config/config');
 
-// Sirve archivos estáticos desde la carpeta 'public'
+// Importar rutas
+const authRoutes = require('./routes/auth');
+
+// Importar middleware
+const { verificarToken } = require('./middleware/auth');
+
+const app = express();
+
+// Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// Servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'views')));
 
+// Rutas de autenticación (públicas)
+app.use('/auth', authRoutes);
 
-// Define una ruta para tu página principal
+// Ruta raíz - redirigir según autenticación
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'menu.html'));
-    
+    const token = req.cookies.token;
+    if (token) {
+        res.redirect('/dashboard');
+    } else {
+        res.redirect('/auth/login');
+    }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
+// Ruta para dashboard (protegida)
+app.get('/dashboard', verificarToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'menu.html'));
 });
+
+// Rutas protegidas para las páginas del sistema
+app.get('/categorias.html', verificarToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'categorias.html'));
+});
+
+app.get('/menu.html', verificarToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'menu.html'));
+});
+
+// Inicializar servidor
+const iniciarServidor = async () => {
+    try {
+        // Conectar a la base de datos
+        const dbConectada = await conectarDB();
+        
+        if (!dbConectada) {
+            console.error(' No se pudo conectar a la base de datos');
+            process.exit(1);
+        }
+
+        // Iniciar servidor
+        const PORT = config.server.port;
+        app.listen(PORT, () => {
+            console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
+            console.log(`Sistema de autenticación configurado`);
+            console.log(`Entorno: ${config.server.env}`);
+        });
+
+    } catch (error) {
+        console.error(' Error iniciando servidor:', error);
+        process.exit(1);
+    }
+};
+
+iniciarServidor();
