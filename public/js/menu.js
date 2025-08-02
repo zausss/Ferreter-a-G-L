@@ -57,3 +57,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Función para confirmar cierre de sesión
+function confirmarCerrarSesion(event) {
+    event.preventDefault(); // Evitar navegación inmediata
+    
+    // Mostrar confirmación
+    const confirmar = confirm('¿Estás seguro de que deseas cerrar sesión?');
+    
+    if (confirmar) {
+        // Mostrar mensaje de carga
+        const botonCerrarSesion = document.getElementById('cerrar-sesion');
+        const spanTexto = botonCerrarSesion.querySelector('span');
+        const textoOriginal = spanTexto.textContent;
+        
+        spanTexto.textContent = 'Cerrando...';
+        botonCerrarSesion.style.opacity = '0.6';
+        botonCerrarSesion.style.pointerEvents = 'none';
+        
+        // Hacer petición de logout
+        fetch('/auth/logout', {
+            method: 'GET',
+            credentials: 'include' // Incluir cookies
+        })
+        .then(response => {
+            if (response.ok || response.redirected) {
+                // Redirigir al login
+                window.location.href = '/auth/login';
+            } else {
+                throw new Error('Error cerrando sesión');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al cerrar sesión. Intenta nuevamente.');
+            
+            // Restaurar botón
+            spanTexto.textContent = textoOriginal;
+            botonCerrarSesion.style.opacity = '1';
+            botonCerrarSesion.style.pointerEvents = 'auto';
+        });
+    }
+}

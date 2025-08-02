@@ -739,6 +739,48 @@ position: absolute; /* Posiciona el elemento de forma absoluta */
 
 /* ----------------------------------- Responsive para nuevas secciones ----------------------------- */
 
+/* ================================
+   ESTILOS PARA BOTÓN CERRAR SESIÓN
+   ================================ */
+
+/* Botón de cerrar sesión - estilos especiales */
+#cerrar-sesion {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 10px;
+    padding-top: 15px;
+    transition: all 0.3s ease;
+}
+
+#cerrar-sesion:hover {
+    background-color: #d32f2f !important; /* Rojo más intenso al hover */
+    transform: translateX(5px); /* Pequeño desplazamiento visual */
+}
+
+#cerrar-sesion svg {
+    fill: #d32f2f; /* Color rojo para el icono */
+    transition: fill 0.3s ease;
+}
+
+#cerrar-sesion:hover svg {
+    fill: #ffffff; /* Icono blanco al hacer hover */
+}
+
+#cerrar-sesion span {
+    color: #d32f2f; /* Texto rojo */
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+#cerrar-sesion:hover span {
+    color: #ffffff; /* Texto blanco al hacer hover */
+    font-weight: 600;
+}
+
+/* Estado de carga cuando se está cerrando sesión */
+#cerrar-sesion[style*="opacity"] {
+    cursor: not-allowed;
+}
+
 /* ======================================================================
    FINAL DEL ARCHIVO CSS PRINCIPAL
    Las media queries están en: /css/responsive.css

@@ -139,7 +139,7 @@ class AuthController {
             }
             
             // Si es petición normal, redirigir
-            res.redirect('/login');
+            res.redirect('/auth/login');
             
         } catch (error) {
             console.error('Error en logout:', error);
