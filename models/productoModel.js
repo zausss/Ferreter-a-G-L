@@ -1,59 +1,215 @@
-const { pool, conectarDB } = require('../config/database');
+const { pool } = require('../config/database');
 
-const probarConexionYTabla = async () => {
-    console.log('🔄 Probando conexión a PostgreSQL...');
+class Producto {
     
-    try {
-        // 1. Probar conexión básica
-        const conectado = await conectarDB();
-        
-        if (!conectado) {
-            console.log('❌ No se pudo conectar a la base de datos');
-            return;
+    // Obtener todos los productos
+    static async obtenerTodos() {
+        try {
+            const query = `
+                SELECT 
+                    p.id,
+                    p.codigo_producto,
+                    p.nombre,
+                    p.descripcion,
+                    p.precio_venta,
+                    p.precio_compra,
+                    p.stock_actual,
+                    p.stock_minimo,
+                    p.activo,
+                    c.nombre_categoria,
+                    p.fecha_creacion
+                FROM productos p
+                LEFT JOIN categorias c ON p.categoria_id = c.id
+                WHERE p.activo = true
+                ORDER BY p.nombre;
+            `;
+            
+            const resultado = await pool.query(query);
+            return resultado.rows;
+            
+        } catch (error) {
+            console.error('Error obteniendo productos:', error);
+            throw error;
         }
-
-        // 2. Verificar que existe la tabla usuarios_sistema
-        console.log('🔍 Verificando tabla usuarios_sistema...');
-        const verificarTabla = await pool.query(`
-            SELECT EXISTS (
-                SELECT 1 
-                FROM information_schema.tables 
-                WHERE table_name = 'usuarios_sistema'
-            );
-        `);
-        
-        if (verificarTabla.rows[0].exists) {
-            console.log('✅ La tabla usuarios_sistema existe');
-            
-            // 3. Contar cuántos registros hay (sin mostrar datos)
-            const conteo = await pool.query('SELECT COUNT(*) as total FROM usuarios_sistema');
-            console.log(`📊 La tabla tiene ${conteo.rows[0].total} registros`);
-            
-            // 4. Mostrar estructura de la tabla (solo nombres de columnas)
-            const columnas = await pool.query(`
-                SELECT column_name, data_type 
-                FROM information_schema.columns 
-                WHERE table_name = 'usuarios_sistema'
-                ORDER BY ordinal_position;
-            `);
-            
-            console.log('🏗️  Estructura de la tabla:');
-            columnas.rows.forEach(col => {
-                console.log(`   - ${col.column_name} (${col.data_type})`);
-            });
-            
-        } else {
-            console.log('❌ La tabla usuarios_sistema NO existe');
-        }
-        
-    } catch (error) {
-        console.error('❌ Error:', error.message);
-    } finally {
-        // Cerrar conexiones
-        await pool.end();
-        console.log('🔒 Conexiones cerradas');
     }
-};
+    
+    // Buscar producto por ID
+    static async buscarPorId(id) {
+        try {
+            const query = `
+                SELECT 
+                    p.id,
+                    p.codigo_producto,
+                    p.nombre,
+                    p.descripcion,
+                    p.precio_venta,
+                    p.precio_compra,
+                    p.stock_actual,
+                    p.stock_minimo,
+                    p.categoria_id,
+                    p.activo,
+                    c.nombre_categoria
+                FROM productos p
+                LEFT JOIN categorias c ON p.categoria_id = c.id
+                WHERE p.id = $1;
+            `;
+            
+            const resultado = await pool.query(query, [id]);
+            return resultado.rows[0] || null;
+            
+        } catch (error) {
+            console.error('Error buscando producto por ID:', error);
+            throw error;
+        }
+    }
+    
+    // Buscar productos por categoría
+    static async buscarPorCategoria(categoriaId) {
+        try {
+            const query = `
+                SELECT 
+                    p.id,
+                    p.codigo_producto,
+                    p.nombre,
+                    p.descripcion,
+                    p.precio_venta,
+                    p.stock_actual,
+                    c.nombre_categoria
+                FROM productos p
+                LEFT JOIN categorias c ON p.categoria_id = c.id
+                WHERE p.categoria_id = $1 AND p.activo = true
+                ORDER BY p.nombre;
+            `;
+            
+            const resultado = await pool.query(query, [categoriaId]);
+            return resultado.rows;
+            
+        } catch (error) {
+            console.error('Error buscando productos por categoría:', error);
+            throw error;
+        }
+    }
+    
+    // Crear nuevo producto
+    static async crear(datosProducto) {
+        try {
+            const {
+                codigo_producto,
+                nombre,
+                descripcion,
+                precio_venta,
+                precio_compra,
+                stock_actual,
+                stock_minimo,
+                categoria_id
+            } = datosProducto;
+            
+            const query = `
+                INSERT INTO productos (
+                    codigo_producto, nombre, descripcion, 
+                    precio_venta, precio_compra, stock_actual, 
+                    stock_minimo, categoria_id, activo, fecha_creacion
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, true, CURRENT_TIMESTAMP)
+                RETURNING id, codigo_producto, nombre;
+            `;
+            
+            const valores = [
+                codigo_producto, nombre, descripcion,
+                precio_venta, precio_compra, stock_actual,
+                stock_minimo, categoria_id
+            ];
+            
+            const resultado = await pool.query(query, valores);
+            return resultado.rows[0];
+            
+        } catch (error) {
+            console.error('Error creando producto:', error);
+            throw error;
+        }
+    }
+    
+    // Actualizar producto
+    static async actualizar(id, datosProducto) {
+        try {
+            const {
+                nombre,
+                descripcion,
+                precio_venta,
+                precio_compra,
+                stock_actual,
+                stock_minimo,
+                categoria_id
+            } = datosProducto;
+            
+            const query = `
+                UPDATE productos 
+                SET nombre = $1, descripcion = $2, precio_venta = $3,
+                    precio_compra = $4, stock_actual = $5, stock_minimo = $6,
+                    categoria_id = $7, fecha_actualizacion = CURRENT_TIMESTAMP
+                WHERE id = $8 AND activo = true
+                RETURNING id, nombre;
+            `;
+            
+            const valores = [
+                nombre, descripcion, precio_venta,
+                precio_compra, stock_actual, stock_minimo,
+                categoria_id, id
+            ];
+            
+            const resultado = await pool.query(query, valores);
+            return resultado.rows[0] || null;
+            
+        } catch (error) {
+            console.error('Error actualizando producto:', error);
+            throw error;
+        }
+    }
+    
+    // Eliminar producto (soft delete)
+    static async eliminar(id) {
+        try {
+            const query = `
+                UPDATE productos 
+                SET activo = false, fecha_actualizacion = CURRENT_TIMESTAMP
+                WHERE id = $1
+                RETURNING id, nombre;
+            `;
+            
+            const resultado = await pool.query(query, [id]);
+            return resultado.rows[0] || null;
+            
+        } catch (error) {
+            console.error('Error eliminando producto:', error);
+            throw error;
+        }
+    }
+    
+    // Buscar productos con stock bajo
+    static async stockBajo() {
+        try {
+            const query = `
+                SELECT 
+                    p.id,
+                    p.codigo_producto,
+                    p.nombre,
+                    p.stock_actual,
+                    p.stock_minimo,
+                    c.nombre_categoria
+                FROM productos p
+                LEFT JOIN categorias c ON p.categoria_id = c.id
+                WHERE p.stock_actual <= p.stock_minimo 
+                AND p.activo = true
+                ORDER BY p.stock_actual ASC;
+            `;
+            
+            const resultado = await pool.query(query);
+            return resultado.rows;
+            
+        } catch (error) {
+            console.error('Error obteniendo productos con stock bajo:', error);
+            throw error;
+        }
+    }
+}
 
-// Ejecutar la prueba
-probarConexionYTabla();
+module.exports = Producto;
