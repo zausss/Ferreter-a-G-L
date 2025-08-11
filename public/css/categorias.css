@@ -1,0 +1,37 @@
+/* Estilos para la página de categorías */
+.nueva-categoria {
+    display: flex;
+    justify-content: left;
+    padding: 3px 5px;
+    
+}
+
+.header {
+    
+    border-bottom: 10px;
+}
+
+.btn-agregar {
+    background-color: #3B82F6;
+    color: white;
+    border: none;
+    padding: 20px 50px;
+    cursor: pointer;
+    font-size: 20px;
+    border-radius: 10px;
+}
+
+/*barra de búsqueda */
+
+.barra-busqueda {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.campo-busqueda {
+    width: 100%;
+    padding: 3px;
+    border-radius: 5px;
+    font-size: 16px;
+}

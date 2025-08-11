@@ -6,6 +6,7 @@
     <title>Categorías</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="/css/categorias.css">
 </head>
 <body>
     <div class="contenedor-principal">
@@ -32,9 +33,9 @@
                             <span class="icono-adicional">+</span>
                         </a>
                         <ul class="submenu" id="submenu-inventario">
-                            <li><a href="/inventario/categorias.html">Categorías</a></li>
-                            <li><a href="/inventario/productos.html">Productos</a></li>
-                            <li><a href="/inventario/stock.html">Control de Stock</a></li>
+                            <li><a href="categorias.html">Categorías</a></li>
+                            <li><a href="#">Productos</a></li>
+                            <li><a href="#">Control de Stock</a></li>
                         </ul>
                     </li>
                     
@@ -99,8 +100,52 @@
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="m234-480-12-60q-12-5-22.5-10.5T178-564l-58 18-40-68 46-40q-2-13-2-26t2-26l-46-40 40-68 58 18q11-8 21.5-13.5T222-820l12-60h80l12 60q12 5 22.5 10.5T370-796l58-18 40 68-46 40q2 13 2 26t-2 26l46 40-40 68-58-18q-11 8-21.5 13.5T326-540l-12 60h-80Zm40-120q33 0 56.5-23.5T354-680q0-33-23.5-56.5T274-760q-33 0-56.5 23.5T194-680q0 33 23.5 56.5T274-600ZM592-40l-18-84q-17-6-31.5-14.5T514-158l-80 26-56-96 64-56q-2-18-2-36t2-36l-64-56 56-96 80 26q14-11 28.5-19.5T574-516l18-84h112l18 84q17 6 31.5 14.5T782-482l80-26 56 96-64 56q2 18 2 36t-2 36l64 56-56 96-80-26q-14 11-28.5 19.5T722-124l-18 84H592Zm56-160q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Z"/></svg>
                     <span>Configuración</span>
                 </a>
+                
+                <!-- Botón de Cerrar Sesión -->
+                <a href="/auth/logout" class="item-navegacion" id="cerrar-sesion" onclick="confirmarCerrarSesion(event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#d32f2f">
+                        <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
+                    </svg>
+                    <span>Cerrar Sesión</span>
+                </a>
             </div>
         </aside>
+
+
+        <!-- área de contenido de la pagina -->
+
+        <main class="area-contenido">
+            <header>
+                <h1>Lista de Categorías</h1>
+            </header>
+
+            <div class="nueva-categoria">
+                <button class="btn-agregar">Nueva Categoría</button>
+            </div>
+
+            <div class="barra-busqueda">
+                <input type="text" placeholder="Buscar" class="campo-busqueda">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+    <path d="M8.25 10.875a2.625 2.625 0 1 1 5.25 0 2.625 2.625 0 0 1-5.25 0Z" />
+    <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.125 4.5a4.125 4.125 0 1 0 2.338 7.524l2.007 2.006a.75.75 0 1 0 1.06-1.06l-2.006-2.007a4.125 4.125 0 0 0-3.399-6.463Z" clip-rule="evenodd" />
+</svg>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </main>
+
+
 
         <script src="/js/menu.js"></script>
 </body>
