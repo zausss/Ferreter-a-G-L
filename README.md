@@ -104,4 +104,5 @@ Este proyecto implementa:
 MIT License
 
 ## 👨‍💻 Autor
-Daniel Esteban Vargas Garcia - Proyecto de Graduación
+Daniel Esteban Vargas Garcia  
+LEUDIVIA TANGARIFE BELTRAN -Proyecto de Graduación
