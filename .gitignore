@@ -3,7 +3,7 @@
 .env.local
 .env.production
 .env.staging
-.DOCUMENTACION-COMPLETA.md
+
 
 # Dependencias
 node_modules/
