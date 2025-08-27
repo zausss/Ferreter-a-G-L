@@ -113,40 +113,544 @@
 
 
         <!-- área de contenido de la pagina -->
-
         <main class="area-contenido">
-            <header>
-                <h1>Lista de Categorías</h1>
-            </header>
+            <div class="categorias-container">
+                <!-- Header -->
+                <div class="categorias-header">
+                    <h1>Gestión de Categorías</h1>
+                    <button class="btn-nueva-categoria" onclick="abrirModal()">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
+                        </svg>
+                        Nueva Categoría
+                    </button>
+                </div>
 
-            <div class="nueva-categoria">
-                <button class="btn-agregar">Nueva Categoría</button>
+                <!-- Stats -->
+                <div class="categorias-stats">
+                    <div class="stat-card">
+                        <h3 class="stat-numero" id="total-categorias">0</h3>
+                        <p class="stat-label">Total Categorías</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="stat-numero" id="categorias-activas">0</h3>
+                        <p class="stat-label">Categorías Activas</p>
+                    </div>
+                </div>
+
+                <!-- Barra de búsqueda -->
+                <div class="busqueda-container">
+                    <input 
+                        type="text" 
+                        placeholder="Buscar categorías..." 
+                        class="campo-busqueda" 
+                        id="campo-busqueda"
+                        onkeyup="buscarCategorias()"
+                    >
+                    <svg class="icono-busqueda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+
+                <!-- Mensajes -->
+                <div class="mensaje-exito" id="mensaje-exito">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
+                        <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                    </svg>
+                    <span id="texto-mensaje-exito"></span>
+                </div>
+
+                <div class="mensaje-error" id="mensaje-error">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
+                        <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+                    </svg>
+                    <span id="texto-mensaje-error"></span>
+                </div>
+
+                <!-- Tabla de categorías -->
+                <div class="categorias-tabla-container">
+                    <div class="loading" id="loading" style="display: none;">
+                        <div class="spinner"></div>
+                    </div>
+
+                    <table class="categorias-tabla" id="tabla-categorias">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                                <th>Fecha Creación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla-categorias">
+                            <!-- Las categorías se cargarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+
+                    <!-- Estado vacío -->
+                    <div class="estado-vacio" id="estado-vacio" style="display: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                        </svg>
+                        <h3>No hay categorías</h3>
+                        <p>Aún no has creado ninguna categoría. ¡Crea tu primera categoría!</p>
+                        <button class="btn-nueva-categoria" onclick="abrirModal()">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
+                            </svg>
+                            Crear Primera Categoría
+                        </button>
+                    </div>
+                </div>
             </div>
-
-            <div class="barra-busqueda">
-                <input type="text" placeholder="Buscar" class="campo-busqueda">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-    <path d="M8.25 10.875a2.625 2.625 0 1 1 5.25 0 2.625 2.625 0 0 1-5.25 0Z" />
-    <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.125 4.5a4.125 4.125 0 1 0 2.338 7.524l2.007 2.006a.75.75 0 1 0 1.06-1.06l-2.006-2.007a4.125 4.125 0 0 0-3.399-6.463Z" clip-rule="evenodd" />
-</svg>
-            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
         </main>
 
+        <!-- Modal para crear/editar categoría -->
+        <div class="modal-categoria" id="modal-categoria">
+            <div class="modal-contenido">
+                <div class="modal-header">
+                    <h2 class="modal-titulo" id="titulo-modal">Nueva Categoría</h2>
+                    <button class="btn-cerrar-modal" onclick="cerrarModal()">&times;</button>
+                </div>
+
+                <form class="formulario-categoria" id="formulario-categoria">
+                    <div class="grupo-campo">
+                        <label class="etiqueta-campo" for="codigo-categoria">Código *</label>
+                        <input 
+                            type="text" 
+                            id="codigo-categoria" 
+                            name="codigo_categoria" 
+                            class="campo-formulario"
+                            placeholder="Ej: HER, PIN, ELE" 
+                            maxlength="10"
+                            required
+                        >
+                    </div>
+
+                    <div class="grupo-campo">
+                        <label class="etiqueta-campo" for="nombre-categoria">Nombre *</label>
+                        <input 
+                            type="text" 
+                            id="nombre-categoria" 
+                            name="nombre_categoria" 
+                            class="campo-formulario"
+                            placeholder="Ej: Herramientas, Pinturas, Eléctricos" 
+                            maxlength="100"
+                            required
+                        >
+                    </div>
+
+                    <div class="grupo-campo">
+                        <label class="etiqueta-campo" for="descripcion-categoria">Descripción</label>
+                        <textarea 
+                            id="descripcion-categoria" 
+                            name="descripcion" 
+                            class="campo-formulario campo-textarea"
+                            placeholder="Descripción opcional de la categoría..."
+                            maxlength="500"
+                        ></textarea>
+                    </div>
+
+                    <div class="botones-formulario">
+                        <button type="button" class="btn-cancelar" onclick="cerrarModal()">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn-guardar" id="btn-guardar">
+                            Guardar Categoría
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
 
         <script src="/js/menu.js"></script>
+        <script src="/js/dashboard.js"></script>
+        <script>
+            // ==========================================
+            // GESTIÓN DE CATEGORÍAS - JavaScript
+            // ==========================================
+
+            let categorias = [];
+            let categoriaEditando = null;
+            let timeoutBusqueda = null;
+
+            // Cargar categorías al iniciar la página
+            document.addEventListener('DOMContentLoaded', function() {
+                cargarCategorias();
+            });
+
+            // ==========================================
+            // FUNCIONES DE CARGA DE DATOS
+            // ==========================================
+
+            async function cargarCategorias() {
+                try {
+                    mostrarLoading(true);
+                    
+                    const response = await fetch('/api/categorias', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
+                        },
+                        credentials: 'include' // Importante: incluir cookies
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            // No autenticado, redirigir al login
+                            window.location.href = '/auth/login';
+                            return;
+                        }
+                        throw new Error('Error al cargar categorías');
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        categorias = data.categorias;
+                        mostrarCategorias(categorias);
+                        actualizarEstadisticas();
+                    } else {
+                        mostrarError('Error al cargar las categorías');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    mostrarError('Error al conectar con el servidor');
+                } finally {
+                    mostrarLoading(false);
+                }
+            }
+
+            // ==========================================
+            // FUNCIONES DE INTERFAZ
+            // ==========================================
+
+            function mostrarCategorias(listaCategorias) {
+                const cuerpoTabla = document.getElementById('cuerpo-tabla-categorias');
+                const estadoVacio = document.getElementById('estado-vacio');
+                const tabla = document.getElementById('tabla-categorias');
+
+                if (listaCategorias.length === 0) {
+                    tabla.style.display = 'none';
+                    estadoVacio.style.display = 'block';
+                    return;
+                }
+
+                tabla.style.display = 'table';
+                estadoVacio.style.display = 'none';
+
+                cuerpoTabla.innerHTML = '';
+
+                listaCategorias.forEach(categoria => {
+                    const fila = document.createElement('tr');
+                    const fechaCreacion = new Date(categoria.fecha_creacion).toLocaleDateString('es-CO');
+                    
+                    fila.innerHTML = `
+                        <td>
+                            <span class="codigo-categoria">${categoria.codigo_categoria}</span>
+                        </td>
+                        <td>
+                            <span class="nombre-categoria">${categoria.nombre_categoria}</span>
+                        </td>
+                        <td>
+                            <span class="descripcion-categoria" title="${categoria.descripcion || 'Sin descripción'}">
+                                ${categoria.descripcion || 'Sin descripción'}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="${categoria.activo ? 'estado-activo' : 'estado-inactivo'}">
+                                ${categoria.activo ? 'Activa' : 'Inactiva'}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="fecha-categoria">${fechaCreacion}</span>
+                        </td>
+                        <td>
+                            <div class="acciones-categoria">
+                                <button class="btn-accion btn-ver" onclick="verCategoria(${categoria.id})" title="Ver detalles">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                                        <path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <button class="btn-accion btn-editar" onclick="editarCategoria(${categoria.id})" title="Editar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                                        <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+                                    </svg>
+                                </button>
+                                <button class="btn-accion btn-eliminar" onclick="eliminarCategoria(${categoria.id}, '${categoria.nombre_categoria}')" title="Eliminar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    
+                    cuerpoTabla.appendChild(fila);
+                });
+            }
+
+            function actualizarEstadisticas() {
+                const totalCategorias = categorias.length;
+                const categoriasActivas = categorias.filter(c => c.activo).length;
+                
+                document.getElementById('total-categorias').textContent = totalCategorias;
+                document.getElementById('categorias-activas').textContent = categoriasActivas;
+            }
+
+            // ==========================================
+            // FUNCIONES DE MODAL
+            // ==========================================
+
+            function abrirModal(categoria = null) {
+                const modal = document.getElementById('modal-categoria');
+                const titulo = document.getElementById('titulo-modal');
+                const formulario = document.getElementById('formulario-categoria');
+                
+                categoriaEditando = categoria;
+                
+                if (categoria) {
+                    // Modo edición
+                    titulo.textContent = 'Editar Categoría';
+                    document.getElementById('codigo-categoria').value = categoria.codigo_categoria;
+                    document.getElementById('nombre-categoria').value = categoria.nombre_categoria;
+                    document.getElementById('descripcion-categoria').value = categoria.descripcion || '';
+                } else {
+                    // Modo creación
+                    titulo.textContent = 'Nueva Categoría';
+                    formulario.reset();
+                }
+                
+                modal.classList.add('mostrar');
+                document.getElementById('codigo-categoria').focus();
+            }
+
+            function cerrarModal() {
+                const modal = document.getElementById('modal-categoria');
+                modal.classList.remove('mostrar');
+                categoriaEditando = null;
+                
+                // Limpiar formulario
+                document.getElementById('formulario-categoria').reset();
+            }
+
+            // ==========================================
+            // FUNCIONES DE ACCIONES
+            // ==========================================
+
+            async function verCategoria(id) {
+                const categoria = categorias.find(c => c.id === id);
+                if (categoria) {
+                    alert(`Categoría: ${categoria.nombre_categoria}\nCódigo: ${categoria.codigo_categoria}\nDescripción: ${categoria.descripcion || 'Sin descripción'}\nFecha de creación: ${new Date(categoria.fecha_creacion).toLocaleDateString('es-CO')}`);
+                }
+            }
+
+            function editarCategoria(id) {
+                const categoria = categorias.find(c => c.id === id);
+                if (categoria) {
+                    abrirModal(categoria);
+                }
+            }
+
+            async function eliminarCategoria(id, nombre) {
+                console.log('🗑️ Frontend: Intentando eliminar ID:', id, 'Nombre:', nombre);
+                
+                if (confirm(`¿Estás seguro de que deseas eliminar la categoría "${nombre}"?\n\nEsta acción no se puede deshacer.`)) {
+                    try {
+                        console.log('📡 Frontend: Enviando DELETE a:', `/api/categorias/${id}`);
+                        
+                        const response = await fetch(`/api/categorias/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Accept': 'application/json'
+                            },
+                            credentials: 'include' // Importante: incluir cookies
+                        });
+
+                        console.log('📨 Frontend: Response status:', response.status);
+
+                        if (response.status === 401) {
+                            window.location.href = '/auth/login';
+                            return;
+                        }
+
+                        const data = await response.json();
+                        console.log('📋 Frontend: Response data:', data);
+
+                        if (data.success) {
+                            mostrarExito(data.message);
+                            cargarCategorias();
+                        } else {
+                            mostrarError(data.message);
+                        }
+                        
+                    } catch (error) {
+                        console.error('❌ Frontend Error:', error);
+                        mostrarError('Error al eliminar la categoría');
+                    }
+                }
+            }
+
+            // ==========================================
+            // MANEJO DE FORMULARIO
+            // ==========================================
+
+            document.getElementById('formulario-categoria').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const btnGuardar = document.getElementById('btn-guardar');
+                const datosFormulario = new FormData(this);
+                
+                const categoria = {
+                    codigo_categoria: datosFormulario.get('codigo_categoria').trim().toUpperCase(),
+                    nombre_categoria: datosFormulario.get('nombre_categoria').trim(),
+                    descripcion: datosFormulario.get('descripcion').trim() || null
+                };
+
+                // Validaciones
+                if (!categoria.codigo_categoria || !categoria.nombre_categoria) {
+                    mostrarError('El código y nombre son obligatorios');
+                    return;
+                }
+
+                if (categoria.codigo_categoria.length > 10) {
+                    mostrarError('El código no puede tener más de 10 caracteres');
+                    return;
+                }
+
+                try {
+                    btnGuardar.textContent = 'Guardando...';
+                    btnGuardar.classList.add('btn-guardando');
+                    btnGuardar.disabled = true;
+
+                    const url = categoriaEditando 
+                        ? `/api/categorias/${categoriaEditando.id}`
+                        : '/api/categorias';
+                    
+                    const method = categoriaEditando ? 'PUT' : 'POST';
+
+                    const response = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        credentials: 'include', // Importante: incluir cookies
+                        body: JSON.stringify(categoria)
+                    });
+
+                    if (response.status === 401) {
+                        window.location.href = '/auth/login';
+                        return;
+                    }
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        mostrarExito(data.message);
+                        cerrarModal();
+                        cargarCategorias();
+                    } else {
+                        mostrarError(data.message);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    mostrarError('Error al guardar la categoría');
+                } finally {
+                    btnGuardar.textContent = categoriaEditando ? 'Actualizar Categoría' : 'Guardar Categoría';
+                    btnGuardar.classList.remove('btn-guardando');
+                    btnGuardar.disabled = false;
+                }
+            });
+
+            // ==========================================
+            // BÚSQUEDA
+            // ==========================================
+
+            function buscarCategorias() {
+                const termino = document.getElementById('campo-busqueda').value.toLowerCase();
+                
+                if (timeoutBusqueda) {
+                    clearTimeout(timeoutBusqueda);
+                }
+                
+                timeoutBusqueda = setTimeout(() => {
+                    const categoriasFiltradas = categorias.filter(categoria => 
+                        categoria.codigo_categoria.toLowerCase().includes(termino) ||
+                        categoria.nombre_categoria.toLowerCase().includes(termino) ||
+                        (categoria.descripcion && categoria.descripcion.toLowerCase().includes(termino))
+                    );
+                    
+                    mostrarCategorias(categoriasFiltradas);
+                }, 300);
+            }
+
+            // ==========================================
+            // FUNCIONES AUXILIARES
+            // ==========================================
+
+            function mostrarLoading(mostrar) {
+                const loading = document.getElementById('loading');
+                const tabla = document.getElementById('tabla-categorias');
+                
+                if (mostrar) {
+                    loading.style.display = 'flex';
+                    tabla.style.display = 'none';
+                } else {
+                    loading.style.display = 'none';
+                    tabla.style.display = 'table';
+                }
+            }
+
+            function mostrarExito(mensaje) {
+                const elemento = document.getElementById('mensaje-exito');
+                const texto = document.getElementById('texto-mensaje-exito');
+                
+                texto.textContent = mensaje;
+                elemento.classList.add('mostrar');
+                
+                setTimeout(() => {
+                    elemento.classList.remove('mostrar');
+                }, 5000);
+            }
+
+            function mostrarError(mensaje) {
+                const elemento = document.getElementById('mensaje-error');
+                const texto = document.getElementById('texto-mensaje-error');
+                
+                texto.textContent = mensaje;
+                elemento.classList.add('mostrar');
+                
+                setTimeout(() => {
+                    elemento.classList.remove('mostrar');
+                }, 5000);
+            }
+
+            // Cerrar modal con Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    cerrarModal();
+                }
+            });
+
+            // Cerrar modal al hacer clic fuera
+            document.getElementById('modal-categoria').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    cerrarModal();
+                }
+            });
+
+            // Formatear código a mayúsculas mientras se escribe
+            document.getElementById('codigo-categoria').addEventListener('input', function(e) {
+                e.target.value = e.target.value.toUpperCase();
+            });
+        </script>
 </body>
 </html>

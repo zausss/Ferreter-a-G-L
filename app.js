@@ -6,6 +6,7 @@ const config = require('./config/config');
 
 // Importar rutas
 const authRoutes = require('./routes/auth');
+const categoriaRoutes = require('./routes/categoriaRoutes');
 
 // Importar middleware
 const { verificarToken } = require('./middleware/auth');
@@ -23,6 +24,9 @@ app.use(express.static(path.join(__dirname, 'views')));
 
 // Rutas de autenticación (públicas)
 app.use('/auth', authRoutes);
+
+// Rutas API (protegidas)
+app.use('/api/categorias', categoriaRoutes);
 
 // Ruta raíz - redirigir según autenticación
 app.get('/', (req, res) => {
