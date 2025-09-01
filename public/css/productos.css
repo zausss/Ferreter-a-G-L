@@ -3,6 +3,7 @@
     max-width: 100vw;
     box-sizing: border-box;
     padding-right: 50px;
+    background-color: #a9aaaa;
 }
 /* Contenedor principal de productos */
 .productos-container {
@@ -16,8 +17,9 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
-    padding-bottom: 15px;
+    padding: 0px 15px 15px 0px;
     border-bottom: 2px solid #e0e0e0;
+    
 }
 
 .productos-header h1 {

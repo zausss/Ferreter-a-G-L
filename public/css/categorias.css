@@ -1,6 +1,17 @@
+/* Fondo gris para el área principal de categorías */
+.area-contenido {
+    background-color: #a9aaaa;
+
+}
 /* ==========================================
    ESTILOS PARA PÁGINA DE CATEGORÍAS
    ========================================== */
+
+.area-principal {
+    
+    background-color: #3ebdbd;
+}
+
 
 /* Contenedor principal de categorías */
 .categorias-container {
@@ -55,6 +66,8 @@
 
 /* Barra de búsqueda */
 .busqueda-container {
+    width: 100%;
+    max-width: 468px;
     margin-bottom: 25px;
     position: relative;
 }
