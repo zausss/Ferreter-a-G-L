@@ -98,6 +98,25 @@ Este proyecto implementa:
 - ✅ Base de datos relacional normalizada
 - ✅ Interface de usuario moderna
 - ✅ Código limpio y documentado
+
+## 🧪 Matriz de Casos de Prueba
+
+| Caso | Requisito Funcional | Descripción | Entrada | Resultado Esperado | Responsable | Estado |
+|------|---------------------|-------------|---------|--------------------|-------------|--------|
+| CP01 | RF-01 | Login con usuario/email y contraseña válidos | Usuario/email y contraseña correctos | Acceso concedido, redirección al dashboard | [Tu Nombre] | Pendiente |
+| CP02 | RF-02 | Login con credenciales incorrectas | Usuario/email o contraseña incorrectos | Mensaje de error, acceso denegado | [Tu Nombre] | Pendiente |
+| CP03 | RF-03 | Login con campos vacíos | Usuario/email o contraseña vacíos | Mensaje de error, acceso denegado | [Tu Nombre] | Pendiente |
+| CP04 | RF-04 | Listar categorías autenticado | Token JWT válido | Lista de categorías mostrada | [Tu Nombre] | Pendiente |
+| CP05 | RF-05 | Crear nueva categoría (admin) | Nombre válido, usuario admin | Categoría creada correctamente | [Tu Nombre] | Pendiente |
+| CP06 | RF-06 | Crear categoría con nombre vacío o repetido | Nombre vacío o ya existente | Mensaje de error, no se crea categoría | [Tu Nombre] | Pendiente |
+| CP07 | RF-07 | Editar nombre de categoría (admin) | Nombre nuevo válido, usuario admin | Categoría editada correctamente | [Tu Nombre] | Pendiente |
+| CP08 | RF-08 | Editar categoría sin permisos | Usuario sin rol admin | Mensaje de error, edición denegada | [Tu Nombre] | Pendiente |
+| CP09 | RF-09 | Eliminar (soft delete) categoría (admin) | Usuario admin, categoría existente | Categoría eliminada lógicamente | [Tu Nombre] | Pendiente |
+| CP10 | RF-10 | Eliminar categoría sin permisos | Usuario sin rol admin | Mensaje de error, eliminación denegada | [Tu Nombre] | Pendiente |
+| CP11 | RF-11 | Buscar categorías por nombre | Nombre de categoría existente/parcial | Lista de coincidencias mostrada | [Tu Nombre] | Pendiente |
+| CP12 | RF-12 | Acceso a rutas protegidas sin token | Sin token o token inválido | Acceso denegado, mensaje de autenticación | [Tu Nombre] | Pendiente |
+| CP13 | RF-13 | Acceso a funciones admin sin rol | Usuario autenticado sin rol admin | Acceso denegado, mensaje de autorización | [Tu Nombre] | Pendiente |
+| CP14 | RF-14 | Token expirado o inválido | Token expirado o alterado | Mensaje de error de token inválido/expirado | [Tu Nombre] | Pendiente |
 - ✅ Herramientas de administración
 
 ## 📄 Licencia
