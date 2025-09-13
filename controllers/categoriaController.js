@@ -1,6 +1,67 @@
 const { pool } = require('../config/database');
 
 class CategoriaController {
+    // Eliminar categoría por codigo_categoria (soft delete)
+    static async eliminarPorCodigo(req, res) {
+        try {
+            const { codigo_categoria } = req.params;
+            if (!codigo_categoria) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'El código de la categoría es obligatorio'
+                });
+            }
+
+            // Buscar la categoría por código
+            const queryExiste = `
+                SELECT id, nombre_categoria FROM categorias 
+                WHERE codigo_categoria = $1 AND activo = true
+            `;
+            const existeResult = await pool.query(queryExiste, [codigo_categoria.toUpperCase()]);
+
+            if (existeResult.rows.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Categoría no encontrada con ese código'
+                });
+            }
+            const categoria = existeResult.rows[0];
+
+            // Verificar si tiene productos asociados
+            const queryProductos = `
+                SELECT COUNT(*) as total
+                FROM productos 
+                WHERE categoria_id = $1 AND activo = true
+            `;
+            const productosResult = await pool.query(queryProductos, [categoria.id]);
+            if (parseInt(productosResult.rows[0].total) > 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'No se puede eliminar la categoría porque tiene productos asociados'
+                });
+            }
+
+            // Realizar soft delete
+            const queryEliminar = `
+                UPDATE categorias 
+                SET 
+                    activo = false,
+                    fecha_actualizacion = CURRENT_TIMESTAMP
+                WHERE id = $1
+            `;
+            const result = await pool.query(queryEliminar, [categoria.id]);
+            res.json({
+                success: true,
+                message: 'Categoría eliminada exitosamente por código'
+            });
+        } catch (error) {
+            console.error('❌ Error eliminando categoría por código:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al eliminar la categoría por código'
+            });
+        }
+    }
     
     // Obtener todas las categorías
     static async obtenerTodas(req, res) {

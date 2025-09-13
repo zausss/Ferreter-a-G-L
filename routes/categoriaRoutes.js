@@ -24,6 +24,10 @@ router.post('/', soloAdministradores, CategoriaController.crear);
 // PUT /categorias/:id - Actualizar categoría
 router.put('/:id', CategoriaController.actualizar);
 
+
+// DELETE /categorias/codigo/:codigo_categoria - Eliminar por código (solo admin)
+router.delete('/codigo/:codigo_categoria', soloAdministradores, CategoriaController.eliminarPorCodigo);
+
 // DELETE /categorias/:id - Eliminar categoría (soft delete)
 router.delete('/:id', CategoriaController.eliminar);
 
