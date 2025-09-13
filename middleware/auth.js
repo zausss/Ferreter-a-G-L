@@ -5,10 +5,19 @@ const Usuario = require('../models/Usuario');
 // Middleware para verificar JWT
 const verificarToken = async (req, res, next) => {
     try {
-        const token = req.cookies.token;
+        // 1. Buscar token en cookies
+        let token = req.cookies.token;
 
+        // 2. Si no está en cookies, buscar en cabecera Authorization (Bearer)
+        if (!token && req.headers.authorization) {
+            const authHeader = req.headers.authorization;
+            if (authHeader.startsWith('Bearer ')) {
+                token = authHeader.slice(7); // Quita 'Bearer '
+            }
+        }
+
+        // 3. Si no hay token, responder con error o redirección
         if (!token) {
-            // Si es una petición AJAX, responder con JSON
             if (req.xhr || req.headers.accept?.includes('json')) {
                 return res.status(401).json({
                     autenticado: false,
@@ -16,21 +25,17 @@ const verificarToken = async (req, res, next) => {
                     redirectTo: '/auth/login'
                 });
             }
-            
-            // Si es petición normal, redirigir
             return res.redirect('/auth/login');
         }
 
-        // Verificar y decodificar token
+        // 4. Verificar y decodificar token
         const decoded = jwt.verify(token, config.jwt.secret);
-        
-        // Buscar usuario actualizado en BD
+
+        // 5. Buscar usuario actualizado en BD
         const usuario = await Usuario.buscarPorId(decoded.id);
-        
+
         if (!usuario) {
-            // Token válido pero usuario no existe o inactivo
             res.clearCookie('token');
-            
             if (req.xhr || req.headers.accept?.includes('json')) {
                 return res.status(401).json({
                     autenticado: false,
@@ -38,11 +43,10 @@ const verificarToken = async (req, res, next) => {
                     redirectTo: '/auth/login'
                 });
             }
-            
             return res.redirect('/auth/login');
         }
 
-        // Agregar información del usuario al request
+        // 6. Agregar información del usuario al request
         req.usuario = {
             id: usuario.id,
             nombre_usuario: usuario.nombre_usuario,
@@ -55,10 +59,7 @@ const verificarToken = async (req, res, next) => {
 
     } catch (error) {
         console.error('Error verificando token:', error);
-        
-        // Token inválido o expirado
         res.clearCookie('token');
-        
         if (req.xhr || req.headers.accept?.includes('json')) {
             return res.status(401).json({
                 autenticado: false,
@@ -66,7 +67,6 @@ const verificarToken = async (req, res, next) => {
                 redirectTo: '/auth/login'
             });
         }
-
         res.redirect('/auth/login');
     }
 };
