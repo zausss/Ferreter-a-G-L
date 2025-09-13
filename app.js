@@ -52,29 +52,29 @@ app.get('/menu.html', verificarToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'menu.html'));
 });
 
-// Inicializar servidor
-const iniciarServidor = async () => {
-    try {
-        // Conectar a la base de datos
-        const dbConectada = await conectarDB();
-        
-        if (!dbConectada) {
-            console.error(' No se pudo conectar a la base de datos');
+
+// Solo iniciar el servidor si este archivo es ejecutado directamente
+if (require.main === module) {
+    const iniciarServidor = async () => {
+        try {
+            // Conectar a la base de datos
+            const dbConectada = await conectarDB();
+            if (!dbConectada) {
+                console.error(' No se pudo conectar a la base de datos');
+                process.exit(1);
+            }
+            const PORT = config.server.port;
+            app.listen(PORT, () => {
+                console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
+                console.log(`Sistema de autenticación configurado`);
+                console.log(`Entorno: ${config.server.env}`);
+            });
+        } catch (error) {
+            console.error(' Error iniciando servidor:', error);
             process.exit(1);
         }
+    };
+    iniciarServidor();
+}
 
-        // Iniciar servidor
-        const PORT = config.server.port;
-        app.listen(PORT, () => {
-            console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-            console.log(`Sistema de autenticación configurado`);
-            console.log(`Entorno: ${config.server.env}`);
-        });
-
-    } catch (error) {
-        console.error(' Error iniciando servidor:', error);
-        process.exit(1);
-    }
-};
-
-iniciarServidor();
+module.exports = app;

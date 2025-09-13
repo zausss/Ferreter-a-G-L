@@ -21,16 +21,11 @@ class CategoriaController {
             
             const result = await pool.query(query);
             
-            // Si es una petición AJAX, devolver JSON
-            if (req.xhr || req.headers.accept.indexOf('json') > -1) {
-                return res.json({
-                    success: true,
-                    categorias: result.rows
-                });
-            }
-            
-            // Si es una petición normal, renderizar la vista
-            res.render('categorias', { categorias: result.rows });
+            // Siempre devolver JSON para la API
+            return res.json({
+                success: true,
+                categorias: result.rows
+            });
             
         } catch (error) {
             console.error('Error obteniendo categorías:', error);

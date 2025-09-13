@@ -17,8 +17,9 @@ router.get('/buscar', CategoriaController.buscar);
 // GET /categorias/:id - Obtener categoría por ID
 router.get('/:id', CategoriaController.obtenerPorId);
 
-// POST /categorias - Crear nueva categoría
-router.post('/', CategoriaController.crear);
+const { soloAdministradores } = require('../middleware/auth');
+// POST /categorias - Crear nueva categoría (solo admin)
+router.post('/', soloAdministradores, CategoriaController.crear);
 
 // PUT /categorias/:id - Actualizar categoría
 router.put('/:id', CategoriaController.actualizar);
