@@ -9,7 +9,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: var(--fondo-principal); /* Fondo unificado */
+    background: #72b4eb;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -19,11 +19,10 @@ body {
 .contenedor-login {
     max-width: 400px;
     width: 90%;
-    background: var(--fondo-contenedor); /* Fondo unificado */
-    border-radius: var(--radio-contenedor); /* Radio unificado */
-    box-shadow: var(--sombra-contenedor-suave); /* Sombra unificada */
-    padding: var(--padding-contenedor-mediano); /* Padding unificado */
-    text-align: center;
+    background: white; /* Fondo blanco limpio */
+    border-radius: 12px; /* Bordes redondeados modernos */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); /* Sombra moderna */
+    padding: 2rem; /* Padding generoso */
     text-align: center;
 }
 
@@ -39,15 +38,15 @@ body {
     background-color: #ffffff;
     padding: 5px;
     margin-bottom: 15px;
-    border: 3px solid #3498db;
+    border: 3px solid #667eea;
     object-fit: cover;
 }
 
 .encabezado-login h2 {
-    color: #333;
+    color: #1f2937;
     font-size: 1.5em;
     margin-bottom: 5px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .encabezado-login p {
@@ -113,22 +112,21 @@ input[type="password"]:focus {
 .boton-login {
     width: 100%;
     padding: 12px 20px;
-    background: var(--gradiente-primario); /* Gradiente unificado */
-    color: var(--texto-blanco); /* Color usando variable */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Gradiente moderno */
+    color: white; /* Texto blanco */
     border: none;
-    border-radius: var(--radio-normal); /* Radio usando variable */
+    border-radius: 8px; /* Bordes redondeados */
     font-size: 16px;
-    font-weight: var(--peso-semi-bold); /* Peso usando variable */
+    font-weight: 500; /* Peso moderado */
     cursor: pointer;
-    transition: all var(--transicion-normal); /* Transición usando variable */
+    transition: all 0.2s ease; /* Transición rápida */
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .boton-login:hover {
-    background: var(--gradiente-primario-hover); /* Hover unificado */
     transform: translateY(-2px);
-    box-shadow: var(--sombra-media); /* Sombra usando variable */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); /* Sombra moderna */
 }
 
 /* Pie del login */
@@ -146,7 +144,7 @@ input[type="password"]:focus {
 }
 
 .pie-login a {
-    color: #3498db;
+    color: #667eea;
     text-decoration: none;
     font-weight: 600;
     transition: color 0.3s ease;

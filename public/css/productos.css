@@ -7,12 +7,13 @@
     width: 100vw;
     max-width: 100vw;
     box-sizing: border-box;
-    padding-right: 50px;
-    background-color: var(--fondo-principal);
+    padding: 1.5rem;
+    background: #f8fafc;
+    min-height: 100vh;
 }
 /* Contenedor principal de productos */
 .productos-container {
-    padding: 20px;
+    padding: 0;
     width: 100%;
 }
 
@@ -21,41 +22,40 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-    padding: 0px 15px 15px 0px;
-    border-bottom: 2px solid #e0e0e0;
-    
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .productos-header h1 {
-    color: #2c3e50;
-    font-size: 2.5rem;
-    font-weight: 600;
+    color: #1f2937;
+    font-size: 2rem;
+    font-weight: 700;
     margin: 0;
-
 }
 
 /* Botón Nuevo producto */
 .btn-nuevo-producto {
-    background: var(--gradiente-primario);
-    color: var(--texto-blanco);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
     border: none;
     padding: 12px 24px;
-    border-radius: var(--radio-normal);
-    font-size: var(--fuente-normal);
-    font-weight: var(--peso-medio);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all var(--transicion-normal);
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: var(--espaciado-xs);
+    gap: 0.5rem;
     margin-left: auto; /* Alinea el botón completamente a la derecha */
 }
 
 .btn-nuevo-producto:hover {
-    background: var(--gradiente-primario-hover);
     transform: translateY(-2px);
-    box-shadow: var(--sombra-media);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .btn-nuevo-producto svg {
@@ -66,10 +66,10 @@
 /* Filtros */
 .filtros-container {
     background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .filtros-grupo {
@@ -134,10 +134,10 @@
 /* Tabla de productos */
 .tabla-container {
     background: white;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
 }
 
 .tabla-productos {
@@ -146,7 +146,7 @@
 }
 
 .tabla-productos thead {
-    background: linear-gradient(135deg, #34495e, #2c3e50);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
 }
 
@@ -284,23 +284,23 @@
 }
 
 .btn-accion.editar {
-    background-color: #e3f2fd;
-    color: #1976d2;
+    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+    color: white;
 }
 
 .btn-accion.editar:hover {
-    background-color: #1976d2;
-    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .btn-accion.eliminar {
-    background-color: #ffebee;
-    color: #d32f2f;
+    background: linear-gradient(135deg, #ffa726 0%, #ff7043 100%);
+    color: white;
 }
 
 .btn-accion.eliminar:hover {
-    background-color: #d32f2f;
-    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 /* Paginación */
@@ -370,9 +370,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 25px;
-    border-bottom: 1px solid #ecf0f1;
-    background: linear-gradient(135deg, #34495e, #2c3e50);
+    padding: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border-radius: 12px 12px 0 0;
 }

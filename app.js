@@ -9,6 +9,9 @@ const authRoutes = require('./routes/auth');
 const categoriaRoutes = require('./routes/categoriaRoutes');
 const productoRoutes = require('./routes/productoRoutes');
 
+// Importar controladores adicionales
+const CargoController = require('./controllers/cargoController');
+
 // Importar middleware
 const { verificarToken } = require('./middleware/auth');
 
@@ -29,6 +32,9 @@ app.use('/auth', authRoutes);
 // Rutas API (protegidas)
 app.use('/api/categorias', categoriaRoutes);
 app.use('/api/productos', productoRoutes);
+
+// Rutas adicionales para registro
+app.get('/api/cargos', CargoController.obtenerCargos);
 
 // Ruta raíz - redirigir según autenticación
 app.get('/', (req, res) => {
@@ -52,6 +58,10 @@ app.get('/categorias.html', verificarToken, (req, res) => {
 
 app.get('/productos.html', verificarToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'productos.html'));
+});
+
+app.get('/control-stock.html', verificarToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'control-stock.html'));
 });
 
 app.get('/menu.html', verificarToken, (req, res) => {

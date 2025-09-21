@@ -342,6 +342,30 @@ class ProductoController {
             });
         }
     }
+
+    // Obtener estadísticas de productos para el dashboard
+    static async obtenerEstadisticas(req, res) {
+        try {
+            const estadisticas = await Producto.obtenerEstadisticas();
+            
+            res.json({
+                exito: true,
+                estadisticas: {
+                    total_productos: parseInt(estadisticas.total_productos) || 0,
+                    productos_con_stock: parseInt(estadisticas.productos_con_stock) || 0,
+                    productos_stock_bajo: parseInt(estadisticas.productos_stock_bajo) || 0,
+                    valor_total_inventario: parseFloat(estadisticas.valor_total_inventario) || 0
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error obteniendo estadísticas de productos:', error);
+            res.status(500).json({
+                exito: false,
+                mensaje: 'Error interno del servidor'
+            });
+        }
+    }
 }
 
 module.exports = ProductoController;

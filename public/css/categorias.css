@@ -4,6 +4,15 @@
 @import 'variables.css';
 
 /* ==========================================
+   FONDO DE PÁGINA MODERNO
+   ========================================== */
+.area-principal {
+    background: #f8fafc;
+    min-height: 100vh;
+    padding: 1.5rem;
+}
+
+/* ==========================================
    ESTILOS PARA PÁGINA DE CATEGORÍAS
    ========================================== */
 
@@ -12,38 +21,39 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #e0e0e0;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .categorias-header h1 {
-    color: #2c3e50;
-    font-size: 2.5rem;
-    font-weight: 600;
+    color: #1f2937;
+    font-size: 2rem;
+    font-weight: 700;
     margin: 0;
 }
 
 /* Botón Nueva Categoría */
 .btn-nueva-categoria {
-    background: var(--gradiente-primario);
-    color: var(--texto-blanco);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
     border: none;
     padding: 12px 24px;
-    border-radius: var(--radio-normal);
-    font-size: var(--fuente-normal);
-    font-weight: var(--peso-medio);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all var(--transicion-normal);
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: var(--espaciado-xs);
+    gap: 0.5rem;
 }
 
 .btn-nueva-categoria:hover {
-    background: var(--gradiente-primario-hover);
     transform: translateY(-2px);
-    box-shadow: var(--sombra-media);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .btn-nueva-categoria svg {
@@ -55,7 +65,7 @@
 .busqueda-container {
     width: 100%;
     max-width: 468px;
-    margin-bottom: 25px;
+    margin-bottom: 2rem;
     position: relative;
 }
 
@@ -63,17 +73,17 @@
     width: 100%;
     max-width: 400px;
     padding: 12px 45px 12px 15px;
-    border: 2px solid #e0e0e0;
-    border-radius: 25px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
     background: white;
 }
 
 .campo-busqueda:focus {
     outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .icono-busqueda {
@@ -118,9 +128,9 @@
 
 /* Tabla de categorías */
 .categorias-tabla-container {
-    background: var(--fondo-contenedor); /* Fondo unificado */
-    border-radius: var(--radio-contenedor); /* Radio unificado */
-    box-shadow: var(--sombra-contenedor-media); /* Sombra unificada */
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
@@ -130,7 +140,7 @@
 }
 
 .categorias-tabla thead {
-    background: linear-gradient(135deg, #34495e, #2c3e50);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
 }
 
@@ -238,23 +248,23 @@
 }
 
 .btn-editar {
-    background: #f39c12;
+    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
     color: white;
 }
 
 .btn-editar:hover {
-    background: #e67e22;
-    transform: scale(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .btn-eliminar {
-    background: #e74c3c;
+    background: linear-gradient(135deg, #ffa726 0%, #ff7043 100%);
     color: white;
 }
 
 .btn-eliminar:hover {
-    background: #c0392b;
-    transform: scale(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .btn-accion svg {
@@ -287,13 +297,13 @@
 .modal-contenido {
     background: white;
     border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    max-width: 500px;
-    width: 90%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 95%;
     max-height: 80vh;
     overflow: hidden;
     transform: scale(0.7);
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
 }
 
 .modal-categoria.mostrar .modal-contenido {
@@ -304,9 +314,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 25px;
-    border-bottom: 1px solid #ecf0f1;
-    background: linear-gradient(135deg, #34495e, #2c3e50);
+    padding: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: #3d4c66;
     color: white;
     border-radius: 12px 12px 0 0;
 }

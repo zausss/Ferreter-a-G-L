@@ -15,6 +15,16 @@ class AuthController {
         res.sendFile(path.join(__dirname, '../views/login.html'));
     }
 
+    // Mostrar página de registro
+    static mostrarRegistro(req, res) {
+        // Si ya está autenticado, redirigir al dashboard
+        if (req.cookies.token) {
+            return res.redirect('/dashboard');
+        }
+        
+        res.sendFile(path.join(__dirname, '../views/registro.html'));
+    }
+
     // Procesar login
     static async procesarLogin(req, res) {
         try {
@@ -173,6 +183,277 @@ class AuthController {
             res.status(500).json({
                 autenticado: false,
                 error: 'Error interno'
+            });
+        }
+    }
+
+    // Procesar registro de empleado
+    static async procesarRegistro(req, res) {
+        try {
+            const {
+                cedula,
+                nombre_completo,
+                telefono,
+                correo_electronico,
+                direccion,
+                cargo_id,
+                fecha_ingreso,
+                salario,
+                nombre_usuario,
+                password,
+                confirmar_password,
+                terminos
+            } = req.body;
+
+            // Validaciones básicas
+            if (!cedula || !nombre_completo || !telefono || !correo_electronico || 
+                !cargo_id || !fecha_ingreso || !salario || !nombre_usuario || !password) {
+                return res.status(400).json({
+                    exito: false,
+                    mensaje: 'Todos los campos marcados con * son obligatorios'
+                });
+            }
+
+            // Validar que las contraseñas coincidan
+            if (password !== confirmar_password) {
+                return res.status(400).json({
+                    exito: false,
+                    mensaje: 'Las contraseñas no coinciden'
+                });
+            }
+
+            // Validar términos y condiciones
+            if (!terminos) {
+                return res.status(400).json({
+                    exito: false,
+                    mensaje: 'Debe aceptar los términos y condiciones'
+                });
+            }
+
+            // Validar formato de cédula
+            if (!/^\d{7,10}$/.test(cedula)) {
+                return res.status(400).json({
+                    exito: false,
+                    mensaje: 'La cédula debe contener entre 7 y 10 dígitos'
+                });
+            }
+
+            // Validar formato de correo
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo_electronico)) {
+                return res.status(400).json({
+                    exito: false,
+                    mensaje: 'El formato del correo electrónico no es válido'
+                });
+            }
+
+            // Validar nombre de usuario
+            if (!/^[a-zA-Z0-9_]{4,50}$/.test(nombre_usuario)) {
+                return res.status(400).json({
+                    exito: false,
+                    mensaje: 'El nombre de usuario solo puede contener letras, números y guiones bajos (4-50 caracteres)'
+                });
+            }
+
+            // Validar contraseña
+            if (password.length < 8 || !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+                return res.status(400).json({
+                    exito: false,
+                    mensaje: 'La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas y números'
+                });
+            }
+
+            // Verificar si la cédula ya existe
+            const empleadoExistente = await Usuario.buscarEmpleadoPorCedula(cedula);
+            if (empleadoExistente) {
+                return res.status(409).json({
+                    exito: false,
+                    mensaje: 'Ya existe un empleado registrado con esta cédula'
+                });
+            }
+
+            // Verificar si el correo ya existe
+            const correoExistente = await Usuario.buscarPorCorreo(correo_electronico);
+            if (correoExistente) {
+                return res.status(409).json({
+                    exito: false,
+                    mensaje: 'Ya existe un empleado registrado con este correo electrónico'
+                });
+            }
+
+            // Verificar si el nombre de usuario ya existe
+            const usuarioExistente = await Usuario.buscarPorNombreUsuario(nombre_usuario);
+            if (usuarioExistente) {
+                return res.status(409).json({
+                    exito: false,
+                    mensaje: 'El nombre de usuario ya está en uso'
+                });
+            }
+
+            // Crear empleado y usuario
+            const empleadoId = await Usuario.crearEmpleadoCompleto({
+                cedula,
+                nombre_completo,
+                telefono,
+                correo_electronico,
+                direccion: direccion || null,
+                cargo_id: parseInt(cargo_id),
+                fecha_ingreso,
+                salario: parseFloat(salario),
+                nombre_usuario,
+                password
+            });
+
+            // Respuesta exitosa
+            res.status(201).json({
+                exito: true,
+                mensaje: 'Empleado registrado exitosamente. Ya puede iniciar sesión con sus credenciales.',
+                empleado_id: empleadoId
+            });
+
+        } catch (error) {
+            console.error('Error en registro de empleado:', error);
+            
+            if (error.message.includes('cargo_id')) {
+                return res.status(400).json({
+                    exito: false,
+                    mensaje: 'El cargo seleccionado no es válido'
+                });
+            }
+            
+            res.status(500).json({
+                exito: false,
+                mensaje: 'Error interno del servidor. Intente nuevamente.'
+            });
+        }
+    }
+
+    // Verificar empleado
+    static async verificarEmpleado(req, res) {
+        try {
+            const { cedula, correo } = req.body;
+
+            // Validar datos requeridos
+            if (!cedula || !correo) {
+                return res.status(400).json({
+                    exito: false,
+                    mensaje: 'Cédula y correo son requeridos'
+                });
+            }
+
+            // Buscar empleado
+            const empleado = await Usuario.verificarEmpleado(cedula, correo);
+            
+            if (!empleado) {
+                return res.status(404).json({
+                    exito: false,
+                    mensaje: 'No se encontró un empleado activo con esos datos'
+                });
+            }
+
+            // Devolver información del empleado (sin datos sensibles)
+            res.json({
+                exito: true,
+                mensaje: 'Empleado encontrado',
+                empleado: {
+                    id: empleado.id,
+                    cedula: empleado.cedula,
+                    nombre_completo: empleado.nombre_completo,
+                    correo_electronico: empleado.correo_electronico,
+                    cargo: empleado.nombre_cargo || 'Sin cargo asignado',
+                    fecha_ingreso: empleado.fecha_ingreso
+                }
+            });
+
+        } catch (error) {
+            console.error('Error verificando empleado:', error);
+            res.status(500).json({
+                exito: false,
+                mensaje: 'Error interno del servidor'
+            });
+        }
+    }
+
+    // Crear credenciales para empleado
+    static async crearCredenciales(req, res) {
+        try {
+            const { id_empleado, nombre_usuario, password } = req.body;
+
+            // Validar datos requeridos
+            if (!id_empleado || !nombre_usuario || !password) {
+                return res.status(400).json({
+                    exito: false,
+                    mensaje: 'Todos los campos son requeridos'
+                });
+            }
+
+            // Validar contraseña (menos estricta)
+            if (password.length < 6) {
+                return res.status(400).json({
+                    exito: false,
+                    mensaje: 'La contraseña debe tener al menos 6 caracteres'
+                });
+            }
+
+            // Crear credenciales
+            const usuario = await Usuario.crearCredencialesEmpleado(id_empleado, nombre_usuario, password);
+
+            res.status(201).json({
+                exito: true,
+                mensaje: 'Credenciales creadas exitosamente',
+                usuario: {
+                    id: usuario.id,
+                    nombre_usuario: usuario.nombre_usuario,
+                    fecha_creacion: usuario.fecha_creacion
+                }
+            });
+
+        } catch (error) {
+            console.error('Error creando credenciales:', error);
+            
+            // Errores específicos
+            if (error.message.includes('ya tiene credenciales')) {
+                return res.status(409).json({
+                    exito: false,
+                    mensaje: 'Este empleado ya tiene credenciales en el sistema'
+                });
+            }
+            
+            if (error.message.includes('ya está en uso')) {
+                return res.status(409).json({
+                    exito: false,
+                    mensaje: 'El nombre de usuario ya está en uso'
+                });
+            }
+
+            res.status(500).json({
+                exito: false,
+                mensaje: 'Error interno del servidor'
+            });
+        }
+    }
+
+    // Obtener información del usuario autenticado
+    static async obtenerInfoUsuario(req, res) {
+        try {
+            // El middleware verificarToken ya agregó la información del usuario a req.usuario
+            const { id, nombre_usuario, nombre_completo, email, rol_sistema } = req.usuario;
+
+            res.json({
+                exito: true,
+                usuario: {
+                    id: id,
+                    nombre_usuario: nombre_usuario,
+                    nombre_completo: nombre_completo,
+                    email: email,
+                    cargo: rol_sistema
+                }
+            });
+
+        } catch (error) {
+            console.error('Error obteniendo información del usuario:', error);
+            res.status(500).json({
+                exito: false,
+                mensaje: 'Error interno del servidor'
             });
         }
     }

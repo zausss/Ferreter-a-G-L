@@ -1,34 +1,28 @@
 // JavaScript para funcionalidad del menú lateral
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Menu.js cargado correctamente');
+    // Cargar información del usuario al cargar la página
+    cargarInfoUsuario();
+    
+    // Cargar estadísticas del dashboard
+    cargarEstadisticasDashboard();
     
     // Seleccionar todos los elementos que tienen submenu
     const elementosConSubmenu = document.querySelectorAll('.tiene-submenu');
-    console.log('Elementos con submenu encontrados:', elementosConSubmenu.length);
     
     elementosConSubmenu.forEach(elemento => {
         const enlace = elemento.querySelector('.item-navegacion');
         const submenu = elemento.querySelector('.submenu');
         
-        console.log('Elemento:', elemento);
-        console.log('Enlace:', enlace);
-        console.log('Submenu:', submenu);
-        
         if (enlace && submenu) {
             // Agregar evento click al enlace principal
             enlace.addEventListener('click', function(e) {
                 e.preventDefault(); // Evitar navegación
-                console.log('Click en enlace del submenu');
                 
                 // Alternar clase activo en el elemento padre
                 elemento.classList.toggle('activo');
                 
                 // Alternar clase mostrar en el submenu
                 submenu.classList.toggle('mostrar');
-                
-                console.log('Clases después del toggle:');
-                console.log('Elemento activo:', elemento.classList.contains('activo'));
-                console.log('Submenu mostrar:', submenu.classList.contains('mostrar'));
                 
                 // Cerrar otros submenus abiertos
                 elementosConSubmenu.forEach(otroElemento => {
@@ -97,5 +91,76 @@ function confirmarCerrarSesion(event) {
             botonCerrarSesion.style.opacity = '1';
             botonCerrarSesion.style.pointerEvents = 'auto';
         });
+    }
+}
+
+// Función para cargar información del usuario autenticado
+async function cargarInfoUsuario() {
+    try {
+        const response = await fetch('/auth/usuario-info', {
+            method: 'GET',
+            credentials: 'include' // Incluir cookies
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            
+            if (data.exito && data.usuario) {
+                const saludoElement = document.getElementById('saludo-usuario');
+                
+                if (saludoElement) {
+                    // Personalizar el saludo con nombre y cargo
+                    const nombreCompleto = data.usuario.nombre_completo;
+                    const cargo = data.usuario.cargo;
+                    
+                    saludoElement.textContent = `Hola, ${nombreCompleto} (${cargo})`;
+                }
+            }
+        } else {
+            // Si hay error de autenticación, redirigir al login
+            if (response.status === 401) {
+                window.location.href = '/auth/login';
+            }
+        }
+    } catch (error) {
+        console.error('Error cargando información del usuario:', error);
+        // En caso de error, mantener el texto por defecto
+    }
+}
+
+// Función para cargar estadísticas del dashboard
+async function cargarEstadisticasDashboard() {
+    try {
+        const response = await fetch('/api/productos/estadisticas', {
+            method: 'GET',
+            credentials: 'include' // Incluir cookies
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            
+            if (data.exito && data.estadisticas) {
+                // Actualizar total de productos
+                const totalProductosElement = document.getElementById('total-productos');
+                if (totalProductosElement) {
+                    totalProductosElement.textContent = data.estadisticas.total_productos;
+                }
+                
+                // Puedes agregar más estadísticas aquí si quieres
+                // Por ejemplo, valor total del inventario, productos con stock bajo, etc.
+            }
+        } else {
+            // Si hay error de autenticación, no mostrar error en este caso
+            if (response.status === 401) {
+                console.log('Usuario no autenticado para estadísticas');
+            }
+        }
+    } catch (error) {
+        console.error('Error cargando estadísticas del dashboard:', error);
+        // En caso de error, mantener texto por defecto
+        const totalProductosElement = document.getElementById('total-productos');
+        if (totalProductosElement) {
+            totalProductosElement.textContent = 'Error';
+        }
     }
 }

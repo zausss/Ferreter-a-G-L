@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Stock - Ferretería J&L</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="/css/tema-moderno.css">
+    <link rel="stylesheet" href="/css/control-stock.css">
+</head>
+<body>
+    <div class="contenedor-principal">
+    
+    <aside class="barra-lateral">
+            <div class="encabezado-barra-lateral">
+                <img src="/img/logo.jpg" alt="Logo Ferretería J&L" class="logo">
+                </div>
+            <nav class="navegacion-barra-lateral">
+                <ul>
+                    <li>
+                        <a href="menu.html" class="item-navegacion activo">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg>
+                            <span>Inicio</span>
+                        </a>
+                    </li>
+
+
+
+
+                    <li class="tiene-submenu">
+                        <a href="#" class="item-navegacion" data-submenu="inventario">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M200-640v440h560v-440H640v320l-160-80-160 80v-320H200Zm0 520q-33 0-56.5-23.5T120-200v-499q0-14 4.5-27t13.5-24l50-61q11-14 27.5-21.5T250-840h460q18 0 34.5 7.5T772-811l50 61q9 11 13.5 24t4.5 27v499q0 33-23.5 56.5T760-120H200Zm16-600h528l-34-40H250l-34 40Zm184 80v190l80-40 80 40v-190H400Zm-200 0h560-560Z"/></svg>
+                            <span>Inventario</span>
+                            <span class="icono-adicional">+</span>
+                        </a>
+                        <ul class="submenu" id="submenu-inventario">
+                            <li><a href="categorias.html">Categorías</a></li>
+                            <li><a href="productos.html">Productos</a></li>
+                            <li><a href="control-stock.html">Control de Stock</a></li>
+                        </ul>
+                    </li>
+                    
+
+
+
+                        <li class="tiene-submenu">
+                        <a href="#" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-160-60q25 0 42.5-17.5T700-480q0-25-17.5-42.5T640-540q-25 0-42.5 17.5T580-480q0 25 17.5 42.5T640-420Z"/></svg>
+                            <span>Ventas</span>
+                            <span class="icono-adicional">+</span>
+                        </a>
+                        <ul class="submenu" id="submenu-ventas">
+                            <li><a href="">Nuevas Ventas</a></li>
+                            <li><a href="">Resumen Ventas</a></li>
+                        </ul>
+                    </li>
+                    
+
+                    <li>
+                        <a href="clientes.html" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M185-80q-17 0-29.5-12.5T143-122v-105q0-90 56-159t144-88q-40 28-62 70.5T259-312v190q0 11 3 22t10 20h-87Zm147 0q-17 0-29.5-12.5T290-122v-190q0-70 49.5-119T459-480h189q70 0 119 49t49 119v64q0 70-49 119T648-80H332Zm148-484q-66 0-112-46t-46-112q0-66 46-112t112-46q66 0 112 46t46 112q0 66-46 112t-112 46Z"/></svg>
+                            <span>Clientes</span>
+                        </a>
+                    </li>
+                
+                
+                    <li class="tiene-submenu">
+                        <a href="#" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M411-480q-28 0-46-21t-13-49l12-72q8-43 40.5-70.5T480-720q44 0 76.5 27.5T597-622l12 72q5 28-13 49t-46 21H411Zm24-80h91l-8-49q-2-14-13-22.5t-25-8.5q-14 0-24.5 8.5T443-609l-8 49ZM124-441q-23 1-39.5-9T63-481q-2-9-1-18t5-17q0 1-1-4-2-2-10-24-2-12 3-23t13-19l2-2q2-19 15.5-32t33.5-13q3 0 19 4l3-1q5-5 13-7.5t17-2.5q11 0 19.5 3.5T208-626q1 0 1.5.5t1.5.5q14 1 24.5 8.5T251-596q2 7 1.5 13.5T250-570q0 1 1 4 7 7 11 15.5t4 17.5q0 4-6 21-1 2 0 4l2 16q0 21-17.5 36T202-441h-78Zm676 1q-33 0-56.5-23.5T720-520q0-12 3.5-22.5T733-563l-28-25q-10-8-3.5-20t18.5-12h80q33 0 56.5 23.5T880-540v20q0 33-23.5 56.5T800-440ZM0-240v-63q0-44 44.5-70.5T160-400q13 0 25 .5t23 2.5q-14 20-21 43t-7 49v65H0Zm240 0v-65q0-65 66.5-105T480-450q108 0 174 40t66 105v65H240Zm560-160q72 0 116 26.5t44 70.5v63H780v-65q0-26-6.5-49T754-397q11-2 22.5-2.5t23.5-.5Zm-320 30q-57 0-102 15t-53 35h311q-9-20-53.5-35T480-370Zm0 50Zm1-280Z"/></svg>
+                            <span>Proveedores</span>
+                            <span class="icono-adicional">+</span>
+                        </a>
+                        <ul class="submenu" id="submenu-proveedores">
+                            <li><a href="proveedores.html">Lista de Proveedores</a></li>
+                            <li><a href="nuevo-proveedor.html">Nuevo Proveedor</a></li>
+                        </ul>
+                    </li>
+                    
+
+
+
+
+
+
+                    <li class="tiene-submenu">
+                        <a href="#" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M320-480v-80h320v80H320Zm0-160v-80h320v80H320Zm-80 240h300q29 0 54 12.5t42 35.5l84 110v-558H240v400Zm0 240h442L573-303q-6-8-14.5-12.5T540-320H240v160Zm480 80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640q0 33-23.5 56.5T720-80Zm-480-80v-640 640Zm0-160v-80 80Z"/></svg>
+                            <span>Reportes</span>
+                            <span class="icono-adicional">+</span>
+                        </a>
+                        <ul class="submenu" id="submenu-reportes">
+                            <li><a href="reporte-ventas.html">Reporte de Ventas</a></li>
+                            <li><a href="reporte-inventario.html">Reporte de Inventario</a></li>
+                            <li><a href="reporte-financiero.html">Reporte Financiero</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <div class="pie-barra-lateral">
+                <a href="#" class="item-navegacion">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="m234-480-12-60q-12-5-22.5-10.5T178-564l-58 18-40-68 46-40q-2-13-2-26t2-26l-46-40 40-68 58 18q11-8 21.5-13.5T222-820l12-60h80l12 60q12 5 22.5 10.5T370-796l58-18 40 68-46 40q2 13 2 26t-2 26l46 40-40 68-58-18q-11 8-21.5 13.5T326-540l-12 60h-80Zm40-120q33 0 56.5-23.5T354-680q0-33-23.5-56.5T274-760q-33 0-56.5 23.5T194-680q0 33 23.5 56.5T274-600ZM592-40l-18-84q-17-6-31.5-14.5T514-158l-80 26-56-96 64-56q-2-18-2-36t2-36l-64-56 56-96 80 26q14-11 28.5-19.5T574-516l18-84h112l18 84q17 6 31.5 14.5T782-482l80-26 56 96-64 56q2 18 2 36t-2 36l64 56-56 96-80-26q-14 11-28.5 19.5T722-124l-18 84H592Zm56-160q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Z"/></svg>
+                    <span>Configuración</span>
+                </a>
+                
+                <!-- Botón de Cerrar Sesión -->
+                <a href="/auth/logout" class="item-navegacion" id="cerrar-sesion" onclick="confirmarCerrarSesion(event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#d32f2f">
+                        <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
+                    </svg>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Área de contenido principal -->
+        <main class="area-contenido">
+            <header class="encabezado-principal">
+                <h2>Control de Stock</h2>
+                <div class="informacion-usuario">
+                    <span id="saludo-usuario">Hola, Usuario</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z"/></svg>
+                </div>
+            </header>
+
+            <!-- Tarjetas de resumen de stock -->
+            <section class="tarjetas-stock">
+                <div class="tarjeta-stock">
+                    <div class="icono-stock productos-total">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 4V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2h4a1 1 0 0 1 0 2h-1v11a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V6H3a1 1 0 0 1 0-2h4zM9 3v1h6V3H9zm8 3H7v11a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6z"/>
+                        </svg>
+                    </div>
+                    <div class="contenido-stock">
+                        <span class="titulo-stock">Total Productos</span>
+                        <span class="valor-stock" id="total-productos-stock">Cargando...</span>
+                    </div>
+                </div>
+
+                <div class="tarjeta-stock">
+                    <div class="icono-stock stock-alto">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <div class="contenido-stock">
+                        <span class="titulo-stock">Stock Disponible</span>
+                        <span class="valor-stock" id="productos-con-stock">Cargando...</span>
+                    </div>
+                </div>
+
+                <div class="tarjeta-stock">
+                    <div class="icono-stock stock-bajo">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                        </svg>
+                    </div>
+                    <div class="contenido-stock">
+                        <span class="titulo-stock">Stock Bajo</span>
+                        <span class="valor-stock" id="productos-stock-bajo">Cargando...</span>
+                    </div>
+                </div>
+
+                <div class="tarjeta-stock">
+                    <div class="icono-stock valor-inventario">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+                        </svg>
+                    </div>
+                    <div class="contenido-stock">
+                        <span class="titulo-stock">Valor Inventario</span>
+                        <span class="valor-stock" id="valor-total-inventario">Cargando...</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Controles y filtros -->
+            <section class="controles-stock">
+                <div class="barra-acciones">
+                    <div class="grupo-filtros">
+                        <input type="text" id="buscar-producto" placeholder="Buscar producto..." class="campo-busqueda">
+                        <select id="filtro-categoria" class="filtro-select">
+                            <option value="">Todas las categorías</option>
+                        </select>
+                        <select id="filtro-estado" class="filtro-select">
+                            <option value="">Todos los estados</option>
+                            <option value="disponible">Con stock</option>
+                            <option value="bajo">Stock bajo</option>
+                            <option value="agotado">Sin stock</option>
+                        </select>
+                    </div>
+                    <div class="grupo-botones">
+                        <button id="btn-registrar-movimiento" class="btn-accion primario">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            Registrar Movimiento
+                        </button>
+                        <button id="btn-actualizar" class="btn-accion secundario">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                            </svg>
+                            Actualizar
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tabla de productos -->
+            <section class="tabla-stock">
+                <div class="contenedor-tabla">
+                    <table id="tabla-productos-stock">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Stock Actual</th>
+                                <th>Stock Mínimo</th>
+                                <th>Estado</th>
+                                <th>Precio</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-productos">
+                            <tr class="fila-cargando">
+                                <td colspan="8">
+                                    <div class="indicador-carga">
+                                        <svg class="spinner" viewBox="0 0 50 50">
+                                            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke="#007bff" stroke-width="5"></circle>
+                                        </svg>
+                                        Cargando productos...
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Paginación -->
+            <section class="paginacion">
+                <div class="info-paginacion">
+                    <span id="info-registros">Mostrando 0 de 0 productos</span>
+                </div>
+                <div class="controles-paginacion">
+                    <button id="btn-anterior" class="btn-paginacion" disabled>Anterior</button>
+                    <div id="numeros-pagina" class="numeros-pagina"></div>
+                    <button id="btn-siguiente" class="btn-paginacion" disabled>Siguiente</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal para registrar movimientos -->
+    <div id="modal-movimiento" class="modal">
+        <div class="modal-contenido">
+            <div class="modal-encabezado">
+                <h3>Registrar Movimiento de Stock</h3>
+                <button class="btn-cerrar-modal">&times;</button>
+            </div>
+            <form id="form-movimiento">
+                <div class="modal-cuerpo">
+                    <div class="formulario-dos-columnas">
+                        <div class="grupo-campo">
+                            <label for="producto-movimiento">Producto:</label>
+                            <select id="producto-movimiento" required>
+                                <option value="">Seleccionar producto...</option>
+                            </select>
+                        </div>
+                        <div class="grupo-campo">
+                            <label for="tipo-movimiento">Tipo de movimiento:</label>
+                            <select id="tipo-movimiento" required>
+                                <option value="">Seleccionar tipo...</option>
+                                <option value="entrada">Entrada (Compra/Devolución)</option>
+                                <option value="salida">Salida (Venta/Pérdida)</option>
+                            </select>
+                        </div>
+                        <div class="grupo-campo">
+                            <label for="cantidad-movimiento">Cantidad:</label>
+                            <input type="number" id="cantidad-movimiento" min="1" required>
+                        </div>
+                        <div class="grupo-campo">
+                            <label for="motivo-movimiento">Motivo:</label>
+                            <input type="text" id="motivo-movimiento" placeholder="Ej: Compra a proveedor" required>
+                        </div>
+                        <div class="grupo-campo columna-completa">
+                            <label for="observaciones-movimiento">Observaciones (opcional):</label>
+                            <textarea id="observaciones-movimiento" rows="3" placeholder="Detalles adicionales..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-pie">
+                    <button type="button" class="btn-secundario" id="btn-cancelar-movimiento">Cancelar</button>
+                    <button type="submit" class="btn-primario">Registrar Movimiento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/menu.js"></script>
+    <script src="/js/control-stock.js"></script>
+</body>
+</html>

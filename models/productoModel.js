@@ -230,6 +230,28 @@ class Producto {
             throw error;
         }
     }
+
+    // Obtener estadísticas de productos para el dashboard
+    static async obtenerEstadisticas() {
+        try {
+            const query = `
+                SELECT 
+                    COUNT(*) as total_productos,
+                    COUNT(*) FILTER (WHERE stock_actual > 0) as productos_con_stock,
+                    COUNT(*) FILTER (WHERE stock_actual <= stock_minimo) as productos_stock_bajo,
+                    SUM(stock_actual * precio_venta) as valor_total_inventario
+                FROM productos 
+                WHERE activo = true;
+            `;
+            
+            const resultado = await pool.query(query);
+            return resultado.rows[0];
+            
+        } catch (error) {
+            console.error('Error obteniendo estadísticas de productos:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = Producto;

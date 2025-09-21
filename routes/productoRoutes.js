@@ -7,6 +7,7 @@ const { verificarToken } = require('../middleware/auth');
 router.use(verificarToken);
 
 // Rutas para productos
+router.get('/estadisticas', ProductoController.obtenerEstadisticas);
 router.get('/', ProductoController.obtenerProductos);
 router.get('/stock-bajo', ProductoController.obtenerStockBajo);
 router.get('/:id', ProductoController.obtenerProductoPorId);
