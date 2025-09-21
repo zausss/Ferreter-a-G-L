@@ -8,6 +8,10 @@
 @media (max-width: 1024px) {
     .contenedor-principal {
         flex-direction: column;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     
     .barra-lateral {
@@ -615,3 +619,63 @@
     body::before { content: "TINY MOBILE"; background: purple; }
 }
 */
+
+/* ==========================================
+   REGLAS ESPECÍFICAS PARA PÁGINAS CON VARIABLES
+   ========================================== */
+@import 'variables.css';
+
+/* Override definitivo para categorías - Mayor especificidad */
+body .area-contenido {
+    background-color: var(--fondo-principal) !important;
+    max-height: none !important;
+    width: 100% !important;
+}
+
+/* Contenedor de categorías - forzar ancho completo en todas las pantallas */
+@media (min-width: 1px) {
+    .categorias-container {
+        max-width: none !important;
+        width: 100% !important;
+    }
+}
+
+/* Contenedor de productos - asegurar ancho completo */
+@media (min-width: 1px) {
+    .productos-container {
+        max-width: none !important;
+        width: 100% !important;
+    }
+}
+
+/* ==========================================
+   FORZAR ANCHO COMPLETO EN TODAS LAS PANTALLAS
+   ========================================== */
+
+/* Asegurar que el contenedor principal ocupe toda la pantalla */
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+}
+
+/* Contenedor principal sin márgenes */
+.contenedor-principal {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Área de contenido ocupando el espacio restante */
+.area-contenido {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    flex: 1 !important;
+}

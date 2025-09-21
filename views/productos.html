@@ -112,8 +112,7 @@
         </aside>
 
 <!--contedor principal de productos-->
-        <main class="area-principal">
-        <div class="productos-container">
+        <main class="area-contenido">
                 <!-- Header -->
                 <div class="productos-header">
                     <h1>Gestión de Productos</h1>
@@ -131,12 +130,209 @@
 
 
 
-            </div>
+                <!-- Filtros y búsqueda -->
+                <div class="filtros-container">
+                    <div class="filtros-grupo">
+                        <div class="campo-busqueda">
+                            <input type="text" id="buscar-producto" placeholder="Buscar producto...">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <select id="filtro-categoria" class="select-filtro">
+                            <option value="">Todas las categorías</option>
+                            <option value="herramientas manuales">Herramientas Manuales</option>
+                            <option value="herramientas eléctricas">Herramientas Eléctricas</option>
+                            <option value="pintura">Pintura</option>
+                            <option value="ferreteria">Ferretería</option>
+                        </select>
+                        <select id="filtro-estado" class="select-filtro">
+                            <option value="">Todos los estados</option>
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tabla de productos -->
+                <div class="tabla-container">
+                    <table class="tabla-productos">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Precio Venta</th>
+                                <th>Precio Compra</th>
+                                <th>Stock</th>
+                                <th>Ubicación</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-productos-body">
+                            <!-- Los productos se cargarán aquí dinámicamente -->
+                            <tr>
+                                <td>FER001</td>
+                                <td>Martillo de Garra 16oz</td>
+                                <td>Herramientas</td>
+                                <td>$15.99</td>
+                                <td>25</td>
+                                <td><span class="estado activo">Activo</span></td>
+                                <td>
+                                    <div class="acciones">
+                                        <button class="btn-accion editar" onclick="editarProducto(1)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                                            </svg>
+                                        </button>
+                                        <button class="btn-accion eliminar" onclick="eliminarProducto(1)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FER002</td>
+                                <td>Destornillador Phillips #2</td>
+                                <td>Herramientas</td>
+                                <td>$5.50</td>
+                                <td>50</td>
+                                <td><span class="estado activo">Activo</span></td>
+                                <td>
+                                    <div class="acciones">
+                                        <button class="btn-accion editar" onclick="editarProducto(2)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                                            </svg>
+                                        </button>
+                                        <button class="btn-accion eliminar" onclick="eliminarProducto(2)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MAT001</td>
+                                <td>Cemento Portland 50kg</td>
+                                <td>Materiales</td>
+                                <td>$8.75</td>
+                                <td>10</td>
+                                <td><span class="estado bajo-stock">Bajo Stock</span></td>
+                                <td>
+                                    <div class="acciones">
+                                        <button class="btn-accion editar" onclick="editarProducto(3)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                                            </svg>
+                                        </button>
+                                        <button class="btn-accion eliminar" onclick="eliminarProducto(3)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <div class="paginacion">
+                    <button class="btn-paginacion" id="btn-anterior">Anterior</button>
+                    <span class="info-paginacion">Página 1 de 1</span>
+                    <button class="btn-paginacion" id="btn-siguiente">Siguiente</button>
+                </div>
         </main>
 
-
-
+        <!-- Modal para agregar/editar producto -->
+        <div id="modal-producto" class="modal">
+            <div class="modal-contenido">
+                <div class="modal-header">
+                    <h2 id="modal-titulo">Nuevo Producto</h2>
+                    <button class="btn-cerrar" onclick="cerrarModal()">×</button>
+                </div>
+                <form id="form-producto">
+                    <div class="modal-body">
+                        <div class="campos-grupo">
+                            <div class="campo">
+                                <label for="codigo">Código del Producto*</label>
+                                <input type="text" id="codigo" name="codigo" required>
+                            </div>
+                            <div class="campo">
+                                <label for="nombre">Nombre del Producto*</label>
+                                <input type="text" id="nombre" name="nombre" required>
+                            </div>
+                        </div>
+                        <div class="campos-grupo">
+                            <div class="campo">
+                                <label for="categoria">Categoría*</label>
+                                <select id="categoria" name="categoria" required>
+                                    <option value="">Seleccionar categoría</option>
+                                    <option value="herramientas manuales">Herramientas Manuales</option>
+                                    <option value="herramientas eléctricas">Herramientas Eléctricas</option>
+                                    <option value="pintura">Pintura</option>
+                                    <option value="ferreteria">Ferretería</option>
+                                </select>
+                            </div>
+                            <div class="campo">
+                                <label for="precio-venta">Precio de Venta*</label>
+                                <input type="number" id="precio-venta" name="precio_venta" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="campos-grupo">
+                            <div class="campo">
+                                <label for="precio-compra">Precio de Compra*</label>
+                                <input type="number" id="precio-compra" name="precio_compra" step="0.01" min="0" required>
+                            </div>
+                            <div class="campo">
+                                <label for="margen">Margen de Ganancia (%)</label>
+                                <input type="number" id="margen" name="margen" step="0.01" min="0" readonly>
+                            </div>
+                        </div>
+                        <div class="campos-grupo">
+                            <div class="campo">
+                                <label for="stock">Stock Inicial*</label>
+                                <input type="number" id="stock" name="stock" min="0" required>
+                            </div>
+                            <div class="campo">
+                                <label for="stock-minimo">Stock Mínimo</label>
+                                <input type="number" id="stock-minimo" name="stock_minimo" min="0" value="5">
+                            </div>
+                        </div>
+                        <div class="campos-grupo">
+                            <div class="campo">
+                                <label for="ubicacion-bodega">Ubicación en Bodega</label>
+                                <input type="text" id="ubicacion-bodega" name="ubicacion_bodega" placeholder="Ej: A1-B2, Estante 3">
+                            </div>
+                            <div class="campo">
+                                <label for="peso">Peso (kg)</label>
+                                <input type="number" id="peso" name="peso" step="0.01" min="0" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="campo">
+                            <label for="dimensiones">Dimensiones (cm)</label>
+                            <input type="text" id="dimensiones" name="dimensiones" placeholder="Largo x Ancho x Alto (ej: 25x15x10)">
+                        </div>
+                        <div class="campo">
+                            <label for="descripcion">Descripción</label>
+                            <textarea id="descripcion" name="descripcion" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+                        <button type="submit" class="btn-guardar">Guardar Producto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
 <script src="/js/menu.js"></script>
+<script src="/js/productos.js"></script>
 </body>
 </html>

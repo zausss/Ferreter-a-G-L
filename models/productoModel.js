@@ -13,8 +13,12 @@ class Producto {
                     p.descripcion,
                     p.precio_venta,
                     p.precio_compra,
+                    p.margen_ganancia,
                     p.stock_actual,
                     p.stock_minimo,
+                    p.ubicacion_bodega,
+                    p.peso,
+                    p.dimensiones,
                     p.activo,
                     c.nombre_categoria,
                     p.fecha_creacion
@@ -44,8 +48,12 @@ class Producto {
                     p.descripcion,
                     p.precio_venta,
                     p.precio_compra,
+                    p.margen_ganancia,
                     p.stock_actual,
                     p.stock_minimo,
+                    p.ubicacion_bodega,
+                    p.peso,
+                    p.dimensiones,
                     p.categoria_id,
                     p.activo,
                     c.nombre_categoria
@@ -99,24 +107,30 @@ class Producto {
                 descripcion,
                 precio_venta,
                 precio_compra,
+                margen_ganancia,
                 stock_actual,
                 stock_minimo,
+                ubicacion_bodega,
+                peso,
+                dimensiones,
                 categoria_id
             } = datosProducto;
             
             const query = `
                 INSERT INTO productos (
                     codigo_producto, nombre, descripcion, 
-                    precio_venta, precio_compra, stock_actual, 
-                    stock_minimo, categoria_id, activo, fecha_creacion
-                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, true, CURRENT_TIMESTAMP)
+                    precio_venta, precio_compra, margen_ganancia,
+                    stock_actual, stock_minimo, ubicacion_bodega,
+                    peso, dimensiones, categoria_id, activo, fecha_creacion
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true, CURRENT_TIMESTAMP)
                 RETURNING id, codigo_producto, nombre;
             `;
             
             const valores = [
                 codigo_producto, nombre, descripcion,
-                precio_venta, precio_compra, stock_actual,
-                stock_minimo, categoria_id
+                precio_venta, precio_compra, margen_ganancia,
+                stock_actual, stock_minimo, ubicacion_bodega,
+                peso, dimensiones, categoria_id
             ];
             
             const resultado = await pool.query(query, valores);
@@ -136,24 +150,30 @@ class Producto {
                 descripcion,
                 precio_venta,
                 precio_compra,
+                margen_ganancia,
                 stock_actual,
                 stock_minimo,
+                ubicacion_bodega,
+                peso,
+                dimensiones,
                 categoria_id
             } = datosProducto;
             
             const query = `
                 UPDATE productos 
                 SET nombre = $1, descripcion = $2, precio_venta = $3,
-                    precio_compra = $4, stock_actual = $5, stock_minimo = $6,
-                    categoria_id = $7, fecha_actualizacion = CURRENT_TIMESTAMP
-                WHERE id = $8 AND activo = true
+                    precio_compra = $4, margen_ganancia = $5, stock_actual = $6, 
+                    stock_minimo = $7, ubicacion_bodega = $8, peso = $9,
+                    dimensiones = $10, categoria_id = $11, fecha_actualizacion = CURRENT_TIMESTAMP
+                WHERE id = $12 AND activo = true
                 RETURNING id, nombre;
             `;
             
             const valores = [
                 nombre, descripcion, precio_venta,
-                precio_compra, stock_actual, stock_minimo,
-                categoria_id, id
+                precio_compra, margen_ganancia, stock_actual, 
+                stock_minimo, ubicacion_bodega, peso,
+                dimensiones, categoria_id, id
             ];
             
             const resultado = await pool.query(query, valores);

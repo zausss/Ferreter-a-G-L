@@ -260,7 +260,7 @@ body, html {
 .area-contenido { /* CAMBIADO: de .content-area a .area-contenido */
     flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
     padding: 20px;
-    background-color: #c1c1c2; /* Fondo gris para el contenido principal */
+    background-color: #a9aaaa; /* Fondo gris unificado */
     font-weight: 600;  /* Negrita para el texto del contenido principal */
     overflow-y: auto; /* Permite scroll vertical cuando sea necesario */
     max-height: 100vh; /* Limita la altura máxima */
