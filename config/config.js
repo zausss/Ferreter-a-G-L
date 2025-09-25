@@ -10,7 +10,8 @@ const config = {
         password: process.env.DB_PASSWORD || 'password',
         max: 20,
         idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 2000,
+        connectionTimeoutMillis: 10000, // 10 segundos para Supabase pooler
+        ssl: process.env.DB_HOST && process.env.DB_HOST.includes('supabase.com') ? { rejectUnauthorized: false } : false
     },
     
     // Configuración del Servidor

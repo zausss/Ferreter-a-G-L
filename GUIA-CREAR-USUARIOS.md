@@ -44,16 +44,17 @@ INSERT INTO usuarios_sistema (
 );
 ```
 
-### 3. 🔑 Encriptar Contraseñas
+### 3. 🔑 Registro Automático
 ```bash
-# Ejecutar en terminal después de crear usuarios
-node utils/database-tools.js encriptar
+# Los nuevos usuarios se registran desde la página web
+# Las contraseñas se encriptan automáticamente
+# No necesitas herramientas adicionales
 ```
 
 ### 4. ✅ Verificar Usuario Creado
 ```bash
-# Ver todos los usuarios del sistema
-node utils/database-tools.js usuarios
+# Los usuarios se pueden ver desde la interfaz web de administración
+# O consultando directamente la base de datos en Supabase
 ```
 
 ## 📊 Consultas Útiles:
@@ -107,6 +108,6 @@ VALUES (4, 'maria.gonzalez', 'password123', true);
 ```
 
 ## ⚠️ IMPORTANTE:
-- Siempre ejecutar `node utils/database-tools.js encriptar` después de crear usuarios
+- Los usuarios nuevos se registran desde la página web con encriptación automática
 - Verificar que el cargo_id existe en la tabla cargos
 - Solo roles 'Administrador' y 'Cajero' pueden acceder al sistema

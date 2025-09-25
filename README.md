@@ -81,16 +81,13 @@ Visitar: `http://localhost:3000`
 └── 📄 app.js           # Archivo principal
 ```
 
-## 🔧 Herramientas de Administración
+## 🔧 Administración
 ```bash
-# Encriptar contraseñas de usuarios
-node utils/database-tools.js encriptar
+# Iniciar servidor
+npm start
 
-# Ver todos los usuarios
-node utils/database-tools.js usuarios
-
-# Ayuda
-node utils/database-tools.js
+# Iniciar en modo desarrollo
+npm run dev
 ```
 
 ## 📚 Documentación
