@@ -6,6 +6,11 @@ const config = require('./config/config');
 
 // Importar rutas
 const authRoutes = require('./routes/auth');
+const categoriaRoutes = require('./routes/categoriaRoutes');
+const productoRoutes = require('./routes/productoRoutes');
+
+// Importar controladores adicionales
+const CargoController = require('./controllers/cargoController');
 
 // Importar middleware
 const { verificarToken } = require('./middleware/auth');
@@ -23,6 +28,13 @@ app.use(express.static(path.join(__dirname, 'views')));
 
 // Rutas de autenticación (públicas)
 app.use('/auth', authRoutes);
+
+// Rutas API (protegidas)
+app.use('/api/categorias', categoriaRoutes);
+app.use('/api/productos', productoRoutes);
+
+// Rutas adicionales para registro
+app.get('/api/cargos', CargoController.obtenerCargos);
 
 // Ruta raíz - redirigir según autenticación
 app.get('/', (req, res) => {
@@ -44,33 +56,41 @@ app.get('/categorias.html', verificarToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'categorias.html'));
 });
 
+app.get('/productos.html', verificarToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'productos.html'));
+});
+
+app.get('/control-stock.html', verificarToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'control-stock.html'));
+});
+
 app.get('/menu.html', verificarToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'menu.html'));
 });
 
-// Inicializar servidor
-const iniciarServidor = async () => {
-    try {
-        // Conectar a la base de datos
-        const dbConectada = await conectarDB();
-        
-        if (!dbConectada) {
-            console.error(' No se pudo conectar a la base de datos');
+
+// Solo iniciar el servidor si este archivo es ejecutado directamente
+if (require.main === module) {
+    const iniciarServidor = async () => {
+        try {
+            // Conectar a la base de datos
+            const dbConectada = await conectarDB();
+            if (!dbConectada) {
+                console.error(' No se pudo conectar a la base de datos');
+                process.exit(1);
+            }
+            const PORT = config.server.port;
+            app.listen(PORT, () => {
+                console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
+                console.log(`Sistema de autenticación configurado`);
+                console.log(`Entorno: ${config.server.env}`);
+            });
+        } catch (error) {
+            console.error(' Error iniciando servidor:', error);
             process.exit(1);
         }
+    };
+    iniciarServidor();
+}
 
-        // Iniciar servidor
-        const PORT = config.server.port;
-        app.listen(PORT, () => {
-            console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-            console.log(`Sistema de autenticación configurado`);
-            console.log(`Entorno: ${config.server.env}`);
-        });
-
-    } catch (error) {
-        console.error(' Error iniciando servidor:', error);
-        process.exit(1);
-    }
-};
-
-iniciarServidor();
+module.exports = app;

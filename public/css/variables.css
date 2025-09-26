@@ -1,0 +1,278 @@
+/* ==========================================
+   VARIABLES CSS GLOBALES - FERRETERÍA G&L
+   ==========================================
+   
+   Este archivo contiene todas las variables de colores,
+   fuentes y espaciados para mantener consistencia
+   en toda la aplicación.
+   ========================================== */
+
+:root {
+    /* ==========================================
+       PALETA DE COLORES PRINCIPAL
+       ========================================== */
+    
+    /* Colores Primarios */
+    --color-primario: #3498db;           /* Azul principal para botones */
+    --color-primario-hover: #2980b9;     /* Azul más oscuro para hover */
+    --color-primario-activo: #1f5f8b;    /* Azul muy oscuro para estado activo */
+    
+    /* Colores de Fondo */
+    --fondo-principal: #f8fafc;          /* Fondo gris moderno unificado como control-stock */
+    --fondo-secundario: #f8f9fa;         /* Fondo claro para elementos */
+    --fondo-blanco: #ffffff;             /* Fondo blanco puro */
+    
+    /* Colores de Texto */
+    --texto-principal: #2c3e50;          /* Texto principal oscuro */
+    --texto-secundario: #7f8c8d;         /* Texto secundario gris */
+    --texto-terciario: #6c757d;          /* Texto descriptivo claro */
+    --texto-blanco: #ffffff;             /* Texto blanco */
+    
+    /* Colores de Bordes y Separadores */
+    --borde-claro: #e0e0e0;              /* Bordes suaves */
+    --borde-muy-claro: #ecf0f1;          /* Bordes muy suaves */
+    
+    /* Colores de Estado */
+    --color-exito: #27ae60;              /* Verde para acciones exitosas */
+    --color-advertencia: #f39c12;        /* Naranja para advertencias */
+    --color-error: #e74c3c;              /* Rojo para errores */
+    --color-info: #3498db;               /* Azul para información */
+    
+    /* ==========================================
+       GRADIENTES
+       ========================================== */
+    
+    /* Gradientes para Botones */
+    --gradiente-primario: linear-gradient(135deg, var(--color-primario), var(--color-primario-hover));
+    --gradiente-primario-hover: linear-gradient(135deg, var(--color-primario-hover), var(--color-primario-activo));
+    --gradiente-oscuro: linear-gradient(135deg, #34495e, var(--texto-principal));
+    
+    /* ==========================================
+       SOMBRAS
+       ========================================== */
+    
+    --sombra-suave: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --sombra-media: 0 4px 12px rgba(52, 152, 219, 0.4);
+    --sombra-fuerte: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --sombra-focus: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    
+    /* ==========================================
+       FORMULARIOS
+       ========================================== */
+    
+    /* Bordes de Inputs */
+    --borde-input: 2px solid var(--borde-claro);
+    --borde-input-focus: 2px solid var(--color-primario);
+    
+    /* Fondos de Inputs */
+    --fondo-input: var(--fondo-secundario);
+    --fondo-input-focus: var(--fondo-blanco);
+    
+    /* Espaciados de Inputs */
+    --padding-input: 12px 15px;
+    
+    /* ==========================================
+       CONTENEDORES
+       ========================================== */
+    
+    /* Fondos de Contenedores */
+    --fondo-contenedor: var(--fondo-blanco);
+    --fondo-contenedor-elevado: var(--fondo-blanco);
+    
+    /* Sombras de Contenedores */
+    --sombra-contenedor-suave: 0 2px 10px rgba(0, 0, 0, 0.08);
+    --sombra-contenedor-media: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --sombra-contenedor-fuerte: 0 6px 20px rgba(0, 0, 0, 0.15);
+    
+    /* Paddings de Contenedores */
+    --padding-contenedor-pequeno: var(--espaciado-lg);    /* 20px */
+    --padding-contenedor-mediano: var(--espaciado-xl);    /* 30px */
+    --padding-contenedor-grande: var(--espaciado-xxl);    /* 40px */
+    
+    /* Border Radius de Contenedores */
+    --radio-contenedor: var(--radio-grande);              /* 12px */
+    
+    /* ==========================================
+       TIPOGRAFÍA
+       ========================================== */
+    
+    /* Tamaños de Fuente */
+    --fuente-pequena: 0.875rem;          /* 14px */
+    --fuente-normal: 1rem;               /* 16px */
+    --fuente-mediana: 1.125rem;          /* 18px */
+    --fuente-grande: 1.5rem;             /* 24px */
+    --fuente-titulo: 2.5rem;             /* 40px */
+    
+    /* Peso de Fuente */
+    --peso-normal: 400;
+    --peso-medio: 500;
+    --peso-semi-bold: 600;
+    --peso-bold: 700;
+    
+    /* ==========================================
+       ESPACIADOS
+       ========================================== */
+    
+    --espaciado-xs: 5px;
+    --espaciado-sm: 10px;
+    --espaciado-md: 15px;
+    --espaciado-lg: 20px;
+    --espaciado-xl: 30px;
+    --espaciado-xxl: 40px;
+    
+    /* ==========================================
+       BORDES Y RADIOS
+       ========================================== */
+    
+    --radio-pequeno: 4px;
+    --radio-normal: 8px;
+    --radio-grande: 12px;
+    --radio-completo: 50%;
+    
+    --borde-delgado: 1px;
+    --borde-normal: 2px;
+    --borde-grueso: 3px;
+    
+    /* ==========================================
+       CONTENEDORES Y LAYOUT
+       ========================================== */
+    
+    --ancho-maximo: 1200px;              /* Ancho máximo para contenedores */
+    --ancho-completo: 100%;
+    
+    /* ==========================================
+       TRANSICIONES
+       ========================================== */
+    
+    --transicion-rapida: 0.15s ease;
+    --transicion-normal: 0.3s ease;
+    --transicion-lenta: 0.5s ease;
+}
+
+/* ==========================================
+   CLASES UTILITARIAS GLOBALES
+   ========================================== */
+
+/* Contenedor Principal Unificado */
+.contenedor-principal {
+    padding: var(--espaciado-lg);
+    max-width: var(--ancho-maximo);
+    margin: 0 auto;
+    width: var(--ancho-completo);
+}
+
+/* Header Unificado */
+.header-pagina {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--espaciado-xl);
+    padding-bottom: var(--espaciado-md);
+    border-bottom: var(--borde-normal) solid var(--borde-claro);
+}
+
+.header-pagina h1 {
+    color: var(--texto-principal);
+    font-size: var(--fuente-titulo);
+    font-weight: var(--peso-semi-bold);
+    margin: 0;
+}
+
+/* Botones Unificados */
+.btn-primario {
+    background: var(--gradiente-primario);
+    color: var(--texto-blanco);
+    border: none;
+    padding: 12px 24px;
+    border-radius: var(--radio-normal);
+    font-size: var(--fuente-normal);
+    font-weight: var(--peso-medio);
+    cursor: pointer;
+    transition: all var(--transicion-normal);
+    display: flex;
+    align-items: center;
+    gap: var(--espaciado-xs);
+}
+
+.btn-primario:hover {
+    background: var(--gradiente-primario-hover);
+    box-shadow: var(--sombra-media);
+    transform: translateY(-2px);
+}
+
+/* ==========================================
+   FORMULARIOS UNIFICADOS
+   ========================================== */
+
+/* Input/Campo base unificado */
+.input-unificado {
+    width: 100%;
+    padding: var(--padding-input);
+    border: var(--borde-input);
+    border-radius: var(--radio-normal);
+    font-size: var(--fuente-normal);
+    background-color: var(--fondo-input);
+    color: var(--texto-principal);
+    box-sizing: border-box;
+    transition: all var(--transicion-normal);
+    font-family: inherit;
+}
+
+.input-unificado:focus {
+    outline: none;
+    border: var(--borde-input-focus);
+    background-color: var(--fondo-input-focus);
+    box-shadow: var(--sombra-focus);
+}
+
+/* Label unificado */
+.label-unificado {
+    display: block;
+    color: var(--texto-principal);
+    font-weight: var(--peso-semi-bold);
+    font-size: var(--fuente-pequena);
+    margin-bottom: var(--espaciado-xs);
+}
+
+/* ==========================================
+   CONTENEDORES UNIFICADOS
+   ========================================== */
+
+/* Contenedor base */
+.contenedor-unificado {
+    background: var(--fondo-contenedor);
+    border-radius: var(--radio-contenedor);
+    box-shadow: var(--sombra-contenedor-media);
+    padding: var(--padding-contenedor-mediano);
+    box-sizing: border-box;
+}
+
+/* Variaciones de contenedores */
+.contenedor-card {
+    background: var(--fondo-contenedor);
+    border-radius: var(--radio-contenedor);
+    box-shadow: var(--sombra-contenedor-suave);
+    padding: var(--padding-contenedor-pequeno);
+    box-sizing: border-box;
+}
+
+.contenedor-elevado {
+    background: var(--fondo-contenedor-elevado);
+    border-radius: var(--radio-contenedor);
+    box-shadow: var(--sombra-contenedor-fuerte);
+    padding: var(--padding-contenedor-mediano);
+    box-sizing: border-box;
+}
+
+.contenedor-tabla {
+    background: var(--fondo-contenedor);
+    border-radius: var(--radio-contenedor);
+    box-shadow: var(--sombra-contenedor-media);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Área Principal - Solo variables de fondo, sin layout */
+.area-principal {
+    background-color: var(--fondo-principal);
+}

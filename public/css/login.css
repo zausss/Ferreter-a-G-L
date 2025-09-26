@@ -1,10 +1,15 @@
 
+/* ==========================================
+   IMPORTAR VARIABLES GLOBALES
+   ========================================== */
+@import 'variables.css';
+
 /* CSS para el login */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f2f5;
+    background: #72b4eb;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -14,10 +19,10 @@ body {
 .contenedor-login {
     max-width: 400px;
     width: 90%;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    padding: 30px;
+    background: white; /* Fondo blanco limpio */
+    border-radius: 12px; /* Bordes redondeados modernos */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); /* Sombra moderna */
+    padding: 2rem; /* Padding generoso */
     text-align: center;
 }
 
@@ -33,15 +38,15 @@ body {
     background-color: #ffffff;
     padding: 5px;
     margin-bottom: 15px;
-    border: 3px solid #3498db;
+    border: 3px solid #667eea;
     object-fit: cover;
 }
 
 .encabezado-login h2 {
-    color: #333;
+    color: #1f2937;
     font-size: 1.5em;
     margin-bottom: 5px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .encabezado-login p {
@@ -76,52 +81,52 @@ body {
 
 label {
     display: block;
-    margin-bottom: 8px;
-    color: #333; 
-    font-weight: 600; 
-    font-size: 0.9em;
+    margin-bottom: var(--espaciado-xs); /* Espaciado unificado */
+    color: var(--texto-principal); /* Color unificado */
+    font-weight: var(--peso-semi-bold); /* Peso unificado */
+    font-size: var(--fuente-pequena); /* Tamaño unificado */
 }
 
 input[type="text"],
 input[type="password"] {
     width: 100%;
-    padding: 12px 15px;
-    border: 2px solid #e1e5e9;
-    border-radius: 8px;
-    font-size: 16px;
+    padding: var(--padding-input); /* Padding unificado */
+    border: var(--borde-input); /* Borde unificado */
+    border-radius: var(--radio-normal); /* Radio unificado */
+    font-size: var(--fuente-normal); /* Font size unificado */
+    background-color: var(--fondo-input); /* Fondo unificado */
+    color: var(--texto-principal); /* Color texto unificado */
     box-sizing: border-box;
-    transition: border-color 0.3s ease;
-    background-color: #f8f9fa;
+    transition: all var(--transicion-normal); /* Transición unificada */
 }
 
 input[type="text"]:focus,
 input[type="password"]:focus {
-    border-color: #3498db;
     outline: none;
-    background-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    border: var(--borde-input-focus); /* Borde focus unificado */
+    background-color: var(--fondo-input-focus); /* Fondo focus unificado */
+    box-shadow: var(--sombra-focus); /* Sombra focus unificada */
 }
 
 /* Botón */
 .boton-login {
     width: 100%;
     padding: 12px 20px;
-    background-color: #3498db;
-    color: white;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Gradiente moderno */
+    color: white; /* Texto blanco */
     border: none;
-    border-radius: 8px;
+    border-radius: 8px; /* Bordes redondeados */
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 500; /* Peso moderado */
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease; /* Transición rápida */
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .boton-login:hover {
-    background-color: #2980b9;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); /* Sombra moderna */
 }
 
 /* Pie del login */
@@ -139,7 +144,7 @@ input[type="password"]:focus {
 }
 
 .pie-login a {
-    color: #3498db;
+    color: #667eea;
     text-decoration: none;
     font-weight: 600;
     transition: color 0.3s ease;

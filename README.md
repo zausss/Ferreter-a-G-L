@@ -1,3 +1,9 @@
+## ⚠️ Riesgo y Contingencia
+
+- **Falta de tiempo:** se priorizarán módulos críticos y se dejarán pruebas de baja prioridad para el final.
+- **Errores graves detectados:** se notificará inmediatamente al equipo de desarrollo y se suspenderán pruebas hasta la corrección.
+- **Fallo de la base de datos:** se usará copia de respaldo para restaurar ambiente de prueba.
+- **Incompatibilidad de software:** se documentará y se propondrá versión alternativa de herramienta o sistema.
 # 🔧 Ferretería J&L - Sistema de Gestión
 
 Sistema web completo para gestionar productos, ventas e inventario en ferretería mediana.
@@ -75,16 +81,13 @@ Visitar: `http://localhost:3000`
 └── 📄 app.js           # Archivo principal
 ```
 
-## 🔧 Herramientas de Administración
+## 🔧 Administración
 ```bash
-# Encriptar contraseñas de usuarios
-node utils/database-tools.js encriptar
+# Iniciar servidor
+npm start
 
-# Ver todos los usuarios
-node utils/database-tools.js usuarios
-
-# Ayuda
-node utils/database-tools.js
+# Iniciar en modo desarrollo
+npm run dev
 ```
 
 ## 📚 Documentación
@@ -98,10 +101,11 @@ Este proyecto implementa:
 - ✅ Base de datos relacional normalizada
 - ✅ Interface de usuario moderna
 - ✅ Código limpio y documentado
-- ✅ Herramientas de administración
+
 
 ## 📄 Licencia
 MIT License
 
 ## 👨‍💻 Autor
-Daniel Esteban Vargas Garcia - Proyecto de Graduación
+Daniel Esteban Vargas Garcia  
+LEUDIVIA TANGARIFE BELTRAN -Proyecto de Graduación

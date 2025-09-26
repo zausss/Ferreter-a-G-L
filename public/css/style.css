@@ -11,18 +11,18 @@ body, html {
 .contenedor-principal { 
     display: flex; /* Habilita Flexbox para colocar los hijos en fila */
     min-height: 100vh; /* Usa min-height en lugar de height fijo */
-    background-color: #f0f2f5; /* Un gris claro para el fondo general */
+    background-color: #f8fafc; /* Fondo más claro y moderno */
 }
 
 /* Estilos de la Barra Lateral */
 .barra-lateral { /* CAMBIADO: de .sidebar a .barra-lateral */
     width: 250px; /* Ancho fijo de la barra lateral */
-    background-color: #1E293B;/* Color de fondo oscuro */
-    color: #ecf0f1; /* Color de texto general para la barra lateral */
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);/* Gradiente moderno */
+    color: #f1f5f9; /* Color de texto más claro */
     display: flex;
     flex-direction: column; /* Organiza los elementos en columna (header, nav, footer) */
     padding: 20px 0; /* Espaciado interno superior e inferior */
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Sombra sutil a la derecha */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); /* Sombra más moderna */
 }
 
 /* Encabezado de la barra lateral (logo) */
@@ -62,15 +62,17 @@ body, html {
 }
 
 .item-navegacion:hover { /* CAMBIADO: de .nav-item a .item-navegacion */
-    background-color: #34495e; /* Color de fondo al pasar el mouse */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Gradiente moderno */
     color: #ffffff; /* Color de texto al pasar el mouse */
+    transform: translateX(4px); /* Ligero desplazamiento */
 }
 
 .item-navegacion.activo { /* CAMBIADO: de .nav-item.active a .item-navegacion.activo */
-    background-color: #D9D9D9; /* Color de fondo para el elemento activo */
-    color: #0C0C0C; /* Color de texto para el elemento activo */
-    border-left: 4px solid #3498db; /* Barra azul a la izquierda del activo */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Gradiente principal */
+    color: #ffffff; /* Texto blanco */
+    border-left: 4px solid #4ecdc4; /* Barra de color moderno */
     padding-left: 16px; /* Aumenta el padding izquierdo para compensar la barra */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
 }
 
 /* Estilos para los íconos SVG */
@@ -259,8 +261,8 @@ body, html {
 
 .area-contenido { /* CAMBIADO: de .content-area a .area-contenido */
     flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
-    padding: 20px;
-    background-color: #c1c1c2; /* Fondo gris para el contenido principal */
+    padding: 1.5rem;
+    background: #f8fafc; /* Fondo moderno igual que control-stock */
     font-weight: 600;  /* Negrita para el texto del contenido principal */
     overflow-y: auto; /* Permite scroll vertical cuando sea necesario */
     max-height: 100vh; /* Limita la altura máxima */
@@ -287,20 +289,21 @@ position: absolute; /* Posiciona el elemento de forma absoluta */
 }
 
 .tarjeta {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    padding: 30px; /* Aumentar padding para más espacio interno */
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem; /* Padding moderno */
     display: flex;
     flex-direction: column; /* Cambiar a columna para poner icono arriba */
     align-items: center; /* Centrar contenido horizontalmente */
-    transition: transform 0.3s ease;
+    transition: all 0.2s ease; /* Transición más rápida */
     flex: 1; /* Cada tarjeta ocupa el mismo espacio disponible */
     width: calc(33.33% - 13px); /* Ancho exacto para 3 tarjetas en horizontal */
 }
 
 .tarjeta:hover {
-    transform: translateY(-5px); /* Efecto de elevación al pasar el mouse */
+    transform: translateY(-2px); /* Efecto de elevación más sutil */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); /* Sombra moderna */
 }
 
 .icono-tarjeta {
@@ -393,14 +396,20 @@ position: absolute; /* Posiciona el elemento de forma absoluta */
 }
 
 .caja-seccion {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     min-height: 300px; /* Altura mínima para consistencia */
     height: fit-content; /* Se ajusta al contenido */
+    transition: all 0.2s ease;
+}
+
+.caja-seccion:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 .encabezado-seccion {
     display: flex;
