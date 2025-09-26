@@ -188,21 +188,15 @@
             }
 
             async function eliminarCategoria(id, nombre) {
-                console.log('🗑️ Frontend: Intentando eliminar ID:', id, 'Nombre:', nombre);
-                
                 if (confirm(`¿Estás seguro de que deseas eliminar la categoría "${nombre}"?\n\nEsta acción no se puede deshacer.`)) {
                     try {
-                        console.log('📡 Frontend: Enviando DELETE a:', `/api/categorias/${id}`);
-                        
                         const response = await fetch(`/api/categorias/${id}`, {
                             method: 'DELETE',
                             headers: {
                                 'Accept': 'application/json'
                             },
-                            credentials: 'include' // Importante: incluir cookies
+                            credentials: 'include'
                         });
-
-                        console.log('📨 Frontend: Response status:', response.status);
 
                         if (response.status === 401) {
                             window.location.href = '/auth/login';
@@ -210,7 +204,6 @@
                         }
 
                         const data = await response.json();
-                        console.log('📋 Frontend: Response data:', data);
 
                         if (data.success) {
                             mostrarExito(data.message);

@@ -264,13 +264,13 @@
                     <div class="formulario-dos-columnas">
                         <div class="grupo-campo">
                             <label for="producto-movimiento">Producto:</label>
-                            <select id="producto-movimiento" required>
+                            <select id="producto-movimiento" name="producto" required>
                                 <option value="">Seleccionar producto...</option>
                             </select>
                         </div>
                         <div class="grupo-campo">
                             <label for="tipo-movimiento">Tipo de movimiento:</label>
-                            <select id="tipo-movimiento" required>
+                            <select id="tipo-movimiento" name="tipo" required>
                                 <option value="">Seleccionar tipo...</option>
                                 <option value="entrada">Entrada (Compra/Devolución)</option>
                                 <option value="salida">Salida (Venta/Pérdida)</option>
@@ -278,15 +278,15 @@
                         </div>
                         <div class="grupo-campo">
                             <label for="cantidad-movimiento">Cantidad:</label>
-                            <input type="number" id="cantidad-movimiento" min="1" required>
+                            <input type="number" id="cantidad-movimiento" name="cantidad" min="1" required>
                         </div>
                         <div class="grupo-campo">
                             <label for="motivo-movimiento">Motivo:</label>
-                            <input type="text" id="motivo-movimiento" placeholder="Ej: Compra a proveedor" required>
+                            <input type="text" id="motivo-movimiento" name="motivo" placeholder="Ej: Compra a proveedor" required>
                         </div>
                         <div class="grupo-campo columna-completa">
                             <label for="observaciones-movimiento">Observaciones (opcional):</label>
-                            <textarea id="observaciones-movimiento" rows="3" placeholder="Detalles adicionales..."></textarea>
+                            <textarea id="observaciones-movimiento" name="observaciones" rows="3" placeholder="Detalles adicionales..."></textarea>
                         </div>
                     </div>
                 </div>

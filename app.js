@@ -8,6 +8,7 @@ const config = require('./config/config');
 const authRoutes = require('./routes/auth');
 const categoriaRoutes = require('./routes/categoriaRoutes');
 const productoRoutes = require('./routes/productoRoutes');
+const movimientoRoutes = require('./routes/movimientoRoutes');
 
 // Importar controladores adicionales
 const CargoController = require('./controllers/cargoController');
@@ -32,6 +33,7 @@ app.use('/auth', authRoutes);
 // Rutas API (protegidas)
 app.use('/api/categorias', categoriaRoutes);
 app.use('/api/productos', productoRoutes);
+app.use('/api/movimientos', movimientoRoutes);
 
 // Rutas adicionales para registro
 app.get('/api/cargos', CargoController.obtenerCargos);

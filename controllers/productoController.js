@@ -114,17 +114,8 @@ class ProductoController {
                 });
             }
             
-            // Obtener ID de categoría
-            let categoria_id = 1;
-            if (categoria) {
-                const categoriasMap = {
-                    'herramientas manuales': 1,
-                    'herramientas eléctricas': 2,
-                    'pintura': 5,
-                    'ferreteria': 6
-                };
-                categoria_id = categoriasMap[categoria.toLowerCase()] || 1;
-            }
+            // Obtener ID de categoría desde el frontend
+            let categoria_id = categoria || 1; // Usar el ID enviado desde el frontend o default a 1
             
             // Calcular margen de ganancia
             const margenGanancia = precioCompra > 0 ? 
@@ -181,17 +172,8 @@ class ProductoController {
                 });
             }
             
-            // Obtener ID de categoría
-            let categoria_id = 1;
-            if (categoria) {
-                const categoriasMap = {
-                    'herramientas manuales': 1,
-                    'herramientas eléctricas': 2,
-                    'pintura': 5,
-                    'ferreteria': 6
-                };
-                categoria_id = categoriasMap[categoria.toLowerCase()] || 1;
-            }
+            // Obtener ID de categoría desde el frontend
+            let categoria_id = categoria || 1; // Usar el ID enviado desde el frontend o default a 1
             
             // Calcular margen de ganancia
             const margenGanancia = precioCompra > 0 ? 

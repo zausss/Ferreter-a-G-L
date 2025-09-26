@@ -9,6 +9,7 @@ const API_BASE = '/api/productos';
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
+    cargarCategorias();
     cargarProductos();
     configurarEventos();
 });
@@ -39,6 +40,43 @@ function configurarEventos() {
             cerrarModal();
         }
     });
+}
+
+// Cargar categorías desde la API
+async function cargarCategorias() {
+    try {
+        const response = await fetch('/api/categorias');
+        const data = await response.json();
+        
+        if (data.success) {
+            const categorias = data.categorias;
+            
+            // Cargar en el select de filtros
+            const filtroSelect = document.getElementById('filtro-categoria');
+            filtroSelect.innerHTML = '<option value="">Todas las categorías</option>';
+            
+            // Cargar en el select del formulario
+            const categoriaSelect = document.getElementById('categoria');
+            categoriaSelect.innerHTML = '<option value="">Seleccionar categoría</option>';
+            
+            categorias.forEach(categoria => {
+                // Agregar al filtro
+                const optionFiltro = document.createElement('option');
+                optionFiltro.value = categoria.id;
+                optionFiltro.textContent = categoria.nombre_categoria;
+                filtroSelect.appendChild(optionFiltro);
+                
+                // Agregar al formulario
+                const optionFormulario = document.createElement('option');
+                optionFormulario.value = categoria.id;
+                optionFormulario.textContent = categoria.nombre_categoria;
+                categoriaSelect.appendChild(optionFormulario);
+            });
+        }
+    } catch (error) {
+        console.error('Error cargando categorías:', error);
+        mostrarMensaje('Error al cargar las categorías', 'error');
+    }
 }
 
 // Cargar productos desde la API
@@ -178,7 +216,7 @@ async function editarProducto(id) {
             // Llenar el formulario
             document.getElementById('codigo').value = producto.codigo;
             document.getElementById('nombre').value = producto.nombre;
-            document.getElementById('categoria').value = mapearCategoriaParaSelect(producto.categoria);
+            document.getElementById('categoria').value = producto.categoria_id || '';
             document.getElementById('precio-venta').value = producto.precio;
             document.getElementById('precio-compra').value = producto.precioCompra || '';
             document.getElementById('stock').value = producto.stock;
@@ -317,16 +355,7 @@ function capitalizarTexto(texto) {
     return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
-function mapearCategoriaParaSelect(categoria) {
-    const mapeo = {
-        'Herramientas Manuales': 'herramientas manuales',
-        'Herramientas eléctricas': 'herramientas eléctricas',
-        'pintura': 'pintura',
-        'ferreteria': 'ferreteria',
-        'Sin categoría': ''
-    };
-    return mapeo[categoria] || categoria.toLowerCase();
-}
+// Función eliminada - ahora usamos IDs de categorías directamente
 
 // Función para calcular el margen de ganancia automáticamente
 function calcularMargen() {

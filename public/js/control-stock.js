@@ -451,9 +451,127 @@ document.addEventListener('DOMContentLoaded', function() {
     async function manejarMovimiento(e) {
         e.preventDefault();
         
-        // Aquí iría la lógica para procesar el movimiento
-        // Por ahora solo mostraremos una alerta
-        alert('Funcionalidad de movimientos en desarrollo. Los datos del formulario se han capturado correctamente.');
-        cerrarModal();
+        const formData = new FormData(e.target);
+        const datosMovimiento = {
+            producto_id: parseInt(formData.get('producto')),
+            tipo_movimiento: formData.get('tipo'),
+            cantidad: parseInt(formData.get('cantidad')),
+            motivo: formData.get('motivo') || null,
+            observaciones: formData.get('observaciones') || null
+        };
+        
+        // Validaciones básicas
+        if (!datosMovimiento.producto_id || !datosMovimiento.tipo_movimiento || !datosMovimiento.cantidad) {
+            mostrarNotificacion('Por favor completa todos los campos obligatorios', 'error');
+            return;
+        }
+        
+        if (datosMovimiento.cantidad <= 0) {
+            mostrarNotificacion('La cantidad debe ser mayor a 0', 'error');
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/movimientos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datosMovimiento)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                mostrarNotificacion(result.message, 'success');
+                cerrarModal();
+                
+                // Recargar datos para reflejar los cambios
+                await cargarProductos();
+                await cargarEstadisticas();
+                
+            } else {
+                mostrarNotificacion(result.message, 'error');
+            }
+            
+        } catch (error) {
+            console.error('Error procesando movimiento:', error);
+            mostrarNotificacion('Error de conexión al procesar el movimiento', 'error');
+        }
+    }
+
+    // Función para mostrar notificaciones
+    function mostrarNotificacion(mensaje, tipo = 'info') {
+        // Crear elemento de notificación
+        const notificacion = document.createElement('div');
+        notificacion.className = `notificacion ${tipo}`;
+        notificacion.innerHTML = `
+            <span>${mensaje}</span>
+            <button onclick="this.parentElement.remove()">×</button>
+        `;
+        
+        // Agregar estilos dinámicos
+        notificacion.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${tipo === 'success' ? '#28a745' : tipo === 'error' ? '#dc3545' : '#007bff'};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 300px;
+            animation: slideIn 0.3s ease-out;
+        `;
+        
+        // Agregar al DOM
+        document.body.appendChild(notificacion);
+        
+        // Auto-remover después de 5 segundos
+        setTimeout(() => {
+            if (notificacion.parentElement) {
+                notificacion.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    notificacion.remove();
+                }, 300);
+            }
+        }, 5000);
+    }
+    
+    // Agregar estilos de animación al head si no existen
+    if (!document.querySelector('#notificacion-styles')) {
+        const styles = document.createElement('style');
+        styles.id = 'notificacion-styles';
+        styles.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            .notificacion button {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 18px;
+                cursor: pointer;
+                padding: 0;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .notificacion button:hover {
+                opacity: 0.7;
+            }
+        `;
+        document.head.appendChild(styles);
     }
 });
