@@ -110,8 +110,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (response.ok) {
                 const data = await response.json();
-                if (data.success && data.data) {
-                    categoriasData = data.data;
+                if (data.success && data.categorias) {
+                    categoriasData = data.categorias;
                     llenarFiltroCategoria();
                 }
             }
@@ -192,9 +192,9 @@ document.addEventListener('DOMContentLoaded', function() {
             productosFiltrados = productosFiltrados.filter(producto => {
                 switch (filtros.estado) {
                     case 'disponible':
-                        return producto.stock > producto.stock_minimo;
+                        return producto.stock > producto.stockMinimo;
                     case 'bajo':
-                        return producto.stock > 0 && producto.stock <= producto.stock_minimo;
+                        return producto.stock > 0 && producto.stock <= producto.stockMinimo;
                     case 'agotado':
                         return producto.stock === 0;
                     default:
