@@ -167,21 +167,33 @@
 .tabla-productos tbody tr {
     transition: background-color 0.3s ease;
 }
-
+/* estilos de los colores de barra de informacion de productos */
 .tabla-productos tbody tr:hover {
     background-color: #f8f9fa;
 }
 
-/* Estilos para información de productos */
-.producto-info .nombre {
-    font-weight: 500;
-    margin-bottom: 4px;
+/* Estilos para columna de códigos */
+.tabla-productos td:first-child{
+    color: #dc2626; /* Rojo */
+    font-weight: 600;
 }
 
+.tabla-productos td:first-child {
+    background-color: rgba(187, 137, 137, 0.05); /* Fondo rojo muy suave */
+}
+
+/* Estilos para información de productos */
+.producto-info .nombre {
+    font-weight: 800;
+    margin-bottom: 4px;
+    
+}
+
+/* estilos para información secundaria de productos */
 .producto-info .dimensiones,
 .producto-info .peso {
     display: block;
-    color: #6c757d;
+    color: #030303;
     font-size: 0.8rem;
     margin: 2px 0;
 }
@@ -214,7 +226,7 @@
 
 .ubicacion {
     font-size: 0.9rem;
-    color: #495057;
+    color: #1087ff;
 }
 
 /* Estilos para el campo de margen */

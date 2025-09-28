@@ -242,14 +242,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function crearFilaProducto(producto) {
         const fila = document.createElement('tr');
         
-        const estado = obtenerEstadoStock(producto.stock, producto.stock_minimo);
+        const estado = obtenerEstadoStock(producto.stock, producto.stockMinimo);
         
         fila.innerHTML = `
             <td><code>${producto.codigo}</code></td>
             <td><strong>${producto.nombre}</strong></td>
             <td>${producto.categoria || 'Sin categoría'}</td>
             <td><strong>${producto.stock}</strong></td>
-            <td>${producto.stock_minimo}</td>
+            <td>${producto.stockMinimo}</td>
             <td>
                 <span class="estado-stock estado-${estado.clase}">
                     ${estado.texto}
