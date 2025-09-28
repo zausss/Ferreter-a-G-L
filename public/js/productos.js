@@ -34,10 +34,33 @@ function configurarEventos() {
     document.getElementById('btn-anterior').addEventListener('click', paginaAnterior);
     document.getElementById('btn-siguiente').addEventListener('click', paginaSiguiente);
     
-    // Cerrar modal al hacer clic fuera
+    // Cerrar modal al hacer clic fuera (con confirmación)
     document.getElementById('modal-producto').addEventListener('click', function(e) {
         if (e.target === this) {
-            cerrarModal();
+            // Verificar si hay datos en el formulario
+            const form = document.getElementById('form-producto');
+            const formData = new FormData(form);
+            let hasData = false;
+            
+            for (let value of formData.values()) {
+                if (value.trim() !== '') {
+                    hasData = true;
+                    break;
+                }
+            }
+            
+            if (hasData) {
+                customAlert.confirm(
+                    'Se perderán todos los datos que has ingresado en el formulario.',
+                    '¿Cerrar sin guardar?'
+                ).then((confirmed) => {
+                    if (confirmed) {
+                        cerrarModal();
+                    }
+                });
+            } else {
+                cerrarModal();
+            }
         }
     });
 }
@@ -301,7 +324,13 @@ async function eliminarProducto(id) {
     const producto = productos.find(p => p.id === id);
     if (!producto) return;
     
-    if (confirm(`¿Estás seguro de que deseas eliminar el producto "${producto.nombre}"?`)) {
+    const confirmed = await customAlert.confirm(
+        `Esta acción eliminará permanentemente el producto "${producto.nombre}" y no se puede deshacer.`,
+        '¿Eliminar producto?',
+        'error'
+    );
+    
+    if (confirmed) {
         try {
             const response = await fetch(`${API_BASE}/${id}`, {
                 method: 'DELETE'

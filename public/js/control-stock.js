@@ -406,7 +406,22 @@ document.addEventListener('DOMContentLoaded', function() {
         elementos.btnCancelarMovimiento.addEventListener('click', cerrarModal);
         elementos.modal.addEventListener('click', (e) => {
             if (e.target === elementos.modal) {
-                cerrarModal();
+                // Verificar si hay datos en el formulario
+                const cantidad = elementos.inputCantidad.value.trim();
+                const motivo = elementos.inputMotivo.value.trim();
+                
+                if (cantidad !== '' || motivo !== '') {
+                    customAlert.confirm(
+                        'Se perderán todos los datos que has ingresado en el formulario.',
+                        '¿Cerrar sin guardar?'
+                    ).then((confirmed) => {
+                        if (confirmed) {
+                            cerrarModal();
+                        }
+                    });
+                } else {
+                    cerrarModal();
+                }
             }
         });
 

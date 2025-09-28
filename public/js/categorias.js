@@ -176,7 +176,12 @@
             async function verCategoria(id) {
                 const categoria = categorias.find(c => c.id === id);
                 if (categoria) {
-                    alert(`Categoría: ${categoria.nombre_categoria}\nCódigo: ${categoria.codigo_categoria}\nDescripción: ${categoria.descripcion || 'Sin descripción'}\nFecha de creación: ${new Date(categoria.fecha_creacion).toLocaleDateString('es-CO')}`);
+                    customAlert.showCategoryPreview({
+                        nombre: categoria.nombre_categoria,
+                        descripcion: categoria.descripcion,
+                        created_at: categoria.fecha_creacion,
+                        updated_at: categoria.fecha_actualizacion
+                    });
                 }
             }
 
@@ -188,7 +193,13 @@
             }
 
             async function eliminarCategoria(id, nombre) {
-                if (confirm(`¿Estás seguro de que deseas eliminar la categoría "${nombre}"?\n\nEsta acción no se puede deshacer.`)) {
+                const confirmed = await customAlert.confirm(
+                    `Esta acción eliminará permanentemente la categoría "${nombre}" y no se puede deshacer.`,
+                    '¿Eliminar categoría?',
+                    'error'
+                );
+                
+                if (confirmed) {
                     try {
                         const response = await fetch(`/api/categorias/${id}`, {
                             method: 'DELETE',
@@ -362,10 +373,25 @@
                 }
             });
 
-            // Cerrar modal al hacer clic fuera
+            // Cerrar modal al hacer clic fuera (con confirmación)
             document.getElementById('modal-categoria').addEventListener('click', function(e) {
                 if (e.target === this) {
-                    cerrarModal();
+                    // Verificar si hay datos en el formulario
+                    const nombre = document.getElementById('nombre-categoria').value.trim();
+                    const descripcion = document.getElementById('descripcion-categoria').value.trim();
+                    
+                    if (nombre !== '' || descripcion !== '') {
+                        customAlert.confirm(
+                            'Se perderán todos los datos que has ingresado en el formulario.',
+                            '¿Cerrar sin guardar?'
+                        ).then((confirmed) => {
+                            if (confirmed) {
+                                cerrarModal();
+                            }
+                        });
+                    } else {
+                        cerrarModal();
+                    }
                 }
             });
 

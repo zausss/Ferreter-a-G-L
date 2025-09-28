@@ -53,11 +53,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Función para confirmar cierre de sesión
-function confirmarCerrarSesion(event) {
+async function confirmarCerrarSesion(event) {
     event.preventDefault(); // Evitar navegación inmediata
     
-    // Mostrar confirmación
-    const confirmar = confirm('¿Estás seguro de que deseas cerrar sesión?');
+    // Mostrar confirmación personalizada
+    const confirmar = await customAlert.confirm(
+        '¿Estás seguro de que deseas cerrar tu sesión actual?',
+        'Cerrar Sesión'
+    );
     
     if (confirmar) {
         // Mostrar mensaje de carga
@@ -84,7 +87,7 @@ function confirmarCerrarSesion(event) {
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al cerrar sesión. Intenta nuevamente.');
+            customAlert.alert('Hubo un problema al cerrar la sesión. Por favor, intenta nuevamente.', 'Error', 'error');
             
             // Restaurar botón
             spanTexto.textContent = textoOriginal;
