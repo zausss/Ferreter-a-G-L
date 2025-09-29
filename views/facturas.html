@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Facturas - Ferretería G&L</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/tema-moderno.css">
+    <link rel="stylesheet" href="/css/alerts.css">
+    <link rel="stylesheet" href="/css/facturas.css">
+
+
+</head>
+<body class="facturas-page">
+<div class="contenedor-principal">
+    <!-- Menú vertical -->
+    <aside class="barra-lateral">
+            <div class="encabezado-barra-lateral">
+                <img src="/img/logo.jpg" alt="Logo Ferretería J&L" class="logo">
+                </div>
+            <nav class="navegacion-barra-lateral">
+                <ul>
+                    <li class="inicio-activo">
+                        <a href="menu.html" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg>
+                            <span>Inicio</span>
+                        </a>
+                    </li>
+
+
+
+
+                    <li class="tiene-submenu">
+                        <a href="#" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M200-640v440h560v-440H640v320l-160-80-160 80v-320H200Zm0 520q-33 0-56.5-23.5T120-200v-499q0-14 4.5-27t13.5-24l50-61q11-14 27.5-21.5T250-840h460q18 0 34.5 7.5T772-811l50 61q9 11 13.5 24t4.5 27v499q0 33-23.5 56.5T760-120H200Zm16-600h528l-34-40H250l-34 40Zm184 80v190l80-40 80 40v-190H400Zm-200 0h560-560Z"/></svg>
+                            <span>Inventario</span>
+                            <span class="icono-adicional">+</span>
+                        </a>
+                        <ul class="submenu" id="submenu-inventario">
+                            <li><a href="categorias.html">Categorías</a></li>
+                            <li><a href="productos.html">Productos</a></li>
+                            <li><a href="control-stock.html">Control de Stock</a></li>
+                        </ul>
+                    </li>
+                    
+
+
+
+                    <li class="tiene-submenu ventas-activo">
+                        <a href="#" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-160-60q25 0 42.5-17.5T700-480q0-25-17.5-42.5T640-540q-25 0-42.5 17.5T580-480q0 25 17.5 42.5T640-420Z"/></svg>
+                            <span>Ventas</span>
+                            <span class="icono-adicional">+</span>
+                        </a>
+                        <ul class="submenu" id="submenu-ventas">
+                            <li><a href="venta.html">Nueva Venta</a></li>
+                            <li><a href="facturas.html" class="facturas-activo">Gestión de Facturas</a></li>
+                            <li><a href="">Resumen Ventas</a></li>
+                        </ul>
+                    </li>
+                    
+
+                    <li>
+                        <a href="clientes.html" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M185-80q-17 0-29.5-12.5T143-122v-105q0-90 56-159t144-88q-40 28-62 70.5T259-312v190q0 11 3 22t10 20h-87Zm147 0q-17 0-29.5-12.5T290-122v-190q0-70 49.5-119T459-480h189q70 0 119 49t49 119v64q0 70-49 119T648-80H332Zm148-484q-66 0-112-46t-46-112q0-66 46-112t112-46q66 0 112 46t46 112q0 66-46 112t-112 46Z"/></svg>
+                            <span>Clientes</span>
+                        </a>
+                    </li>
+                
+                
+                    <li class="tiene-submenu">
+                        <a href="#" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M411-480q-28 0-46-21t-13-49l12-72q8-43 40.5-70.5T480-720q44 0 76.5 27.5T597-622l12 72q5 28-13 49t-46 21H411Zm24-80h91l-8-49q-2-14-13-22.5t-25-8.5q-14 0-24.5 8.5T443-609l-8 49ZM124-441q-23 1-39.5-9T63-481q-2-9-1-18t5-17q0 1-1-4-2-2-10-24-2-12 3-23t13-19l2-2q2-19 15.5-32t33.5-13q3 0 19 4l3-1q5-5 13-7.5t17-2.5q11 0 19.5 3.5T208-626q1 0 1.5.5t1.5.5q14 1 24.5 8.5T251-596q2 7 1.5 13.5T250-570q0 1 1 4 7 7 11 15.5t4 17.5q0 4-6 21-1 2 0 4l2 16q0 21-17.5 36T202-441h-78Zm676 1q-33 0-56.5-23.5T720-520q0-12 3.5-22.5T733-563l-28-25q-10-8-3.5-20t18.5-12h80q33 0 56.5 23.5T880-540v20q0 33-23.5 56.5T800-440ZM0-240v-63q0-44 44.5-70.5T160-400q13 0 25 .5t23 2.5q-14 20-21 43t-7 49v65H0Zm240 0v-65q0-65 66.5-105T480-450q108 0 174 40t66 105v65H240Zm560-160q72 0 116 26.5t44 70.5v63H780v-65q0-26-6.5-49T754-397q11-2 22.5-2.5t23.5-.5Zm-320 30q-57 0-102 15t-53 35h311q-9-20-53.5-35T480-370Zm0 50Zm1-280Z"/></svg>
+                            <span>Proveedores</span>
+                            <span class="icono-adicional">+</span>
+                        </a>
+                        <ul class="submenu" id="submenu-proveedores">
+                            <li><a href="proveedores.html">Lista de Proveedores</a></li>
+                            <li><a href="nuevo-proveedor.html">Nuevo Proveedor</a></li>
+                        </ul>
+                    </li>
+                    
+
+
+
+
+
+
+                    <li class="tiene-submenu">
+                        <a href="#" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M320-480v-80h320v80H320Zm0-160v-80h320v80H320Zm-80 240h300q29 0 54 12.5t42 35.5l84 110v-558H240v400Zm0 240h442L573-303q-6-8-14.5-12.5T540-320H240v160Zm480 80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640q0 33-23.5 56.5T720-80Zm-480-80v-640 640Zm0-160v-80 80Z"/></svg>
+                            <span>Reportes</span>
+                            <span class="icono-adicional">+</span>
+                        </a>
+                        <ul class="submenu" id="submenu-reportes">
+                            <li><a href="reporte-ventas.html">Reporte de Ventas</a></li>
+                            <li><a href="reporte-inventario.html">Reporte de Inventario</a></li>
+                            <li><a href="reporte-financiero.html">Reporte Financiero</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <div class="pie-barra-lateral">
+                <a href="#" class="item-navegacion">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="m234-480-12-60q-12-5-22.5-10.5T178-564l-58 18-40-68 46-40q-2-13-2-26t2-26l-46-40 40-68 58 18q11-8 21.5-13.5T222-820l12-60h80l12 60q12 5 22.5 10.5T370-796l58-18 40 68-46 40q2 13 2 26t-2 26l46 40-40 68-58-18q-11 8-21.5 13.5T326-540l-12 60h-80Zm40-120q33 0 56.5-23.5T354-680q0-33-23.5-56.5T274-760q-33 0-56.5 23.5T194-680q0 33 23.5 56.5T274-600ZM592-40l-18-84q-17-6-31.5-14.5T514-158l-80 26-56-96 64-56q-2-18-2-36t2-36l-64-56 56-96 80 26q14-11 28.5-19.5T574-516l18-84h112l18 84q17 6 31.5 14.5T782-482l80-26 56 96-64 56q2 18 2 36t-2 36l64 56-56 96-80-26q-14 11-28.5 19.5T722-124l-18 84H592Zm56-160q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Z"/></svg>
+                    <span>Configuración</span>
+                </a>
+                
+                <!-- Botón de Cerrar Sesión -->
+                <a href="/auth/logout" class="item-navegacion" id="cerrar-sesion" onclick="confirmarCerrarSesion(event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#d32f2f">
+                        <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
+                    </svg>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </aside>
+    <!-- Área de contenido principal -->
+    <main class="area-contenido">
+        <div class="facturas-container">
+        <!-- Header -->
+        <div class="facturas-header">
+            <div>
+                <h1>📄 Gestión de Facturas</h1>
+                <p>Sistema completo de facturas y documentos fiscales</p>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="abrirConfiguracionEmpresa()">
+                    🏢 Configurar Empresa
+                </button>
+                <a href="venta.html" class="btn btn-success">
+                    ➕ Nueva Venta
+                </a>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filtros-container">
+            <h3>🔍 Filtrar Facturas</h3>
+            <div class="filtros-row">
+                <div class="campo-grupo">
+                    <label>ID o Número de Factura</label>
+                    <input type="text" id="filtro-numero" placeholder="Ej: 123 o FAC-20250928-0001">
+                </div>
+                <div class="campo-grupo">
+                    <label>Cliente</label>
+                    <input type="text" id="filtro-cliente" placeholder="Nombre o documento">
+                </div>
+                <div class="campo-grupo">
+                    <label>Estado</label>
+                    <select id="filtro-estado">
+                        <option value="">Todos los estados</option>
+                        <option value="activa">Activas</option>
+                        <option value="pagada">Pagadas</option>
+                        <option value="pendiente">Pendientes</option>
+                        <option value="anulada">Anuladas</option>
+                    </select>
+                </div>
+                <div class="campo-grupo">
+                    <label>Fecha Desde</label>
+                    <input type="date" id="filtro-fecha-desde">
+                </div>
+                <div class="campo-grupo">
+                    <label>Fecha Hasta</label>
+                    <input type="date" id="filtro-fecha-hasta">
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="filtrarFacturas()">
+                    🔍 Buscar Facturas
+                </button>
+                <button class="btn btn-warning" onclick="limpiarFiltros()">
+                    🧹 Limpiar Filtros
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabla de Facturas -->
+        <div class="tabla-facturas">
+            <div id="loading" class="loading" style="display: none;">
+                <p>⏳ Cargando facturas...</p>
+            </div>
+            
+            <div id="facturas-contenido">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>📄 Número</th>
+                            <th>👤 Cliente</th>
+                            <th>💰 Total</th>
+                            <th>💳 Método Pago</th>
+                            <th>📅 Fecha</th>
+                            <th>🏷️ Estado</th>
+                            <th>⚙️ Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="facturas-tbody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <div>📄</div>
+                <h3>No se encontraron facturas</h3>
+                <p>No hay facturas que coincidan con los filtros aplicados</p>
+            </div>
+        </div>
+
+        <!-- Paginación -->
+        <div class="paginacion">
+            <button class="btn btn-primary" id="btn-anterior" onclick="cambiarPagina(-1)">« Anterior</button>
+            <span id="info-pagina">Página 1 de 1</span>
+            <button class="btn btn-primary" id="btn-siguiente" onclick="cambiarPagina(1)">Siguiente »</button>
+        </div>
+    </div>
+
+    <!-- Modal de Configuración de Empresa -->
+    <div id="modal-empresa" class="modal" style="display: none;">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h3>🏢 Configuración de Empresa</h3>
+                <button class="btn-cerrar" onclick="cerrarModalEmpresa()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-empresa">
+                    <div class="filtros-row">
+                        <div class="campo-grupo">
+                            <label>Nombre de la Empresa</label>
+                            <input type="text" id="empresa-nombre" required>
+                        </div>
+                        <div class="campo-grupo">
+                            <label>NIT/RUT</label>
+                            <input type="text" id="empresa-nit" required>
+                        </div>
+                        <div class="campo-grupo">
+                            <label>Teléfono</label>
+                            <input type="text" id="empresa-telefono">
+                        </div>
+                        <div class="campo-grupo">
+                            <label>Email</label>
+                            <input type="email" id="empresa-email">
+                        </div>
+                        <div class="campo-grupo" style="grid-column: 1/-1;">
+                            <label>Dirección</label>
+                            <input type="text" id="empresa-direccion">
+                        </div>
+                        <div class="campo-grupo">
+                            <label>Ciudad</label>
+                            <input type="text" id="empresa-ciudad">
+                        </div>
+                        <div class="campo-grupo">
+                            <label>Eslogan</label>
+                            <input type="text" id="empresa-eslogan">
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button type="submit" class="btn btn-success">💾 Guardar Cambios</button>
+                        <button type="button" class="btn btn-warning" onclick="cerrarModalEmpresa()">❌ Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Fin del contenedor de facturas -->
+        </div>
+    </main>
+</div>
+
+    <script src="/js/alerts.js"></script>
+    <script src="/js/facturas.js"></script>
+    <script src="/js/menu.js"></script>
+    
+
+    
+    <!-- Sistema de navegación activa automática -->
+    <script src="/js/navegacion-activa-auto.js"></script>
+</body>
+</html>

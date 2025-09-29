@@ -1,0 +1,430 @@
+/* ===================================
+   ESTILOS PARA PÁGINA DE FACTURAS
+   Ferretería G&L - Versión Limpia
+   ================================= */
+
+/* ---- CONFIGURACIÓN BASE ---- */
+body.facturas-page {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+body.facturas-page .area-contenido {
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+/* ---- CONTENEDOR PRINCIPAL ---- */
+.facturas-container {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* ---- ENCABEZADO ---- */
+.facturas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.facturas-header h1 {
+    color: #2c3e50;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.facturas-header p {
+    color: #6c757d;
+    margin: 5px 0 0 0;
+    font-size: 14px;
+}
+
+/* ---- FILTROS ---- */
+.filtros-container {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+}
+
+.filtros-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.campo-grupo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo-grupo label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.campo-grupo input,
+.campo-grupo select {
+    padding: 12px;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.campo-grupo input:focus,
+.campo-grupo select:focus {
+    outline: none;
+    border-color: #4ecdc4;
+    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+}
+
+/* ---- BOTONES ---- */
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #44a08d, #3d8b7a);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+/* ---- TABLA DE FACTURAS ---- */
+.tabla-facturas {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    overflow: hidden;
+}
+
+.tabla-facturas table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-facturas th,
+.tabla-facturas td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.tabla-facturas th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.tabla-facturas tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* ---- ESTADOS ---- */
+.estado {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.estado.pagada {
+    background: #d4edda;
+    color: #155724;
+}
+
+.estado.pendiente {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.estado.vencida {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* ---- ACCIONES ---- */
+.acciones-facturas {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-accion {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.btn-ver {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-editar {
+    background: #28a745;
+    color: white;
+}
+
+.btn-eliminar {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-accion:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+}
+
+/* ---- PAGINACIÓN ---- */
+.paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-paginacion {
+    padding: 8px 16px;
+    border: 1px solid #dee2e6;
+    background: white;
+    color: #495057;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-paginacion:hover {
+    background: #e9ecef;
+}
+
+.btn-paginacion.activo {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.btn-paginacion:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ---- ESTADOS VACÍOS Y CARGA ---- */
+#loading,
+.empty-state {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+}
+
+.empty-state h3 {
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+/* ---- MODALES ---- */
+.modal-empresa,
+.modal-factura {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+}
+
+.modal-contenido {
+    background: white;
+    margin: 50px auto;
+    padding: 0;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid #dee2e6;
+    text-align: right;
+}
+
+.btn-cerrar {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+/* ---- ESTILOS DEL MENÚ VERTICAL ---- */
+.submenu {
+    display: none;
+    padding-left: 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin-top: 5px;
+    transition: all 0.3s ease;
+}
+
+.tiene-submenu.activo .submenu,
+.submenu.mostrar {
+    display: block !important;
+}
+
+.submenu li {
+    margin: 5px 0;
+}
+
+.submenu a {
+    display: block;
+    padding: 8px 12px;
+    color: #b0b9c8;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+.submenu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    padding-left: 16px;
+}
+
+.tiene-submenu.activo > .item-navegacion {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.icono-adicional {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+.tiene-submenu.activo .icono-adicional {
+    transform: rotate(45deg);
+}
+
+/* ---- NAVEGACIÓN ACTIVA ---- */
+.navegacion-barra-lateral .ventas-activo > .item-navegacion {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #ffffff !important;
+    border-left: 4px solid #4ecdc4 !important;
+    padding-left: 16px !important;
+}
+
+#submenu-ventas {
+    display: block !important;
+}
+
+#submenu-ventas .facturas-activo {
+    background: linear-gradient(135deg, #4CAF50, #45a049) !important;
+    color: white !important;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 8px 12px !important;
+    margin: 2px 8px;
+    display: block;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+    .facturas-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .filtros-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .tabla-facturas {
+        overflow-x: auto;
+    }
+    
+    .acciones-facturas {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    body.facturas-page .area-contenido {
+        padding: 10px;
+    }
+    
+    .facturas-header,
+    .filtros-container {
+        padding: 15px;
+    }
+    
+    .modal-contenido {
+        margin: 20px auto;
+        width: 95%;
+    }
+}
