@@ -7,17 +7,17 @@ const { verificarToken } = require('../middleware/auth');
 router.use(verificarToken);
 
 // Rutas para productos (búsqueda para ventas)
-router.get('/ventas/productos/buscar', VentaController.buscarProductos);
+router.get('/productos/buscar', VentaController.buscarProductos);
 
 // Rutas para clientes
-router.get('/ventas/clientes/buscar/:documento', VentaController.buscarCliente);
+router.get('/clientes/buscar/:documento', VentaController.buscarCliente);
 
 // Rutas principales de ventas
-router.post('/ventas', VentaController.crearVenta);
-router.get('/ventas', VentaController.obtenerVentas);
-router.get('/ventas/:id', VentaController.obtenerVentaPorId);
+router.post('/', VentaController.crearVenta);
+router.get('/', VentaController.obtenerVentas);
+router.get('/:id', VentaController.obtenerVentaPorId);
 
 // Rutas para reportes
-router.get('/ventas/reportes/resumen', VentaController.reporteVentas);
+router.get('/reportes/resumen', VentaController.reporteVentas);
 
 module.exports = router;

@@ -140,23 +140,31 @@ class FacturaController {
         }
     }
     
-    // Obtener factura por ID
+    // Obtener factura por ID (método limpio)
     static async obtenerFacturaPorId(req, res) {
         try {
             const { id } = req.params;
+            console.log(`📋 Buscando factura ID: ${id}`);
             
+            // Consulta SQL corregida con nombres de columnas exactos
             const facturaQuery = `
-                SELECT f.*, 
-                       json_agg(
-                           json_build_object(
-                               'id', fd.id,
-                               'producto_codigo', fd.producto_codigo,
-                               'producto_nombre', fd.producto_nombre,
-                               'cantidad', fd.cantidad,
-                               'precio_unitario', fd.precio_unitario,
-                               'subtotal_linea', fd.subtotal_linea
-                           )
-                       ) as detalles
+                SELECT 
+                    f.*,
+                    COALESCE(
+                        json_agg(
+                            CASE WHEN fd.id IS NOT NULL THEN
+                                json_build_object(
+                                    'id', fd.id,
+                                    'codigo', fd.producto_codigo,
+                                    'nombre', fd.producto_nombre,
+                                    'cantidad', fd.cantidad,
+                                    'precio', fd.precio_unitario,
+                                    'subtotal', fd.subtotal_linea
+                                )
+                            END
+                        ) FILTER (WHERE fd.id IS NOT NULL),
+                        '[]'
+                    ) as detalles
                 FROM facturas f
                 LEFT JOIN factura_detalles fd ON f.id = fd.factura_id
                 WHERE f.id = $1
@@ -166,88 +174,55 @@ class FacturaController {
             const result = await pool.query(facturaQuery, [id]);
             
             if (result.rows.length === 0) {
+                console.log(`❌ Factura ${id} no encontrada`);
                 return res.status(404).json({
                     success: false,
                     message: 'Factura no encontrada'
                 });
             }
             
+            console.log(`✅ Factura ${id} encontrada`);
             res.json({
                 success: true,
                 factura: result.rows[0]
             });
             
         } catch (error) {
-            console.error('Error obteniendo factura:', error);
+            console.error('❌ Error obteniendo factura:', error);
             res.status(500).json({
                 success: false,
-                message: 'Error interno del servidor'
+                message: 'Error al obtener factura'
             });
         }
     }
     
-    // Listar facturas con filtros
+    // Listar facturas (método limpio y simple)
     static async listarFacturas(req, res) {
         try {
-            const { 
-                page = 1, 
-                limit = 20, 
-                estado, 
-                fechaDesde, 
-                fechaHasta,
-                cliente,
-                numeroFactura,
-                facturaId
-            } = req.query;
-            
+            console.log('📋 Cargando lista de facturas...');
+            const { page = 1, limit = 20, cliente, numeroFactura } = req.query;
             const offset = (page - 1) * limit;
             
-            let whereConditions = [];
+            // Construir filtros básicos
+            let whereClause = '';
             let queryParams = [];
             let paramCount = 0;
             
-            // Filtros dinámicos
-            if (estado) {
-                paramCount++;
-                whereConditions.push(`f.estado = $${paramCount}`);
-                queryParams.push(estado);
-            }
-            
-            if (fechaDesde) {
-                paramCount++;
-                whereConditions.push(`f.fecha_creacion >= $${paramCount}`);
-                queryParams.push(fechaDesde);
-            }
-            
-            if (fechaHasta) {
-                paramCount++;
-                whereConditions.push(`f.fecha_creacion <= $${paramCount}`);
-                queryParams.push(fechaHasta + ' 23:59:59');
-            }
-            
             if (cliente) {
                 paramCount++;
-                whereConditions.push(`(f.cliente_nombre ILIKE $${paramCount} OR f.cliente_documento ILIKE $${paramCount})`);
+                whereClause += `WHERE (f.cliente_nombre ILIKE $${paramCount} OR f.cliente_documento ILIKE $${paramCount})`;
                 queryParams.push(`%${cliente}%`);
             }
             
             if (numeroFactura) {
                 paramCount++;
-                whereConditions.push(`f.numero_factura ILIKE $${paramCount}`);
+                const whereWord = whereClause ? ' AND' : 'WHERE';
+                whereClause += `${whereWord} f.numero_factura ILIKE $${paramCount}`;
                 queryParams.push(`%${numeroFactura}%`);
             }
             
-            if (facturaId) {
-                paramCount++;
-                whereConditions.push(`f.id = $${paramCount}`);
-                queryParams.push(facturaId);
-            }
-            
-            const whereClause = whereConditions.length > 0 ? 
-                `WHERE ${whereConditions.join(' AND ')}` : '';
-            
-            // Query principal usando tabla facturas
-            const facturas = await pool.query(`
+            // Query principal simplificado
+            const query = `
                 SELECT 
                     f.id,
                     f.numero_factura,
@@ -256,24 +231,26 @@ class FacturaController {
                     f.total,
                     f.metodo_pago,
                     f.estado,
-                    f.fecha_creacion,
-                    COUNT(fd.id) as total_items
+                    f.fecha_creacion
                 FROM facturas f
-                LEFT JOIN factura_detalles fd ON f.id = fd.factura_id
                 ${whereClause}
-                GROUP BY f.id
                 ORDER BY f.fecha_creacion DESC
                 LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}
-            `, [...queryParams, limit, offset]);
+            `;
             
-            // Count total
-            const totalResult = await pool.query(`
+            const facturas = await pool.query(query, [...queryParams, limit, offset]);
+            
+            // Contar total
+            const countQuery = `
                 SELECT COUNT(*) as total
                 FROM facturas f
                 ${whereClause}
-            `, queryParams);
+            `;
             
+            const totalResult = await pool.query(countQuery, queryParams);
             const total = parseInt(totalResult.rows[0].total);
+            
+            console.log(`✅ ${facturas.rows.length} facturas cargadas de ${total} totales`);
             
             res.json({
                 success: true,
@@ -287,10 +264,10 @@ class FacturaController {
             });
             
         } catch (error) {
-            console.error('Error listando facturas:', error);
+            console.error('❌ Error listando facturas:', error);
             res.status(500).json({
                 success: false,
-                message: 'Error interno del servidor'
+                message: 'Error al cargar facturas'
             });
         }
     }
@@ -396,19 +373,147 @@ class FacturaController {
     // Obtener información de empresa
     static async obtenerEmpresa(req, res) {
         try {
+            console.log('🏢 Obteniendo información de empresa...');
+            
+            // Intentar obtener de la tabla empresa_info
             const result = await pool.query('SELECT * FROM empresa_info LIMIT 1');
             
+            // Si no existe datos, crear datos por defecto
+            let empresa = result.rows[0];
+            if (!empresa) {
+                console.log('ℹ️  No hay datos de empresa, usando valores por defecto');
+                empresa = {
+                    nombre_empresa: 'Ferretería G&L',
+                    nit: '900.123.456-7',
+                    direccion: 'Calle Principal #123',
+                    telefono: '(57) 555-0123',
+                    email: 'ventas@ferreteriagl.com'
+                };
+            }
+            
+            console.log('✅ Información de empresa obtenida');
             res.json({
                 success: true,
-                empresa: result.rows[0] || {}
+                empresa: empresa
             });
             
         } catch (error) {
-            console.error('Error obteniendo empresa:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Error interno del servidor'
+            console.error('❌ Error obteniendo empresa:', error);
+            
+            // Respuesta con datos por defecto en caso de error
+            res.json({
+                success: true,
+                empresa: {
+                    nombre_empresa: 'Ferretería G&L',
+                    nit: '900.123.456-7',
+                    direccion: 'Calle Principal #123',
+                    telefono: '(57) 555-0123',
+                    email: 'ventas@ferreteriagl.com'
+                }
             });
+        }
+    }
+
+    // Imprimir factura (generar HTML para impresión)
+    static async imprimirFactura(req, res) {
+        try {
+            const { id } = req.params;
+            
+            // Obtener factura completa
+            const facturaResult = await pool.query(`
+                SELECT f.*, fd.producto_id, fd.producto_codigo, fd.producto_nombre, 
+                       fd.cantidad, fd.precio_unitario, fd.subtotal as detalle_subtotal
+                FROM facturas f
+                LEFT JOIN factura_detalles fd ON f.id = fd.factura_id
+                WHERE f.id = $1
+                ORDER BY fd.id
+            `, [id]);
+
+            if (facturaResult.rows.length === 0) {
+                return res.status(404).send('Factura no encontrada');
+            }
+
+            const factura = facturaResult.rows[0];
+            const detalles = facturaResult.rows.map(row => ({
+                codigo: row.producto_codigo,
+                nombre: row.producto_nombre,
+                cantidad: row.cantidad,
+                precio: row.precio_unitario,
+                subtotal: row.detalle_subtotal
+            }));
+
+            // Generar HTML para impresión
+            const html = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Factura ${factura.numero_factura}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        .header { text-align: center; margin-bottom: 20px; }
+                        .factura-info { margin-bottom: 20px; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f2f2f2; }
+                        .totales { text-align: right; margin-top: 20px; }
+                        @media print { body { margin: 0; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>${factura.empresa_nombre}</h1>
+                        <p>NIT: ${factura.empresa_nit}</p>
+                        <p>${factura.empresa_direccion}</p>
+                        <p>Tel: ${factura.empresa_telefono}</p>
+                    </div>
+                    
+                    <div class="factura-info">
+                        <h2>Factura: ${factura.numero_factura}</h2>
+                        <p><strong>Fecha:</strong> ${new Date(factura.fecha_factura).toLocaleDateString()}</p>
+                        <p><strong>Cliente:</strong> ${factura.cliente_nombre}</p>
+                        <p><strong>Documento:</strong> ${factura.cliente_documento}</p>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unit.</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${detalles.map(det => `
+                                <tr>
+                                    <td>${det.codigo}</td>
+                                    <td>${det.nombre}</td>
+                                    <td>${det.cantidad}</td>
+                                    <td>$${det.precio}</td>
+                                    <td>$${det.subtotal}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    <div class="totales">
+                        <p><strong>Subtotal: $${factura.subtotal}</strong></p>
+                        <p><strong>IVA: $${factura.iva}</strong></p>
+                        <p><strong>Total: $${factura.total}</strong></p>
+                    </div>
+
+                    <script>window.print();</script>
+                </body>
+                </html>
+            `;
+
+            res.setHeader('Content-Type', 'text/html');
+            res.send(html);
+            
+        } catch (error) {
+            console.error('Error imprimiendo factura:', error);
+            res.status(500).send('Error al generar la factura');
         }
     }
 }

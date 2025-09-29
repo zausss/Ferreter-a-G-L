@@ -9,6 +9,8 @@ const authRoutes = require('./routes/auth');
 const categoriaRoutes = require('./routes/categoriaRoutes');
 const productoRoutes = require('./routes/productoRoutes');
 const movimientoRoutes = require('./routes/movimientoRoutes');
+const ventaRoutes = require('./routes/ventaRoutes');
+const facturaRoutes = require('./routes/facturaRoutes');
 
 // Importar controladores adicionales
 const CargoController = require('./controllers/cargoController');
@@ -34,6 +36,8 @@ app.use('/auth', authRoutes);
 app.use('/api/categorias', categoriaRoutes);
 app.use('/api/productos', productoRoutes);
 app.use('/api/movimientos', movimientoRoutes);
+app.use('/api/ventas', ventaRoutes);
+app.use('/api/facturas', facturaRoutes);
 
 // Rutas adicionales para registro
 app.get('/api/cargos', CargoController.obtenerCargos);
@@ -68,6 +72,14 @@ app.get('/control-stock.html', verificarToken, (req, res) => {
 
 app.get('/menu.html', verificarToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'menu.html'));
+});
+
+app.get('/venta.html', verificarToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'venta.html'));
+});
+
+app.get('/facturas.html', verificarToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'facturas.html'));
 });
 
 

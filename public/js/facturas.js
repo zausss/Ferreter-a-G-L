@@ -26,6 +26,15 @@ class SistemaFacturas {
             this.guardarConfiguracionEmpresa();
         });
 
+        // Event listener para botones de ver factura (delegación de eventos)
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-ver-factura')) {
+                const facturaId = e.target.getAttribute('data-id');
+                console.log('🔍 Haciendo clic en ver factura:', facturaId);
+                this.verFactura(facturaId);
+            }
+        });
+
         // Cerrar modal con ESC
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
@@ -47,6 +56,7 @@ class SistemaFacturas {
     }
 
     async cargarFacturas() {
+        console.log('🔄 Cargando facturas...', this.filtros);
         this.mostrarLoading(true);
         
         try {
@@ -56,25 +66,29 @@ class SistemaFacturas {
                 ...this.filtros
             });
 
-            const token = localStorage.getItem('token');
+            // Usar credentials para cookies automáticamente
             const response = await fetch(`/api/facturas?${params}`, {
+                method: 'GET',
+                credentials: 'include',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });
 
             if (!response.ok) {
-                throw new Error('Error al cargar facturas');
+                const errorText = await response.text();
+                throw new Error(`Error ${response.status}: ${errorText}`);
             }
 
             const data = await response.json();
+            console.log('✅ Facturas cargadas:', data.facturas?.length || 0);
+            
             this.mostrarFacturas(data.facturas);
             this.actualizarPaginacion(data.pagination);
 
         } catch (error) {
-            console.error('Error:', error);
-            mostrarAlerta('Error al cargar facturas', 'error');
+            console.error('❌ Error cargando facturas:', error);
+            this.mostrarAlerta('Error al cargar facturas: ' + error.message, 'error');
             this.mostrarEstadoVacio();
         } finally {
             this.mostrarLoading(false);
@@ -121,8 +135,8 @@ class SistemaFacturas {
                 </td>
                 <td>
                     <div class="acciones-facturas">
-                        <button class="btn btn-primary" onclick="sistemaFacturas.verFactura(${factura.id})" title="Ver Factura">
-                            👁️
+                                                <button class="btn btn-primary btn-ver-factura" data-id="${factura.id}" title="Ver Factura">
+                            👁️ Ver
                         </button>
                         <button class="btn btn-success" onclick="sistemaFacturas.imprimirFactura(${factura.id})" title="Imprimir">
                             🖨️
@@ -139,12 +153,25 @@ class SistemaFacturas {
     }
 
     mostrarEstadoVacio() {
-        document.getElementById('facturas-contenido').style.display = 'none';
-        document.getElementById('empty-state').style.display = 'block';
+        const contenido = document.getElementById('facturas-contenido');
+        const estadoVacio = document.getElementById('empty-state');
+        
+        if (contenido) {
+            contenido.style.display = 'none';
+        }
+        if (estadoVacio) {
+            estadoVacio.style.display = 'block';
+        }
+        console.log('📭 Mostrando estado vacío - no hay facturas');
     }
 
     mostrarLoading(mostrar) {
-        document.getElementById('loading').style.display = mostrar ? 'block' : 'none';
+        const loading = document.getElementById('loading');
+        if (loading) {
+            loading.style.display = mostrar ? 'block' : 'none';
+        } else {
+            console.log(mostrar ? '🔄 Cargando...' : '✅ Carga completada');
+        }
     }
 
     actualizarPaginacion(pagination) {
@@ -217,38 +244,47 @@ class SistemaFacturas {
 
     async verFactura(id) {
         try {
-            const token = localStorage.getItem('token');
+            console.log(`👁️  Viendo factura ID: ${id}`);
+            
+            // Usar credentials para cookies automáticamente
             const response = await fetch(`/api/facturas/${id}`, {
+                method: 'GET',
+                credentials: 'include',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });
 
             if (!response.ok) {
-                throw new Error('Error al cargar factura');
+                const errorText = await response.text();
+                throw new Error(`Error ${response.status}: ${errorText}`);
             }
 
             const data = await response.json();
+            console.log('✅ Factura cargada:', data.factura?.numero_factura);
+            
             this.mostrarDetalleFactura(data.factura);
 
         } catch (error) {
-            console.error('Error:', error);
-            mostrarAlerta('Error al cargar los detalles de la factura', 'error');
+            console.error('❌ Error cargando factura:', error);
+            this.mostrarAlerta('Error al cargar los detalles de la factura: ' + error.message, 'error');
         }
     }
 
     mostrarDetalleFactura(factura) {
+        console.log('📄 Mostrando modal de factura:', factura.numero_factura);
+        console.log('🔍 Datos de factura:', factura);
+        
         // Crear modal con detalles de la factura
         const modal = document.createElement('div');
-        modal.className = 'modal';
+        modal.className = 'modal-factura';
         modal.style.display = 'block';
         
         modal.innerHTML = `
             <div class="modal-contenido" style="max-width: 800px;">
                 <div class="modal-header">
                     <h3>📄 Factura ${factura.numero_factura}</h3>
-                    <button class="btn-cerrar" onclick="this.closest('.modal').remove()">×</button>
+                    <button class="btn-cerrar" onclick="this.closest('.modal-factura').remove()">×</button>
                 </div>
                 <div class="modal-body">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
@@ -279,15 +315,15 @@ class SistemaFacturas {
                             </tr>
                         </thead>
                         <tbody>
-                            ${factura.detalles.map(detalle => `
+                            ${factura.detalles && factura.detalles.length > 0 ? factura.detalles.map(detalle => `
                                 <tr>
-                                    <td style="padding: 8px; border: 1px solid #ddd;">${detalle.producto_codigo}</td>
-                                    <td style="padding: 8px; border: 1px solid #ddd;">${detalle.producto_nombre}</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">${detalle.codigo || detalle.producto_codigo}</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">${detalle.nombre || detalle.producto_nombre}</td>
                                     <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detalle.cantidad}</td>
-                                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">$${this.formatearPrecio(detalle.precio_unitario)}</td>
-                                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">$${this.formatearPrecio(detalle.subtotal_linea)}</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">$${this.formatearPrecio(detalle.precio || detalle.precio_unitario)}</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">$${this.formatearPrecio(detalle.subtotal || detalle.subtotal_linea)}</td>
                                 </tr>
-                            `).join('')}
+                            `).join('') : '<tr><td colspan="5" style="text-align: center; padding: 20px;">No hay productos en esta factura</td></tr>'}
                         </tbody>
                     </table>
                     
@@ -299,12 +335,13 @@ class SistemaFacturas {
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-success" onclick="sistemaFacturas.imprimirFactura(${factura.id})">🖨️ Imprimir</button>
-                    <button class="btn btn-warning" onclick="this.closest('.modal').remove()">❌ Cerrar</button>
+                    <button class="btn btn-warning" onclick="this.closest('.modal-factura').remove()">❌ Cerrar</button>
                 </div>
             </div>
         `;
 
         document.body.appendChild(modal);
+        console.log('✅ Modal agregado al DOM');
     }
 
     async anularFactura(id) {
@@ -312,18 +349,20 @@ class SistemaFacturas {
         if (!razon) return;
 
         try {
-            const token = localStorage.getItem('token');
+            console.log(`❌ Anulando factura ID: ${id} - Razón: ${razon}`);
+            
             const response = await fetch(`/api/facturas/${id}/anular`, {
                 method: 'PUT',
+                credentials: 'include',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ razon })
             });
 
             if (!response.ok) {
-                throw new Error('Error al anular factura');
+                const errorText = await response.text();
+                throw new Error(`Error ${response.status}: ${errorText}`);
             }
 
             mostrarAlerta('Factura anulada exitosamente', 'success');
@@ -432,6 +471,20 @@ class SistemaFacturas {
 
     capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // Método para mostrar alertas (compatible con sistema de alertas)
+    mostrarAlerta(mensaje, tipo = 'info') {
+        console.log(`${tipo.toUpperCase()}: ${mensaje}`);
+        
+        // Si existe la función global mostrarAlerta, usarla
+        if (typeof mostrarAlerta === 'function') {
+            mostrarAlerta(mensaje, tipo);
+            return;
+        }
+        
+        // Fallback: mostrar alert simple
+        alert(mensaje);
     }
 }
 

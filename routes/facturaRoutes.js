@@ -17,6 +17,9 @@ router.get('/', FacturaController.listarFacturas);
 // Anular factura
 router.put('/:id/anular', FacturaController.anularFactura);
 
+// Imprimir factura
+router.get('/:id/imprimir', FacturaController.imprimirFactura);
+
 // ===== RUTAS DE EMPRESA =====
 
 // Obtener información de empresa

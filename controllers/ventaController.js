@@ -1,5 +1,4 @@
 const { pool } = require('../config/database');
-const DatabaseErrorHandler = require('../utils/database-error-handler');
 const FacturaController = require('./facturaController');
 
 class VentaController {
@@ -15,26 +14,41 @@ class VentaController {
                 });
             }
             
-            // Usar el manejo robusto de errores de base de datos
             console.log(`🔍 Buscando productos con término: "${q}"`);
-            const resultado = await DatabaseErrorHandler.buscarProductos(q);
             
-            if (resultado.success) {
-                console.log(`✅ Búsqueda exitosa: ${resultado.mensaje}`);
-                res.json(resultado.productos);
-            } else {
-                console.error(`❌ Error en búsqueda: ${resultado.mensaje}`);
-                res.status(500).json({ 
-                    success: false, 
-                    message: resultado.mensaje
-                });
-            }
+            const query = `
+                SELECT 
+                    id,
+                    codigo_producto,
+                    nombre,
+                    precio_venta,
+                    stock_actual
+                FROM productos 
+                WHERE nombre ILIKE $1
+                AND stock_actual > 0 
+                AND activo = true
+                ORDER BY nombre
+                LIMIT 10
+            `;
+            
+            const result = await pool.query(query, [`%${q}%`]);
+            
+            const productos = result.rows.map(p => ({
+                id: p.id,
+                codigo: p.codigo_producto,
+                nombre: p.nombre,
+                precio: parseFloat(p.precio_venta),
+                stock: p.stock_actual
+            }));
+            
+            console.log(`✅ Encontrados ${productos.length} productos`);
+            res.json(productos);
             
         } catch (error) {
-            console.error('Error fatal en buscarProductos:', error);
+            console.error('Error buscando productos:', error);
             res.status(500).json({ 
                 success: false, 
-                message: 'Error interno del servidor - conexión a base de datos' 
+                message: 'Error al buscar productos' 
             });
         }
     }
