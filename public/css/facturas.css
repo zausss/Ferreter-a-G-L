@@ -108,10 +108,28 @@ body.facturas-page .area-contenido {
 .btn-primary {
     background: linear-gradient(135deg, #4ecdc4, #44a08d);
     color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 .btn-primary:hover {
     background: linear-gradient(135deg, #44a08d, #3d8b7a);
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-success:hover {
+    background: #218838;
     transform: translateY(-1px);
 }
 
@@ -414,8 +432,9 @@ body.facturas-page .area-contenido {
 }
 
 @media (max-width: 480px) {
+    
     body.facturas-page .area-contenido {
-        padding: 10px;
+        padding: 5px;
     }
     
     .facturas-header,
