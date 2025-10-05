@@ -8,8 +8,85 @@
 
             // Cargar categorías al iniciar la página
             document.addEventListener('DOMContentLoaded', function() {
+                console.log('🚀 Inicializando sistema de categorías...');
                 cargarCategorias();
+                configurarEventListeners();
+                console.log('✅ Sistema de categorías inicializado correctamente');
             });
+
+            // Configurar event listeners
+            function configurarEventListeners() {
+                console.log('🔧 Configurando event listeners...');
+                
+                // Event listeners para botones de nueva categoría y acciones
+                document.addEventListener('click', function(e) {
+                    const target = e.target.closest('[data-action]');
+                    if (!target) return;
+
+                    const action = target.getAttribute('data-action');
+                    const id = target.getAttribute('data-id');
+                    const nombre = target.getAttribute('data-nombre');
+
+                    switch(action) {
+                        case 'nueva-categoria':
+                            console.log('🆕 Abriendo modal para nueva categoría');
+                            abrirModal();
+                            break;
+                            
+                        case 'cerrar-modal':
+                            console.log('🔴 Cerrando modal de categoría');
+                            cerrarModal();
+                            break;
+                            
+                        case 'ver-categoria':
+                            console.log('👁️ Viendo categoría ID:', id);
+                            verCategoria(parseInt(id));
+                            break;
+                            
+                        case 'editar-categoria':
+                            console.log('✏️ Editando categoría ID:', id);
+                            editarCategoria(parseInt(id));
+                            break;
+                            
+                        case 'eliminar-categoria':
+                            console.log('🗑️ Eliminando categoría ID:', id, 'Nombre:', nombre);
+                            eliminarCategoria(parseInt(id), nombre);
+                            break;
+                    }
+                });
+
+                // Cerrar modal con ESC
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        const modal = document.getElementById('modal-categoria');
+                        if (modal && modal.classList.contains('mostrar')) {
+                            console.log('🔴 Cerrando modal con ESC');
+                            cerrarModal();
+                        }
+                    }
+                });
+
+                // Cerrar modal al hacer clic fuera
+                document.addEventListener('click', function(e) {
+                    const modal = document.getElementById('modal-categoria');
+                    if (e.target === modal) {
+                        console.log('🔴 Cerrando modal por clic fuera');
+                        cerrarModal();
+                    }
+                });
+
+                // Event listener para el campo de búsqueda
+                const campoBusqueda = document.getElementById('campo-busqueda');
+                if (campoBusqueda) {
+                    campoBusqueda.addEventListener('input', function(e) {
+                        console.log('🔍 Buscando categorías con término:', e.target.value);
+                        buscarCategorias();
+                    });
+                    console.log('✅ Event listener de búsqueda configurado');
+                } else {
+                    console.error('❌ No se encontró el campo de búsqueda');
+                }
+            }
 
             // ==========================================
             // FUNCIONES DE CARGA DE DATOS
@@ -100,19 +177,19 @@
                         </td>
                         <td>
                             <div class="acciones-categoria">
-                                <button class="btn-accion btn-ver" onclick="verCategoria(${categoria.id})" title="Ver detalles">
+                                <button class="btn-accion btn-ver" data-action="ver-categoria" data-id="${categoria.id}" title="Ver detalles">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                                         <path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clip-rule="evenodd" />
                                     </svg>
                                 </button>
-                                <button class="btn-accion btn-editar" onclick="editarCategoria(${categoria.id})" title="Editar">
+                                <button class="btn-accion btn-editar" data-action="editar-categoria" data-id="${categoria.id}" title="Editar">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
                                         <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
                                     </svg>
                                 </button>
-                                <button class="btn-accion btn-eliminar" onclick="eliminarCategoria(${categoria.id}, '${categoria.nombre_categoria}')" title="Eliminar">
+                                <button class="btn-accion btn-eliminar" data-action="eliminar-categoria" data-id="${categoria.id}" data-nombre="${categoria.nombre_categoria}" title="Eliminar">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                         <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
                                     </svg>
@@ -138,10 +215,28 @@
             // ==========================================
 
             function abrirModal(categoria = null) {
+                console.log('🔧 Intentando abrir modal de categoría...', categoria);
+                
                 const modal = document.getElementById('modal-categoria');
                 const titulo = document.getElementById('titulo-modal');
                 const formulario = document.getElementById('formulario-categoria');
                 
+                if (!modal) {
+                    console.error('❌ No se encontró el modal con ID "modal-categoria"');
+                    return;
+                }
+                
+                if (!titulo) {
+                    console.error('❌ No se encontró el título con ID "titulo-modal"');
+                    return;
+                }
+                
+                if (!formulario) {
+                    console.error('❌ No se encontró el formulario con ID "formulario-categoria"');
+                    return;
+                }
+                
+                console.log('✅ Elementos del modal encontrados correctamente');
                 categoriaEditando = categoria;
                 
                 if (categoria) {
@@ -156,8 +251,18 @@
                     formulario.reset();
                 }
                 
+                console.log('🎪 Mostrando modal...');
                 modal.classList.add('mostrar');
-                document.getElementById('codigo-categoria').focus();
+                
+                const codigoInput = document.getElementById('codigo-categoria');
+                if (codigoInput) {
+                    codigoInput.focus();
+                    console.log('✅ Focus establecido en código-categoria');
+                } else {
+                    console.error('❌ No se encontró el input código-categoria');
+                }
+                
+                console.log('✅ Modal abierto exitosamente');
             }
 
             function cerrarModal() {
@@ -258,6 +363,7 @@
                 }
 
                 try {
+                    console.log('🚀 Iniciando envío de categoría...', categoria);
                     btnGuardar.textContent = 'Guardando...';
                     btnGuardar.classList.add('btn-guardando');
                     btnGuardar.disabled = true;
@@ -267,6 +373,7 @@
                         : '/api/categorias';
                     
                     const method = categoriaEditando ? 'PUT' : 'POST';
+                    console.log(`📡 Enviando ${method} a ${url}`);
 
                     const response = await fetch(url, {
                         method: method,
@@ -278,23 +385,33 @@
                         body: JSON.stringify(categoria)
                     });
 
+                    console.log('📊 Response status:', response.status);
+                    console.log('📊 Response headers:', [...response.headers.entries()]);
+
                     if (response.status === 401) {
+                        console.log('🔒 Error 401: No autorizado, redirigiendo a login');
                         window.location.href = '/auth/login';
                         return;
                     }
 
                     const data = await response.json();
+                    console.log('📦 Response data:', data);
 
                     if (data.success) {
+                        console.log('✅ Categoría guardada exitosamente');
                         mostrarExito(data.message);
                         cerrarModal();
                         cargarCategorias();
                     } else {
-                        mostrarError(data.message);
+                        const errorMessage = data.message || data.error || 'Error desconocido';
+                        console.log('❌ Error del servidor:', errorMessage);
+                        console.log('❌ Detalles del error:', data.details);
+                        mostrarError(errorMessage);
                     }
                     
                 } catch (error) {
-                    console.error('Error:', error);
+                    console.error('❌ Error completo:', error);
+                    console.error('❌ Error stack:', error.stack);
                     mostrarError('Error al guardar la categoría');
                 } finally {
                     btnGuardar.textContent = categoriaEditando ? 'Actualizar Categoría' : 'Guardar Categoría';
@@ -399,3 +516,27 @@
             document.getElementById('codigo-categoria').addEventListener('input', function(e) {
                 e.target.value = e.target.value.toUpperCase();
             });
+
+            // Hacer funciones disponibles globalmente para debugging
+            window.abrirModal = abrirModal;
+            window.cerrarModal = cerrarModal;
+            window.cargarCategorias = cargarCategorias;
+            
+            // Función de testing para verificar que todo funciona
+            window.testModal = function() {
+                console.log('🧪 Ejecutando test del modal...');
+                
+                // Verificar que los elementos existen
+                const modal = document.getElementById('modal-categoria');
+                const btnNueva = document.querySelector('[data-action="nueva-categoria"]');
+                
+                console.log('Modal encontrado:', !!modal);
+                console.log('Botón nueva categoría encontrado:', !!btnNueva);
+                
+                if (btnNueva && modal) {
+                    console.log('✅ Test exitoso: Modal puede abrirse');
+                    abrirModal();
+                } else {
+                    console.error('❌ Test fallido: Elementos no encontrados');
+                }
+            };

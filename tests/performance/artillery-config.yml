@@ -1,0 +1,162 @@
+config:
+  target: 'http://localhost:3000'
+  phases:
+    # Fase de calentamiento - 5 usuarios por 30 segundos
+    - duration: 30
+      arrivalRate: 5
+      name: "Warm up"
+    # Fase principal - 20 usuarios concurrentes por 60 segundos
+    - duration: 60
+      arrivalRate: 20
+      name: "Peak load - 20 concurrent users"
+    # Fase de enfriamiento - reducir a 5 usuarios por 30 segundos
+    - duration: 30
+      arrivalRate: 5
+      name: "Cool down"
+  
+  # Variables globales
+  variables:
+    username: "admin"
+    password: "admin123"
+  
+  # Configuración de headers
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+
+# Hook para obtener token de autenticación
+before:
+  flow:
+    - post:
+        url: "/api/auth/login"
+        json:
+          username: "{{ username }}"
+          password: "{{ password }}"
+        capture:
+          - json: "$.token"
+            as: "auth_token"
+
+scenarios:
+  # Escenario 1: Consultas de productos (60% del tráfico)
+  - name: "Consultas de Productos"
+    weight: 60
+    flow:
+      # Autenticación al inicio
+      - post:
+          url: "/api/auth/login"
+          json:
+            username: "{{ username }}"
+            password: "{{ password }}"
+          capture:
+            - json: "$.token"
+              as: "auth_token"
+      
+      # Configurar header de autorización
+      - function: "setAuthHeader"
+      
+      # Obtener productos con paginación
+      - get:
+          url: "/api/productos?pagina=1&limite=10"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          expect:
+            - statusCode: [200, 401]
+      
+      # Pausa aleatoria entre 0.5 y 2 segundos
+      - think: "{{ $randomInt(500, 2000) }}"
+      
+      # Buscar productos
+      - get:
+          url: "/api/productos?busqueda=martillo"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          expect:
+            - statusCode: [200, 401]
+      
+      - think: "{{ $randomInt(500, 1500) }}"
+      
+      # Obtener productos con stock bajo
+      - get:
+          url: "/api/productos/stock-bajo"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          expect:
+            - statusCode: [200, 401]
+
+  # Escenario 2: Consultas de facturas (25% del tráfico)
+  - name: "Consultas de Facturas"
+    weight: 25
+    flow:
+      # Autenticación
+      - post:
+          url: "/api/auth/login"
+          json:
+            username: "{{ username }}"
+            password: "{{ password }}"
+          capture:
+            - json: "$.token"
+              as: "auth_token"
+      
+      # Listar facturas
+      - get:
+          url: "/api/facturas?pagina=1&limite=5"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          expect:
+            - statusCode: [200, 401]
+      
+      - think: "{{ $randomInt(1000, 3000) }}"
+      
+      # Filtrar facturas por fecha
+      - get:
+          url: "/api/facturas?fechaInicio=2024-01-01&fechaFin=2024-12-31"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          expect:
+            - statusCode: [200, 401]
+
+  # Escenario 3: Creación de ventas (15% del tráfico)
+  - name: "Crear Ventas"
+    weight: 15
+    flow:
+      # Autenticación
+      - post:
+          url: "/api/auth/login"
+          json:
+            username: "{{ username }}"
+            password: "{{ password }}"
+          capture:
+            - json: "$.token"
+              as: "auth_token"
+      
+      # Crear venta
+      - post:
+          url: "/api/ventas"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          json:
+            cliente:
+              tipo: "natural"
+              documento: "{{ $randomInt(10000000, 99999999) }}"
+              nombre: "Cliente Test {{ $randomInt(1, 1000) }}"
+              telefono: "300{{ $randomInt(1000000, 9999999) }}"
+            productos:
+              - id: 1
+                cantidad: "{{ $randomInt(1, 5) }}"
+                precioUnitario: 25000
+              - id: 2
+                cantidad: "{{ $randomInt(1, 3) }}"
+                precioUnitario: 15000
+            subtotal: "{{ $randomInt(25000, 100000) }}"
+            iva: 0
+            total: "{{ $randomInt(25000, 100000) }}"
+            metodoPago: "efectivo"
+            montoRecibido: "{{ $randomInt(30000, 120000) }}"
+            cambio: 5000
+          expect:
+            - statusCode: [200, 201, 400, 401]
+      
+      - think: "{{ $randomInt(2000, 5000) }}"
+
+# Función personalizada para configurar headers
+processor: "./artillery-functions.js"

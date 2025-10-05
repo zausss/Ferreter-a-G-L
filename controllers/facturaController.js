@@ -200,10 +200,22 @@ class FacturaController {
     static async listarFacturas(req, res) {
         try {
             console.log('📋 Cargando lista de facturas...');
-            const { page = 1, limit = 20, cliente, numeroFactura } = req.query;
+            const { 
+                page = 1, 
+                limit = 20, 
+                cliente, 
+                numeroFactura, 
+                facturaId,
+                estado,
+                fechaDesde,
+                fechaHasta 
+            } = req.query;
+            
+            console.log('🔍 Filtros recibidos:', { cliente, numeroFactura, facturaId, estado, fechaDesde, fechaHasta });
+            
             const offset = (page - 1) * limit;
             
-            // Construir filtros básicos
+            // Construir filtros dinámicos
             let whereClause = '';
             let queryParams = [];
             let paramCount = 0;
@@ -219,6 +231,34 @@ class FacturaController {
                 const whereWord = whereClause ? ' AND' : 'WHERE';
                 whereClause += `${whereWord} f.numero_factura ILIKE $${paramCount}`;
                 queryParams.push(`%${numeroFactura}%`);
+            }
+
+            if (facturaId) {
+                paramCount++;
+                const whereWord = whereClause ? ' AND' : 'WHERE';
+                whereClause += `${whereWord} f.id = $${paramCount}`;
+                queryParams.push(facturaId);
+            }
+
+            if (estado) {
+                paramCount++;
+                const whereWord = whereClause ? ' AND' : 'WHERE';
+                whereClause += `${whereWord} f.estado = $${paramCount}`;
+                queryParams.push(estado);
+            }
+
+            if (fechaDesde) {
+                paramCount++;
+                const whereWord = whereClause ? ' AND' : 'WHERE';
+                whereClause += `${whereWord} DATE(f.fecha_creacion) >= $${paramCount}`;
+                queryParams.push(fechaDesde);
+            }
+
+            if (fechaHasta) {
+                paramCount++;
+                const whereWord = whereClause ? ' AND' : 'WHERE';
+                whereClause += `${whereWord} DATE(f.fecha_creacion) <= $${paramCount}`;
+                queryParams.push(fechaHasta);
             }
             
             // Query principal simplificado
@@ -274,20 +314,29 @@ class FacturaController {
     
     // Anular factura
     static async anularFactura(req, res) {
+        let client = null;
         try {
             const { id } = req.params;
             const { razon } = req.body;
             
-            let client = await pool.connect();
+            console.log('🔍 Anulando factura:', { id, razon });
+            
+            client = await pool.connect();
+            console.log('✅ Conexión obtenida');
+            
             await client.query('BEGIN');
+            console.log('✅ Transacción iniciada');
             
             // Verificar que la factura existe y está activa
+            console.log('🔍 Verificando factura activa...');
             const facturaActual = await client.query(
                 'SELECT * FROM facturas WHERE id = $1 AND estado = $2',
                 [id, 'activa']
             );
+            console.log('✅ Consulta ejecutada, resultados:', facturaActual.rows.length);
             
             if (facturaActual.rows.length === 0) {
+                console.log('❌ Factura no encontrada o ya anulada');
                 await client.query('ROLLBACK');
                 return res.status(404).json({
                     success: false,
@@ -296,46 +345,87 @@ class FacturaController {
             }
             
             // Anular factura
+            console.log('📝 Actualizando estado de factura...');
+            const notasActualizadas = `Anulada: ${razon} - ${new Date().toISOString()}`;
             await client.query(`
                 UPDATE facturas 
                 SET estado = 'anulada', 
                     fecha_modificacion = NOW(),
-                    notas_internas = CONCAT(COALESCE(notas_internas, ''), 'Anulada: ', $2)
+                    notas_internas = CASE 
+                        WHEN notas_internas IS NULL THEN $2
+                        ELSE notas_internas || ' | ' || $2
+                    END
                 WHERE id = $1
-            `, [id, razon]);
+            `, [id, notasActualizadas]);
+            console.log('✅ Factura actualizada');
             
-            // Registrar cambio en historial
-            await client.query(`
-                INSERT INTO facturas_historial (
-                    factura_id, campo_modificado, valor_anterior, valor_nuevo,
-                    usuario, razon_cambio
-                ) VALUES ($1, 'estado', 'activa', 'anulada', $2, $3)
-            `, [id, 'Sistema', razon]);
+            // Registrar cambio en historial (comentado temporalmente)
+            // await client.query(`
+            //     INSERT INTO facturas_historial (
+            //         factura_id, campo_modificado, valor_anterior, valor_nuevo,
+            //         usuario, razon_cambio
+            //     ) VALUES ($1, 'estado', 'activa', 'anulada', $2, $3)
+            // `, [id, 'Sistema', razon]);
             
             await client.query('COMMIT');
+            console.log('✅ Transacción confirmada');
             
             res.json({
                 success: true,
                 message: 'Factura anulada exitosamente'
             });
-            
+
         } catch (error) {
-            console.error('Error anulando factura:', error);
+            console.error('❌ Error anulando factura:', error);
+            
+            if (client) {
+                try {
+                    await client.query('ROLLBACK');
+                    console.log('🔄 Rollback ejecutado');
+                } catch (rollbackError) {
+                    console.error('❌ Error en rollback:', rollbackError);
+                }
+            }
+            
             res.status(500).json({
                 success: false,
-                message: 'Error interno del servidor'
+                message: 'Error interno del servidor: ' + error.message
             });
+        } finally {
+            if (client) {
+                client.release();
+                console.log('🔄 Conexión liberada');
+            }
         }
-    }
-    
-    // Actualizar información de empresa
+    }    // Actualizar información de empresa
     static async actualizarEmpresa(req, res) {
         try {
+            console.log('🏢 Actualizando información de empresa...');
             const { 
                 nombre_empresa, nit, direccion, telefono, 
                 email, ciudad, eslogan 
             } = req.body;
             
+            console.log('📋 Datos recibidos:', { nombre_empresa, nit, direccion, telefono, email, ciudad, eslogan });
+
+            // Verificar si la tabla existe, si no crearla
+            await pool.query(`
+                CREATE TABLE IF NOT EXISTS empresa_info (
+                    id SERIAL PRIMARY KEY,
+                    nombre_empresa VARCHAR(100),
+                    nit VARCHAR(20),
+                    direccion TEXT,
+                    telefono VARCHAR(20),
+                    email VARCHAR(100),
+                    ciudad VARCHAR(50),
+                    eslogan TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            `);
+            console.log('✅ Tabla empresa_info verificada/creada');
+
+            // Intentar actualizar primero
             const result = await pool.query(`
                 UPDATE empresa_info 
                 SET nombre_empresa = $1, nit = $2, direccion = $3, 
@@ -345,27 +435,35 @@ class FacturaController {
                 RETURNING *
             `, [nombre_empresa, nit, direccion, telefono, email, ciudad, eslogan]);
             
+            let empresaData;
+            
             if (result.rows.length === 0) {
+                console.log('📝 No existe registro, insertando nuevo...');
                 // Si no existe, crear
-                await pool.query(`
+                const insertResult = await pool.query(`
                     INSERT INTO empresa_info (
                         nombre_empresa, nit, direccion, telefono, 
                         email, ciudad, eslogan
                     ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+                    RETURNING *
                 `, [nombre_empresa, nit, direccion, telefono, email, ciudad, eslogan]);
+                empresaData = insertResult.rows[0];
+            } else {
+                console.log('📝 Registro actualizado exitosamente');
+                empresaData = result.rows[0];
             }
             
             res.json({
                 success: true,
-                message: 'Información de empresa actualizada',
-                empresa: result.rows[0]
+                message: 'Información de empresa actualizada exitosamente',
+                empresa: empresaData
             });
             
         } catch (error) {
-            console.error('Error actualizando empresa:', error);
+            console.error('❌ Error actualizando empresa:', error);
             res.status(500).json({
                 success: false,
-                message: 'Error interno del servidor'
+                message: 'Error interno del servidor: ' + error.message
             });
         }
     }

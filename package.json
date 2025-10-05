@@ -5,22 +5,43 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:unit": "jest tests/controllers tests/models --testPathIgnorePatterns=integration",
+    "test:integration": "jest tests/integration --testPathIgnorePatterns=mock",
+    "test:integration-mock": "jest tests/integration/*-mock.integration.test.js --verbose",
+    "test:coverage": "jest --coverage",
+    "test:verbose": "jest --verbose",
+    "test:performance": "node tests/performance/simple-load-test.js",
+    "test:performance-advanced": "node tests/performance/performance-test.js",
+    "test:performance-quick": "node tests/performance/quick-test.js",
+    "test:load": "node tests/performance/simple-load-test.js",
+    "test:security": "node tests/security/security-tests.js",
+    "test:security-sql": "node tests/security/sql-injection-advanced.js",
+    "test:security-jwt": "node tests/security/jwt-security-tests.js",
+    "test:security-all": "npm run test:security && npm run test:security-sql && npm run test:security-jwt"
   },
   "keywords": [],
   "author": "Danie",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.12.2",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
     "express-session": "^1.18.2",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "validator": "^13.15.15"
   },
   "devDependencies": {
+    "autocannon": "^8.0.0",
     "jest": "^30.1.3",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.4"
@@ -32,5 +53,20 @@
   "bugs": {
     "url": "https://github.com/zausss/Ferreter-a-G-L/issues"
   },
-  "homepage": "https://github.com/zausss/Ferreter-a-G-L#readme"
+  "homepage": "https://github.com/zausss/Ferreter-a-G-L#readme",
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/integration/jest.setup.js"
+    ],
+    "testTimeout": 30000
+  }
 }

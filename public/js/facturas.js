@@ -13,11 +13,25 @@ class SistemaFacturas {
     }
 
     configurarEventListeners() {
-        // Filtros en tiempo real
+        // Filtros en tiempo real para inputs de texto
         ['filtro-numero', 'filtro-cliente'].forEach(id => {
             document.getElementById(id)?.addEventListener('input', 
                 this.debounce(() => this.filtrarFacturas(), 500)
             );
+        });
+
+        // Filtros inmediatos para selects y fechas
+        ['filtro-estado', 'filtro-fecha-desde', 'filtro-fecha-hasta'].forEach(id => {
+            document.getElementById(id)?.addEventListener('change', () => {
+                console.log(`🔍 Filtro ${id} cambió`);
+                this.filtrarFacturas();
+            });
+        });
+
+        // Botón configurar empresa
+        document.getElementById('btn-configurar-empresa')?.addEventListener('click', () => {
+            console.log('🏢 Abriendo configuración de empresa');
+            this.abrirConfiguracionEmpresa();
         });
 
         // Formulario de empresa
@@ -33,12 +47,26 @@ class SistemaFacturas {
                 console.log('🔍 Haciendo clic en ver factura:', facturaId);
                 this.verFactura(facturaId);
             }
+            
+            // Manejar cierre de modales de forma global
+            if (e.target.classList.contains('modal-factura')) {
+                console.log('🔴 Cerrando modal por clic en overlay');
+                e.target.remove();
+            }
         });
 
         // Cerrar modal con ESC
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
+                // Cerrar modal de empresa si está abierto
                 this.cerrarModalEmpresa();
+                
+                // Cerrar modal de factura si está abierto
+                const modalFactura = document.querySelector('.modal-factura');
+                if (modalFactura) {
+                    console.log('🔴 Cerrando modal de factura con ESC');
+                    modalFactura.remove();
+                }
             }
         });
     }
@@ -284,7 +312,7 @@ class SistemaFacturas {
             <div class="modal-contenido" style="max-width: 800px;">
                 <div class="modal-header">
                     <h3>📄 Factura ${factura.numero_factura}</h3>
-                    <button class="btn-cerrar" onclick="this.closest('.modal-factura').remove()">×</button>
+                    <button class="btn-cerrar" data-action="cerrar-modal">×</button>
                 </div>
                 <div class="modal-body">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
@@ -334,43 +362,85 @@ class SistemaFacturas {
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-success" onclick="sistemaFacturas.imprimirFactura(${factura.id})">🖨️ Imprimir</button>
-                    <button class="btn btn-warning" onclick="this.closest('.modal-factura').remove()">❌ Cerrar</button>
+                    <button class="btn btn-success" data-action="imprimir-factura" data-id="${factura.id}">🖨️ Imprimir</button>
+                    <button class="btn btn-warning" data-action="cerrar-modal">❌ Cerrar</button>
                 </div>
             </div>
         `;
 
         document.body.appendChild(modal);
         console.log('✅ Modal agregado al DOM');
+
+        // Configurar event listeners para el modal
+        const btnCerrar = modal.querySelectorAll('[data-action="cerrar-modal"]');
+        btnCerrar.forEach(btn => {
+            btn.addEventListener('click', () => {
+                console.log('🔴 Cerrando modal de factura');
+                modal.remove();
+            });
+        });
+
+        const btnImprimir = modal.querySelector('[data-action="imprimir-factura"]');
+        if (btnImprimir) {
+            btnImprimir.addEventListener('click', () => {
+                const facturaId = btnImprimir.getAttribute('data-id');
+                console.log('🖨️ Imprimiendo factura:', facturaId);
+                this.imprimirFactura(facturaId);
+            });
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                console.log('🔴 Cerrando modal por clic fuera');
+                modal.remove();
+            }
+        });
     }
 
     async anularFactura(id) {
+        console.log('🔍 Iniciando anulación de factura:', id);
+        
         const razon = prompt('¿Por qué desea anular esta factura?');
-        if (!razon) return;
+        console.log('📝 Razón proporcionada:', razon);
+        
+        if (!razon) {
+            console.log('❌ Cancelado: No se proporcionó razón');
+            return;
+        }
 
         try {
             console.log(`❌ Anulando factura ID: ${id} - Razón: ${razon}`);
             
+            const token = localStorage.getItem('token');
+            console.log('🔐 Token disponible:', !!token);
+            
             const response = await fetch(`/api/facturas/${id}/anular`, {
                 method: 'PUT',
-                credentials: 'include',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ razon })
             });
 
+            console.log('📡 Respuesta del servidor:', response.status, response.statusText);
+            
             if (!response.ok) {
                 const errorText = await response.text();
+                console.error('❌ Error del servidor:', errorText);
                 throw new Error(`Error ${response.status}: ${errorText}`);
             }
 
-            mostrarAlerta('Factura anulada exitosamente', 'success');
+            const resultado = await response.json();
+            console.log('✅ Factura anulada exitosamente:', resultado);
+            
+            this.mostrarAlerta('Factura anulada exitosamente', 'success');
             this.cargarFacturas();
 
         } catch (error) {
-            console.error('Error:', error);
-            mostrarAlerta('Error al anular la factura', 'error');
+            console.error('❌ Error completo:', error);
+            this.mostrarAlerta('Error al anular la factura: ' + error.message, 'error');
         }
     }
 
@@ -420,6 +490,7 @@ class SistemaFacturas {
             };
 
             const token = localStorage.getItem('token');
+
             const response = await fetch('/api/facturas/empresa/info', {
                 method: 'PUT',
                 headers: {
@@ -430,15 +501,30 @@ class SistemaFacturas {
             });
 
             if (!response.ok) {
-                throw new Error('Error al guardar configuración');
+                let errorText;
+                try {
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const errorJson = await response.json();
+                        errorText = errorJson.message || JSON.stringify(errorJson);
+                    } else {
+                        errorText = await response.text();
+                    }
+                } catch (parseError) {
+                    errorText = `No se pudo leer el error del servidor. Status: ${response.status}`;
+                }
+                console.error('❌ Error del servidor:', errorText);
+                throw new Error(`Error ${response.status}: ${errorText}`);
             }
 
-            mostrarAlerta('Configuración de empresa guardada exitosamente', 'success');
+            const resultado = await response.json();
+
+            this.mostrarAlerta('Configuración de empresa guardada exitosamente', 'success');
             this.cerrarModalEmpresa();
 
         } catch (error) {
-            console.error('Error:', error);
-            mostrarAlerta('Error al guardar la configuración', 'error');
+            console.error('❌ Error completo:', error);
+            this.mostrarAlerta('Error al guardar la configuración: ' + error.message, 'error');
         }
     }
 
@@ -448,6 +534,28 @@ class SistemaFacturas {
 
     cerrarModalEmpresa() {
         document.getElementById('modal-empresa').style.display = 'none';
+    }
+
+    // Método específico para cerrar modal de factura
+    cerrarModalFactura() {
+        const modal = document.querySelector('.modal-factura');
+        if (modal) {
+            console.log('🔴 Cerrando modal de factura');
+            modal.remove();
+            return true;
+        }
+        return false;
+    }
+
+    // Método global para cerrar cualquier modal
+    cerrarTodosLosModales() {
+        // Cerrar modal de empresa
+        this.cerrarModalEmpresa();
+        
+        // Cerrar modal de factura
+        this.cerrarModalFactura();
+        
+        console.log('🔄 Todos los modales cerrados');
     }
 
     // Funciones utilitarias
@@ -493,6 +601,14 @@ function filtrarFacturas() {
     sistemaFacturas.filtrarFacturas();
 }
 
+function cerrarModalFactura() {
+    return sistemaFacturas.cerrarModalFactura();
+}
+
+function cerrarTodosLosModales() {
+    sistemaFacturas.cerrarTodosLosModales();
+}
+
 function limpiarFiltros() {
     sistemaFacturas.limpiarFiltros();
 }
@@ -509,7 +625,28 @@ function cerrarModalEmpresa() {
     sistemaFacturas.cerrarModalEmpresa();
 }
 
+// Función global para mostrar alertas
+function mostrarAlerta(mensaje, tipo = 'info') {
+    console.log(`${tipo.toUpperCase()}: ${mensaje}`);
+    
+    // Usar el sistema de alertas personalizado si está disponible
+    if (window.customAlert && typeof window.customAlert.alert === 'function') {
+        const tipoAlerta = tipo === 'error' ? 'warning' : (tipo === 'success' ? 'success' : 'info');
+        const titulo = tipo === 'error' ? 'Error' : (tipo === 'success' ? 'Éxito' : 'Información');
+        return window.customAlert.alert(mensaje, titulo, tipoAlerta);
+    }
+    
+    // Fallback: usar alert nativo
+    alert(`${tipo.toUpperCase()}: ${mensaje}`);
+    return Promise.resolve();
+}
+
 // Inicializar sistema cuando el DOM esté cargado
 document.addEventListener('DOMContentLoaded', () => {
     window.sistemaFacturas = new SistemaFacturas();
+    
+    // Hacer funciones disponibles globalmente
+    window.cerrarModalFactura = () => window.sistemaFacturas.cerrarModalFactura();
+    window.cerrarTodosLosModales = () => window.sistemaFacturas.cerrarTodosLosModales();
+    window.mostrarAlerta = mostrarAlerta;
 });

@@ -17,17 +17,48 @@ const CargoController = require('./controllers/cargoController');
 
 // Importar middleware
 const { verificarToken } = require('./middleware/auth');
+const { 
+    generalLimiter,
+    apiLimiter,
+    developmentLimiter, 
+    configurarSeguridad, 
+    logSeguridad, 
+    prevenirInyeccionSQL 
+} = require('./middleware/validation');
+const { 
+    manejar404, 
+    manejarErrores, 
+    manejarPromesasRechazadas 
+} = require('./middleware/errorHandler');
 
 const app = express();
 
-// Middlewares
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Configurar trust proxy para obtener IPs reales
+app.set('trust proxy', 1);
+
+// Configurar seguridad
+configurarSeguridad(app);
+
+// Middlewares de seguridad
+app.use(developmentLimiter); // Usar el limiter muy permisivo para desarrollo
+app.use((req, res, next) => {
+    console.log(`📡 ${req.method} ${req.path} - ${req.ip}`);
+    next();
+});
+app.use(logSeguridad);
+app.use(prevenirInyeccionSQL);
+
+// Middlewares básicos
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
 // Servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'views')));
+
+// Manejar favicon
+app.get('/favicon.ico', (req, res) => res.status(204).send());
 
 // Rutas de autenticación (públicas)
 app.use('/auth', authRoutes);
@@ -42,19 +73,38 @@ app.use('/api/facturas', facturaRoutes);
 // Rutas adicionales para registro
 app.get('/api/cargos', CargoController.obtenerCargos);
 
+// Ruta de emergencia para resetear rate limits (solo en desarrollo)
+if (config.server.env === 'development') {
+    app.get('/api/reset-limits', (req, res) => {
+        res.json({ 
+            success: true, 
+            message: 'Rate limits configurados en modo desarrollo (muy permisivos)',
+            limits: {
+                development: '10,000 requests en 5 minutos',
+                login: '5 intentos en 15 minutos'
+            }
+        });
+    });
+}
+
 // Ruta raíz - redirigir según autenticación
 app.get('/', (req, res) => {
     const token = req.cookies.token;
     if (token) {
-        res.redirect('/dashboard');
+        res.redirect('/menu.html');
     } else {
-        res.redirect('/auth/login');
+        res.redirect('/login.html');
     }
 });
 
 // Ruta para dashboard (protegida)
 app.get('/dashboard', verificarToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'menu.html'));
+});
+
+// Ruta para login (sin protección)
+app.get('/login.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
 // Rutas protegidas para las páginas del sistema
@@ -82,6 +132,25 @@ app.get('/facturas.html', verificarToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'facturas.html'));
 });
 
+// Manejo de rutas no encontradas (404)
+app.use((req, res) => {
+    // Si es una petición AJAX/API, devolver JSON
+    if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+        return res.status(404).json({
+            error: 'Recurso no encontrado',
+            mensaje: `La ruta ${req.originalUrl} no existe`
+        });
+    }
+    
+    // Si es una petición de navegador, mostrar página 404
+    res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
+});
+
+// Middleware de manejo de errores (debe ir al final)
+app.use(manejarErrores);
+
+// Configurar manejo de promesas rechazadas
+manejarPromesasRechazadas();
 
 // Solo iniciar el servidor si este archivo es ejecutado directamente
 if (require.main === module) {

@@ -7,6 +7,20 @@ const productosPorPagina = 10;
 // URLs de la API
 const API_BASE = '/api/productos';
 
+// Función para formatear precios en pesos colombianos
+function formatearPrecioCOP(precio) {
+    if (precio === null || precio === undefined || isNaN(precio)) {
+        return 'N/A';
+    }
+    
+    return new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(precio);
+}
+
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
     cargarCategorias();
@@ -16,6 +30,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Configurar eventos
 function configurarEventos() {
+    // Event listeners para botones con data-action
+    document.addEventListener('click', function(e) {
+        const target = e.target.closest('[data-action]');
+        if (!target) return;
+
+        const action = target.getAttribute('data-action');
+        const id = target.getAttribute('data-id');
+        const nombre = target.getAttribute('data-nombre');
+
+        switch(action) {
+            case 'nuevo-producto':
+                console.log('🆕 Abriendo modal para nuevo producto');
+                abrirModal();
+                break;
+                
+            case 'cerrar-modal':
+                console.log('🔴 Cerrando modal de producto');
+                cerrarModal();
+                break;
+                
+            case 'editar-producto':
+                console.log('✏️ Editando producto ID:', id);
+                editarProducto(parseInt(id));
+                break;
+                
+            case 'eliminar-producto':
+                console.log('🗑️ Eliminando producto ID:', id, 'Nombre:', nombre);
+                eliminarProducto(parseInt(id));
+                break;
+        }
+    });
+
+    // Cerrar modal con ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('modal-producto');
+            if (modal && modal.style.display === 'flex') {
+                console.log('🔴 Cerrando modal con ESC');
+                cerrarModal();
+            }
+        }
+    });
+
     // Búsqueda
     document.getElementById('buscar-producto').addEventListener('input', filtrarProductos);
     
@@ -83,13 +140,13 @@ async function cargarCategorias() {
             categoriaSelect.innerHTML = '<option value="">Seleccionar categoría</option>';
             
             categorias.forEach(categoria => {
-                // Agregar al filtro
+                // Agregar al filtro (usar nombre para filtrar)
                 const optionFiltro = document.createElement('option');
-                optionFiltro.value = categoria.id;
+                optionFiltro.value = categoria.nombre_categoria;
                 optionFiltro.textContent = categoria.nombre_categoria;
                 filtroSelect.appendChild(optionFiltro);
                 
-                // Agregar al formulario
+                // Agregar al formulario (usar ID para crear/editar)
                 const optionFormulario = document.createElement('option');
                 optionFormulario.value = categoria.id;
                 optionFormulario.textContent = categoria.nombre_categoria;
@@ -109,6 +166,12 @@ async function cargarProductos() {
         const categoria = document.getElementById('filtro-categoria').value;
         const estado = document.getElementById('filtro-estado').value;
         
+        console.log('🔍 Filtros aplicados:', {
+            busqueda: busqueda || 'ninguna',
+            categoria: categoria || 'todas',
+            estado: estado || 'todos'
+        });
+        
         const params = new URLSearchParams({
             pagina: paginaActual,
             limite: productosPorPagina
@@ -118,11 +181,14 @@ async function cargarProductos() {
         if (categoria) params.append('categoria', categoria);
         if (estado) params.append('estado', estado);
         
+        console.log('📡 URL con parámetros:', `${API_BASE}?${params}`);
+        
         const response = await fetch(`${API_BASE}?${params}`);
         const data = await response.json();
         
         if (data.success) {
             productos = data.data;
+            console.log(`✅ ${productos.length} productos cargados`, productos);
             mostrarProductos(productos);
             actualizarPaginacion(data.pagination);
         } else {
@@ -182,8 +248,8 @@ function crearFilaProducto(producto) {
             </div>
         </td>
         <td>${capitalizarTexto(producto.categoria)}</td>
-        <td class="precio-venta">$${producto.precio.toFixed(2)}</td>
-        <td class="precio-compra">$${producto.precioCompra ? producto.precioCompra.toFixed(2) : 'N/A'}</td>
+        <td class="precio-venta">${formatearPrecioCOP(producto.precio)}</td>
+        <td class="precio-compra">${formatearPrecioCOP(producto.precioCompra)}</td>
         <td>
             <div class="stock-info">
                 <span class="stock-actual">${producto.stock}</span>
@@ -194,12 +260,12 @@ function crearFilaProducto(producto) {
         <td><span class="estado ${estadoClass}">${estadoTexto}</span></td>
         <td>
             <div class="acciones">
-                <button class="btn-accion editar" onclick="editarProducto(${producto.id})" title="Editar">
+                <button class="btn-accion editar" data-action="editar-producto" data-id="${producto.id}" data-nombre="${producto.nombre}" title="Editar">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
                     </svg>
                 </button>
-                <button class="btn-accion eliminar" onclick="eliminarProducto(${producto.id})" title="Eliminar">
+                <button class="btn-accion eliminar" data-action="eliminar-producto" data-id="${producto.id}" data-nombre="${producto.nombre}" title="Eliminar">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
                     </svg>
@@ -281,6 +347,8 @@ async function guardarProducto(e) {
         descripcion: formData.get('descripcion')?.trim() || null
     };
     
+    console.log('🚀 Datos del producto a enviar:', datosProducto);
+    
     try {
         let response;
         
@@ -304,14 +372,19 @@ async function guardarProducto(e) {
             });
         }
         
+        console.log('📊 Response status:', response.status);
         const data = await response.json();
+        console.log('📦 Response data:', data);
         
         if (data.success) {
+            console.log('✅ Producto guardado exitosamente');
             mostrarNotificacion(data.message, 'success');
             cargarProductos();
             cerrarModal();
         } else {
-            mostrarNotificacion(data.message, 'error');
+            console.log('❌ Error del servidor:', data.error || data.message);
+            console.log('❌ Detalles del error:', data.details);
+            mostrarNotificacion(data.error || data.message, 'error');
         }
         
     } catch (error) {
@@ -393,20 +466,45 @@ function calcularMargen() {
     
     if (precioVenta > 0 && precioCompra > 0) {
         const margen = ((precioVenta - precioCompra) / precioCompra) * 100;
+        const ganancia = precioVenta - precioCompra;
+        
         document.getElementById('margen').value = margen.toFixed(2);
+        
+        // Mostrar información adicional de ganancia
+        let infoGanancia = document.getElementById('info-ganancia');
+        if (!infoGanancia) {
+            infoGanancia = document.createElement('div');
+            infoGanancia.id = 'info-ganancia';
+            infoGanancia.style.cssText = 'margin-top: 5px; font-size: 12px; color: #666;';
+            document.getElementById('margen').parentNode.appendChild(infoGanancia);
+        }
+        
+        infoGanancia.innerHTML = `
+            <strong>Ganancia por unidad:</strong> ${formatearPrecioCOP(ganancia)}<br>
+            <strong>Precio de Venta:</strong> ${formatearPrecioCOP(precioVenta)}<br>
+            <strong>Precio de Compra:</strong> ${formatearPrecioCOP(precioCompra)}
+        `;
         
         // Cambiar color del campo según el margen
         const campoMargen = document.getElementById('margen');
         if (margen < 20) {
             campoMargen.style.color = '#e74c3c'; // Rojo para margen bajo
+            infoGanancia.style.color = '#e74c3c';
         } else if (margen < 50) {
             campoMargen.style.color = '#f39c12'; // Naranja para margen medio
+            infoGanancia.style.color = '#f39c12';
         } else {
             campoMargen.style.color = '#27ae60'; // Verde para margen alto
+            infoGanancia.style.color = '#27ae60';
         }
     } else {
         document.getElementById('margen').value = '';
         document.getElementById('margen').style.color = '';
+        
+        const infoGanancia = document.getElementById('info-ganancia');
+        if (infoGanancia) {
+            infoGanancia.innerHTML = '';
+        }
     }
 }
 

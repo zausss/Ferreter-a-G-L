@@ -59,7 +59,8 @@ class VentaController {
         let client = null;
         
         try {
-            const { cliente, productos, metodoPago, montoRecibido, subtotal, iva, total } = req.body;
+            const { cliente, productos, tipo_pago, montoRecibido, subtotal, iva, total } = req.body;
+            const metodoPago = tipo_pago; // Mantener compatibilidad con el resto del código
             const usuarioId = req.usuario?.id || 1; // Fallback si no hay usuario
             
             console.log('📋 Datos recibidos:', {

@@ -196,7 +196,7 @@ class Producto {
             `;
             
             const resultado = await pool.query(query, [id]);
-            return resultado.rows[0] || null;
+            return resultado.rowCount > 0;
             
         } catch (error) {
             console.error('Error eliminando producto:', error);

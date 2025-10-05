@@ -304,39 +304,196 @@ body.facturas-page .area-contenido {
 
 .modal-contenido {
     background: white;
-    margin: 50px auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     padding: 0;
     border-radius: 12px;
     max-width: 600px;
-    width: 90%;
+    width: 95%;
     max-height: 90vh;
     overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: modalAppear 0.3s ease-out;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
 }
 
 .modal-header {
-    padding: 20px;
-    border-bottom: 1px solid #dee2e6;
+    padding: 15px 20px;
+    border-bottom: 2px solid #007bff;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.btn-cerrar {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-cerrar:hover {
+    background: #c82333;
+    transform: scale(1.05);
+}
+
+.btn-cerrar:active {
+    transform: scale(0.95);
 }
 
 .modal-body {
     padding: 20px;
+    background: #f8f9fa;
 }
 
 .modal-footer {
-    padding: 20px;
+    padding: 15px;
     border-top: 1px solid #dee2e6;
-    text-align: right;
+    text-align: center;
+    background: white;
+    border-radius: 0 0 12px 12px;
 }
 
-.btn-cerrar {
-    background: none;
+/* Estilos específicos para el formulario de empresa */
+#form-empresa .filtros-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 0;
+}
+
+#form-empresa .campo-grupo {
+    margin-bottom: 15px;
+}
+
+#form-empresa .campo-grupo label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #495057;
+    font-size: 13px;
+}
+
+#form-empresa .campo-grupo input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+    box-sizing: border-box;
+}
+
+#form-empresa .campo-grupo input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+}
+
+#form-empresa .campo-grupo input:hover {
+    border-color: #80bdff;
+}
+
+/* Campo de dirección que ocupa toda la fila */
+#form-empresa .campo-grupo[style*="grid-column"] {
+    grid-column: 1 / -1;
+}
+
+/* Botones del formulario */
+#form-empresa .btn {
+    padding: 10px 20px;
+    margin: 0 8px;
     border: none;
-    font-size: 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
     cursor: pointer;
-    color: #000000;
+    transition: all 0.3s ease;
+}
+
+#form-empresa .btn-success {
+    background: #28a745;
+    color: white;
+}
+
+#form-empresa .btn-success:hover {
+    background: #1e7e34;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+#form-empresa .btn-warning {
+    background: #ffc107;
+    color: #212529;
+}
+
+#form-empresa .btn-warning:hover {
+    background: #e0a800;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+    .modal-contenido {
+        width: 98%;
+        max-height: 95vh;
+        margin: 10px;
+    }
+    
+    #form-empresa .filtros-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .modal-header {
+        padding: 12px 15px;
+    }
+    
+    .modal-body {
+        padding: 15px;
+    }
+    
+    #form-empresa .campo-grupo {
+        margin-bottom: 12px;
+    }
+    
+    #form-empresa .btn {
+        padding: 8px 16px;
+        margin: 0 5px;
+        font-size: 13px;
+    }
 }
 
 /* ---- ESTILOS DEL MENÚ VERTICAL ---- */

@@ -18,6 +18,14 @@ yarn.lock
 logs/
 *.log
 npm-debug.log*
+server.log
+
+# Coverage reports
+coverage/
+
+# Debug files
+debug_*.js
+verificar_*.js
 
 # Cache
 .cache/

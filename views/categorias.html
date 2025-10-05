@@ -119,7 +119,7 @@
             <!-- Header -->
             <div class="categorias-header">
                 <h1>Gestión de Categorías</h1>
-                <button class="btn-nueva-categoria" onclick="abrirModal()">
+                <button class="btn-nueva-categoria" id="btn-nueva-categoria" data-action="nueva-categoria">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
                     </svg>
@@ -146,7 +146,6 @@
                         placeholder="Buscar categorías..." 
                         class="campo-busqueda" 
                         id="campo-busqueda"
-                        onkeyup="buscarCategorias()"
                     >
                     <svg class="icono-busqueda" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
@@ -197,7 +196,7 @@
                         </svg>
                         <h3>No hay categorías</h3>
                         <p>Aún no has creado ninguna categoría. ¡Crea tu primera categoría!</p>
-                        <button class="btn-nueva-categoria" onclick="abrirModal()">
+                        <button class="btn-nueva-categoria" data-action="nueva-categoria">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
                             </svg>
@@ -212,7 +211,7 @@
             <div class="modal-contenido">
                 <div class="modal-header">
                     <h2 class="modal-titulo" id="titulo-modal">Nueva Categoría</h2>
-                    <button class="btn-cerrar-modal" onclick="cerrarModal()">&times;</button>
+                    <button class="btn-cerrar-modal" id="btn-cerrar-modal" data-action="cerrar-modal">&times;</button>
                 </div>
                 
                 <form class="formulario-categoria" id="formulario-categoria">
@@ -253,7 +252,7 @@
                     </div>
                     
                     <div class="modal-footer">
-                        <button type="button" class="btn-cancelar" onclick="cerrarModal()">
+                        <button type="button" class="btn-cancelar" data-action="cerrar-modal">
                             Cancelar
                         </button>
                         <button type="submit" class="btn-guardar" id="btn-guardar">

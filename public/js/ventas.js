@@ -401,12 +401,19 @@ class SistemaVentas {
     }
 
     async procesarVenta() {
-        if (!this.validarVenta()) return;
+        console.log('🚀 Iniciando procesamiento de venta...');
+        if (!this.validarVenta()) {
+            console.log('❌ Validación de venta falló');
+            return;
+        }
+        
+        // Obtener referencia al botón y guardar texto original
+        const btnProcesar = document.getElementById('btn-procesar');
+        const textoOriginal = btnProcesar.textContent;
         
         try {
             // Mostrar estado de carga
-            const btnProcesar = document.getElementById('btn-procesar');
-            const textoOriginal = btnProcesar.textContent;
+            console.log('⏳ Cambiando estado del botón a "Procesando..."');
             btnProcesar.textContent = 'Procesando...';
             btnProcesar.disabled = true;
             
@@ -428,7 +435,7 @@ class SistemaVentas {
                     cantidad: parseInt(item.cantidad),
                     precio: parseFloat(item.precio)
                 })),
-                metodoPago: document.querySelector('input[name="metodo-pago"]:checked').value,
+                tipo_pago: document.querySelector('input[name="metodo-pago"]:checked').value,
                 montoRecibido: parseFloat(document.getElementById('monto-recibido').value) || null,
                 subtotal: Math.round(subtotalCalculado * 100) / 100, // Redondear a 2 decimales
                 iva: Math.round(ivaCalculado * 100) / 100,
@@ -458,6 +465,7 @@ class SistemaVentas {
             }
             
             const resultado = await response.json();
+            console.log('✅ Respuesta del servidor:', resultado);
             
             // Guardar información de la venta para la factura
             this.clienteActual = ventaData.cliente;
@@ -478,7 +486,7 @@ class SistemaVentas {
             mostrarAlerta(error.message || 'Error al procesar la venta', 'error');
         } finally {
             // Restaurar botón
-            const btnProcesar = document.getElementById('btn-procesar');
+            console.log('🔄 Restaurando botón:', textoOriginal);
             btnProcesar.textContent = textoOriginal;
             btnProcesar.disabled = false;
         }
@@ -513,7 +521,7 @@ class SistemaVentas {
         document.getElementById('factura-total').textContent = `$${this.formatearPrecio(this.ventaActual.total)}`;
         
         // Información de pago
-        const metodoPago = this.ventaActual.metodoPago;
+        const metodoPago = this.ventaActual.tipo_pago || this.ventaActual.metodoPago || 'efectivo';
         let textoMetodo = metodoPago.charAt(0).toUpperCase() + metodoPago.slice(1);
         document.getElementById('factura-metodo-pago').textContent = textoMetodo;
         
@@ -622,6 +630,22 @@ class SistemaVentas {
             maximumFractionDigits: 2
         }).format(precio);
     }
+}
+
+// Función global para mostrar alertas
+function mostrarAlerta(mensaje, tipo = 'info') {
+    console.log(`${tipo.toUpperCase()}: ${mensaje}`);
+    
+    // Usar el sistema de alertas personalizado si está disponible
+    if (window.customAlert && typeof window.customAlert.alert === 'function') {
+        const tipoAlerta = tipo === 'error' ? 'warning' : (tipo === 'success' ? 'success' : 'info');
+        const titulo = tipo === 'error' ? 'Error' : (tipo === 'success' ? 'Éxito' : 'Información');
+        return window.customAlert.alert(mensaje, titulo, tipoAlerta);
+    }
+    
+    // Fallback: usar alert nativo
+    alert(`${tipo.toUpperCase()}: ${mensaje}`);
+    return Promise.resolve();
 }
 
 // Inicializar sistema cuando el DOM esté cargado
