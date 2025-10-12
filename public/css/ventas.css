@@ -1,4 +1,5 @@
-/* ===== ESTILOS PARA PÁGINA DE VENTAS ===== */
+/* ===== ESTILOS UNIFICADOS PARA PÁGINA DE VENTAS ===== */
+
 
 .ventas-container {
     padding: 20px;
@@ -84,13 +85,14 @@
 
 .form-cliente {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
 }
 
 .campo-grupo {
     display: flex;
     flex-direction: column;
+    margin-bottom: 8px !important;
 }
 
 .campo-grupo label {
@@ -113,6 +115,8 @@
     outline: none;
     border-color: #4CAF50;
 }
+
+
 
 /* Sección Productos */
 .seccion-productos {
@@ -730,5 +734,564 @@
     
     .factura {
         padding: 0 !important;
+    }
+}
+
+/* ===== ESTILOS PARA GESTIÓN AVANZADA DE CLIENTES ===== */
+
+.header-cliente {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-nuevo-cliente {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-nuevo-cliente:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+.buscador-cliente-container {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.buscador-cliente-container input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.buscador-cliente-container input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.resultados-clientes {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.resultado-cliente {
+    padding: 12px;
+    border-bottom: 1px solid #f8f9fa;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.resultado-cliente:hover {
+    background: #f8f9fa;
+}
+
+.resultado-cliente:last-child {
+    border-bottom: none;
+}
+
+.cliente-nombre {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 4px;
+}
+
+.cliente-documento {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.panel-cliente-info {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    border-left: 4px solid #007bff;
+    border: 1px solid #e9ecef;
+}
+
+.cliente-seleccionado {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.cliente-datos h4 {
+    margin: 0 0 8px 0;
+    color: #2c3e50;
+    font-size: 16px;
+}
+
+.cliente-datos p {
+    margin: 4px 0;
+    color: #6c757d;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.cliente-estadisticas {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 8px 12px;
+}
+
+.stat-label {
+    display: block;
+    font-size: 11px;
+    color: #6c757d;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.stat-value {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: #007bff;
+}
+
+.btn-limpiar-cliente {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+}
+
+.btn-limpiar-cliente:hover {
+    background: #c82333;
+    transform: scale(1.05);
+}
+
+/* Estados del buscador */
+.buscador-clientes.activo input {
+    border-color: #28a745;
+}
+
+.campo-grupo.disabled input,
+.campo-grupo.disabled select {
+    background: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Responsive para gestión de clientes */
+@media (max-width: 768px) {
+    .cliente-seleccionado {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .cliente-estadisticas {
+        justify-content: space-around;
+        width: 100%;
+    }
+    
+    .btn-limpiar-cliente {
+        align-self: flex-end;
+    }
+}
+
+/* ===== ESTILOS PARA MODALES ADICIONALES ===== */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-container {
+    background: white;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-container.modal-grande {
+    max-width: 1000px;
+    width: 95%;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #e9ecef;
+    background: #f8f9fa;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: #2c3e50;
+    font-size: 18px;
+}
+
+.btn-cerrar-modal-cliente,
+.btn-cerrar-modal-historial {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.btn-cerrar-modal-cliente:hover,
+.btn-cerrar-modal-historial:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.modal-body {
+    padding: 50px 50px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    padding: 20px 30px;
+    border-top: 1px solid #e9ecef;
+    background: #f8f9fa;
+    border-radius: 0 0 12px 12px;
+}
+
+/* Formulario del modal - Espaciado mejorado */
+.form-row {
+    display: flex;
+    gap: 50px;
+    margin-bottom: 25px;
+    align-items: flex-end;
+}
+
+.form-group {
+    flex: 1;
+    margin-bottom: 8px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* Botones del modal */
+.btn-cancelar,
+.btn-guardar {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-cancelar {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-cancelar:hover {
+    background: #5a6268;
+}
+
+.btn-guardar {
+    background: #28a745;
+    color: white;
+}
+
+.btn-guardar:hover {
+    background: #218838;
+}
+
+.btn-guardar:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Estilos para historial - Espaciado mejorado */
+.filtros-historial {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    border: 1px solid #e9ecef;
+}
+
+.filtros-historial .form-row {
+    margin-bottom: 20px;
+}
+
+.filtros-historial .form-row:last-child {
+    margin-bottom: 0;
+}
+
+.btn-filtrar {
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-top: 25px;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.btn-filtrar:hover {
+    background: #0056b3;
+}
+
+.tabla-historial-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.tabla-historial {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.tabla-historial th {
+    background: #f8f9fa;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.tabla-historial td {
+    padding: 12px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.tabla-historial tr:hover {
+    background: #f8f9fa;
+}
+
+.cargando {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Estados de venta */
+.estado-completada {
+    background: #d4edda;
+    color: #155724;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.estado-cancelada {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Botones de acción en historial */
+.btn-ver-detalle,
+.btn-reimprimir {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    margin-right: 5px;
+    transition: all 0.3s ease;
+    color: #6c757d;
+}
+
+.btn-ver-detalle:hover {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.btn-reimprimir:hover {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+/* Animación de spinner */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Espaciado adicional para mejorar separación visual */
+.campo-grupo {
+    margin-bottom: 20px;
+}
+
+.campo-grupo label {
+    margin-bottom: 8px;
+    display: block;
+}
+
+.campo-grupo input,
+.campo-grupo select {
+    margin-bottom: 5px;
+}
+
+/* Separación visual en secciones */
+.seccion-clientes {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    background: #fdfdfd;
+}
+
+.seccion-clientes h4 {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #007bff;
+    color: #2c3e50;
+}
+
+/* Espaciado mejorado para botones en línea */
+.btn-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.btn-group .btn {
+    margin: 0;
+}
+
+/* Separación entre grupos de campos relacionados */
+.grupo-campos {
+    margin-bottom: 25px;
+    padding: 15px;
+    border-left: 3px solid #e9ecef;
+    background: #fafafa;
+    border-radius: 0 6px 6px 0;
+}
+
+.grupo-campos:last-child {
+    margin-bottom: 0;
+}
+
+/* Responsive para modales */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+    }
+    
+    .btn-cancelar,
+    .btn-guardar {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .tabla-historial th,
+    .tabla-historial td {
+        padding: 8px 4px;
+        font-size: 12px;
+    }
+    
+    .btn-ver-detalle,
+    .btn-reimprimir {
+        padding: 4px;
+        margin-right: 2px;
     }
 }

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="/css/tema-moderno.css">
+    <link rel="stylesheet" href="/css/alerts.css">
+    <link rel="stylesheet" href="/css/clientes.css">
+
+</head>
+<body>
+    <div class="contenedor-principal">
+        <aside class="barra-lateral">
+            <div class="encabezado-barra-lateral">
+                <img src="/img/logo.jpg" alt="Logo Ferretería J&L" class="logo">
+                </div>
+            <nav class="navegacion-barra-lateral">
+                <ul>
+                    <li>
+                        <a href="#" class="item-navegacion activo">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg>
+                            <span>Inicio</span>
+                        </a>
+                    </li>
+
+
+
+
+                    <li class="tiene-submenu">
+                        <a href="#" class="item-navegacion" data-submenu="inventario">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M200-640v440h560v-440H640v320l-160-80-160 80v-320H200Zm0 520q-33 0-56.5-23.5T120-200v-499q0-14 4.5-27t13.5-24l50-61q11-14 27.5-21.5T250-840h460q18 0 34.5 7.5T772-811l50 61q9 11 13.5 24t4.5 27v499q0 33-23.5 56.5T760-120H200Zm16-600h528l-34-40H250l-34 40Zm184 80v190l80-40 80 40v-190H400Zm-200 0h560-560Z"/></svg>
+                            <span>Inventario</span>
+                            <span class="icono-adicional">+</span>
+                        </a>
+                        <ul class="submenu" id="submenu-inventario">
+                            <li><a href="categorias.html">Categorías</a></li>
+                            <li><a href="productos.html">Productos</a></li>
+                            <li><a href="control-stock.html">Control de Stock</a></li>
+                        </ul>
+                    </li>
+                    
+
+
+
+                        <li class="tiene-submenu">
+                        <a href="#" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-160-60q25 0 42.5-17.5T700-480q0-25-17.5-42.5T640-540q-25 0-42.5 17.5T580-480q0 25 17.5 42.5T640-420Z"/></svg>
+                            <span>Ventas</span>
+                            <span class="icono-adicional">+</span>
+                        </a>
+                        <ul class="submenu" id="submenu-ventas">
+                            <li><a href="venta.html">Nuevas Ventas</a></li>
+                            <li><a href="facturas.html">Factura</a></li>
+                        </ul>
+                    </li>
+                    
+
+                    <li>
+                        <a href="clientes.html" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M185-80q-17 0-29.5-12.5T143-122v-105q0-90 56-159t144-88q-40 28-62 70.5T259-312v190q0 11 3 22t10 20h-87Zm147 0q-17 0-29.5-12.5T290-122v-190q0-70 49.5-119T459-480h189q70 0 119 49t49 119v64q0 70-49 119T648-80H332Zm148-484q-66 0-112-46t-46-112q0-66 46-112t112-46q66 0 112 46t46 112q0 66-46 112t-112 46Z"/></svg>
+                            <span>Clientes</span>
+                        </a>
+                    </li>
+                
+                
+                    <li class="tiene-submenu">
+                        <a href="#" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M411-480q-28 0-46-21t-13-49l12-72q8-43 40.5-70.5T480-720q44 0 76.5 27.5T597-622l12 72q5 28-13 49t-46 21H411Zm24-80h91l-8-49q-2-14-13-22.5t-25-8.5q-14 0-24.5 8.5T443-609l-8 49ZM124-441q-23 1-39.5-9T63-481q-2-9-1-18t5-17q0 1-1-4-2-2-10-24-2-12 3-23t13-19l2-2q2-19 15.5-32t33.5-13q3 0 19 4l3-1q5-5 13-7.5t17-2.5q11 0 19.5 3.5T208-626q1 0 1.5.5t1.5.5q14 1 24.5 8.5T251-596q2 7 1.5 13.5T250-570q0 1 1 4 7 7 11 15.5t4 17.5q0 4-6 21-1 2 0 4l2 16q0 21-17.5 36T202-441h-78Zm676 1q-33 0-56.5-23.5T720-520q0-12 3.5-22.5T733-563l-28-25q-10-8-3.5-20t18.5-12h80q33 0 56.5 23.5T880-540v20q0 33-23.5 56.5T800-440ZM0-240v-63q0-44 44.5-70.5T160-400q13 0 25 .5t23 2.5q-14 20-21 43t-7 49v65H0Zm240 0v-65q0-65 66.5-105T480-450q108 0 174 40t66 105v65H240Zm560-160q72 0 116 26.5t44 70.5v63H780v-65q0-26-6.5-49T754-397q11-2 22.5-2.5t23.5-.5Zm-320 30q-57 0-102 15t-53 35h311q-9-20-53.5-35T480-370Zm0 50Zm1-280Z"/></svg>
+                            <span>Proveedores</span>
+                            <span class="icono-adicional">+</span>
+                        </a>
+                        <ul class="submenu" id="submenu-proveedores">
+                            <li><a href="proveedores.html">Lista de Proveedores</a></li>
+                            <li><a href="nuevo-proveedor.html">Nuevo Proveedor</a></li>
+                        </ul>
+                    </li>
+                    
+
+
+
+
+
+
+                    <li class="tiene-submenu">
+                        <a href="#" class="item-navegacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M320-480v-80h320v80H320Zm0-160v-80h320v80H320Zm-80 240h300q29 0 54 12.5t42 35.5l84 110v-558H240v400Zm0 240h442L573-303q-6-8-14.5-12.5T540-320H240v160Zm480 80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640q0 33-23.5 56.5T720-80Zm-480-80v-640 640Zm0-160v-80 80Z"/></svg>
+                            <span>Reportes</span>
+                            <span class="icono-adicional">+</span>
+                        </a>
+                        <ul class="submenu" id="submenu-reportes">
+                            <li><a href="reporte-ventas.html">Reporte de Ventas</a></li>
+                            <li><a href="reporte-inventario.html">Reporte de Inventario</a></li>
+                            <li><a href="reporte-financiero.html">Reporte Financiero</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <div class="pie-barra-lateral">
+                <a href="#" class="item-navegacion">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="m234-480-12-60q-12-5-22.5-10.5T178-564l-58 18-40-68 46-40q-2-13-2-26t2-26l-46-40 40-68 58 18q11-8 21.5-13.5T222-820l12-60h80l12 60q12 5 22.5 10.5T370-796l58-18 40 68-46 40q2 13 2 26t-2 26l46 40-40 68-58-18q-11 8-21.5 13.5T326-540l-12 60h-80Zm40-120q33 0 56.5-23.5T354-680q0-33-23.5-56.5T274-760q-33 0-56.5 23.5T194-680q0 33 23.5 56.5T274-600ZM592-40l-18-84q-17-6-31.5-14.5T514-158l-80 26-56-96 64-56q-2-18-2-36t2-36l-64-56 56-96 80 26q14-11 28.5-19.5T574-516l18-84h112l18 84q17 6 31.5 14.5T782-482l80-26 56 96-64 56q2 18 2 36t-2 36l64 56-56 96-80-26q-14 11-28.5 19.5T722-124l-18 84H592Zm56-160q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Z"/></svg>
+                    <span>Configuración</span>
+                </a>
+                
+                <!-- Botón de Cerrar Sesión -->
+                <a href="/auth/logout" class="item-navegacion" id="cerrar-sesion" onclick="confirmarCerrarSesion(event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#d32f2f">
+                        <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
+                    </svg>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </aside>
+        <!-- Contenido Principal -->
+        <main class="contenido-principal">
+            <div class="encabezado-contenido">
+                <div class="info-pagina">
+                    <h1>Gestión de Clientes</h1>
+                    <p>Administra la informacion de todos los clientes</p>
+                </div>
+                <div class="acciones-principales">
+                    <button class="boton boton-primario" data-action="nuevo-cliente">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                            <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                        </svg>
+                        Nuevo Cliente
+                    </button>
+                </div>
+            </div>
+
+            <!--seccion de filtros-->
+            <div class="tarjeta-filtros">   
+                <div class="filtros-contenedor">
+
+                    <div class="grupo-filtro"> 
+                        <label for="filtro-documento">Documento:</label>
+                        <input type="text" id="filtro-documento" placeholder="Buscar por documento">
+                    </div>
+
+                    <div class="grupo-filtro">
+                        <label for="filtro-nombre">Nombre:</label>
+                        <input type="text" id="filtro-nombre" placeholder="Buscar por nombre">
+                    </div>
+
+                    <div class="grupo-filtro">
+                        <label for="filtro-estado">Estado:</label>
+                        <select id="filtro-estados">
+                            <option value="todos">Todos</option>
+                            <option value="activo" selected>Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                            <option value="suspendido">Suspendido</option>
+                        </select>
+                    </div>
+
+                    <div class="acciones-filtros">
+                        <button class="boton boton-secundario" data-action="limpiar-filtros">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                                <path d="M480-80q-75 0-140.5-28.5t-114.5-77q-49-48.5-77-114T120-440q0-75 28.5-140.5t77-114.5q48.5-49 114-77T480-800q75 0 140.5 28.5t114.5 77q49 48.5 77 114T840-440q0 75-28.5 140.5t-77 114.5q-48.5 49-114 77T480-80Zm0-80q117 0 198.5-81.5T760-440q0-117-81.5-198.5T480-720q-117 0-198.5 81.5T200-440q0 117 81.5 198.5T480-160Zm-40-320h80v-200h-80v200Zm0 120h80v-80h-80v80Z"/>
+                            </svg>
+                            Limpiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        <!-- Tabla de Clientes -->
+        <div class="tarjeta-tabla">
+            <div class="tabla-contenedor">
+                <table class="tabla-datos" id="tabla-clientes">
+                    <thead>
+                        <tr>
+                            <th>Documento</th>
+                            <th>Nombre Completo</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Ciudad</th>
+                            <th>Estado</th>
+                            <th>Fecha de Registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-clientes">
+                        <tr class="fila-cargando">
+                            <td colspan="8" class="text-center">
+                            <div class="spinner-carga">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                                            <path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q17 0 28.5 11.5T520-840q0 17-11.5 28.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160q133 0 226.5-93.5T800-480q0-17 11.5-28.5T840-520q17 0 28.5 11.5T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Z"/>
+                                        </svg>
+                                        Cargando clientes...
+                            </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!--paginacion -->
+            <div class="paginacion-contenedor" id="paginacion-clientes">
+                <!--aqui se genera dinamicamente -->
+            </div>
+        </div>
+    </main>
+</div> 
+<!-- Modal de cliente -->
+<div class="modal-overlay" id="modal-cliente">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 id="modal-titulo"> <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                        <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"/>
+                    </svg>
+                    Nuevo Cliente
+                    </h3>
+                    <button class="boton-cerrar" data-action="cerrar-modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                        <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                    </svg>
+                    </button>
+        </div>
+
+        <div class="modal-body">
+            <form id="formulario-grid">
+                <input type="hidden" id="cliente-id">
+
+                <div class="formulario-grid">
+                    <!-- informacion del cliente -->
+                    <div class="campo-grupo">
+                        <label for="tipo-documento">Tipo de Documento</label>
+                        <select id="tipo-documento" name="tipo-documento" required>
+                            <option value="CC">Cédula de Ciudadanía</option>
+                            <option value="CE">Cédula de Extranjería</option>
+                            <option value="NIT">NIT</option>
+                            <option value="PP">Pasaporte</option>
+                        </select>
+                    </div>
+
+                    <div class="campo-grupo">
+                        <label for="numero-documento">Número de Documento
+                        <span class="requerido">*</span>
+                        </label>
+                        <input type="text" id="numero-documento"  name="numero-documento"  required  placeholder="Ej: 1234567890">
+                    </div>
+
+                    <div class="campo-grupo">
+                        <label for="nombre">Nombre:
+                        <span class="requerido">*</span>
+                        </label>
+                        <input type="text" id="nombre" name="nombre" required placeholder="Ej: Juan Pérez">
+                    </div>
+
+                    <div class="campo-grupo">
+                        <label for="apellido">Apellido:
+                            <span class="requerido">*</span>
+                        </label>
+                        <input type="text" id="apellido" name="apellido" required placeholder="Ej: García">
+                    </div>
+
+                    <!--informacion de contacto-->
+                    <div class="campo-grupo">
+                        <label for="telefono">Teléfono:
+                        <span class="requerido">*</span>
+                        </label>
+                        <input type="text" id="telefono" name="telefono" placeholder="Ej: 3001234567">
+                    </div>
+
+                    <div class="campo-grupo">
+                        <label for="email">Email:
+                        <span class="requerido">*</span>
+                        </label>
+                        <input type="email" id="email" name="email"  placeholder="Ej: juanperez@example.com">
+                    </div>
+
+                    <!--informacion adicional-->
+
+                    <div class="campo-grupo">
+                        <label for="direccion">Dirección:
+                        <span class="requerido">*</span>
+                        </label>
+                        <input type="text" id="direccion" name="direccion" placeholder="Ej: Calle 123 #45-67">
+                    </div>
+                    <div class="campo-grupo">
+                        <label for="ciudad">Ciudad:
+                        <span class="requerido">*</span>
+                        </label>
+                        <input type="text" id="ciudad" name="ciudad" placeholder="Ej: Bogotá">
+                    </div>
+                    <div class="campo-grupo">
+                        <label for="fecha-nacimiento">Fecha de Nacimiento:
+                        <span class="requerido">*</span>
+                        </label>
+                        <input type="date" id="fecha-nacimiento" name="fecha-nacimiento" required>
+                    </div>
+                    <div class="campo-grupo">
+                        <label for="estado">Estado:
+                        <span class="requerido">*</span>
+                        </label>
+                        <select id="estado" name="estado" required>
+                            <option value="activo" selected>Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                            <option value="suspendido">Suspendido</option>
+                        </select>
+                </div>
+                <!--nota-->
+                <div class="campo-grupo ancho-completo">
+                    <label for="notas">Notas:</label>
+                    <textarea id="notas" name="notas" rows="3" placeholder="Observaciones adicionales sobre el cliente"></textarea>
+                </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="boton boton-secundario" data-action="cerrar-modal">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                            </svg>
+                            Cancelar
+                        </button>
+                        <button type="submit" class="boton boton-primario" data-action="guardar-cliente">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                                <path d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM480-240q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"/>
+                            </svg>
+                            Guardar Cliente
+                        </button>
+                </div>
+            </form>
+        </div>
+            </div>  
+        </div>
+    </div>
+
+    <!--modal de confirmacion-->
+
+    <div class="modal-overlay" id="modal-confirmacion">
+        <div class="modal-container modal-pequeño">
+            <div class="modal-header">
+                <h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#ff9800">
+                        <path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
+                    </svg>
+                    Confirmar Acción
+                </h3>
+            </div>
+            <div class="modal-body">
+                <p id="mensaje-confirmacion"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="boton boton-secundario" data-action="cancelar-confirmacion">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                        <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                    </svg>
+                    Cancelar
+                </button>
+                <button class="boton boton-peligro" data-action="confirmar-accion">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                        <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+                    </svg>
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/menu.js"></script>
+    <script src="/js/alerts.js"></script>
+    <script src="/js/clientes.js"></script>
+</body>
+</html>

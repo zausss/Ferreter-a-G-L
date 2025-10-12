@@ -16,6 +16,8 @@ class SistemaVentas {
         this.configurarCarrito();
         this.configurarPagos();
         this.configurarModal();
+        this.configurarModalNuevoCliente();
+        this.configurarModalHistorial();
         this.actualizarTotales();
     }
 
@@ -57,21 +59,48 @@ class SistemaVentas {
         const tipoCliente = document.getElementById('tipo-cliente');
         const documento = document.getElementById('documento-cliente');
         const nombre = document.getElementById('nombre-cliente');
+        const telefono = document.getElementById('telefono-cliente');
+        const buscadorCliente = document.getElementById('buscar-cliente');
+        const resultadosClientes = document.getElementById('resultados-clientes');
+        const grupoBuscador = document.getElementById('grupo-buscador');
+        const btnNuevoCliente = document.getElementById('btn-nuevo-cliente');
+        const btnLimpiarCliente = document.getElementById('btn-limpiar-cliente');
         
+        // Cambio de tipo de cliente
         tipoCliente.addEventListener('change', () => {
-            if (tipoCliente.value === 'consumidor_final') {
-                documento.value = '';
-                nombre.value = 'Consumidor Final';
-                documento.disabled = true;
-                nombre.disabled = true;
-            } else {
-                documento.disabled = false;
-                nombre.disabled = false;
-                nombre.value = '';
-            }
+            this.cambiarTipoCliente();
         });
         
-        documento.addEventListener('input', () => this.buscarCliente(documento.value));
+        // Búsqueda de clientes registrados
+        if (buscadorCliente) {
+            buscadorCliente.addEventListener('input', (e) => {
+                this.buscarClientesRegistrados(e.target.value);
+            });
+            
+            // Ocultar resultados al hacer clic fuera
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.buscador-cliente-container')) {
+                    resultadosClientes.style.display = 'none';
+                }
+            });
+        }
+        
+        // Botón nuevo cliente
+        if (btnNuevoCliente) {
+            btnNuevoCliente.addEventListener('click', () => {
+                this.abrirModalNuevoCliente();
+            });
+        }
+        
+        // Botón limpiar cliente
+        if (btnLimpiarCliente) {
+            btnLimpiarCliente.addEventListener('click', () => {
+                this.limpiarClienteSeleccionado();
+            });
+        }
+        
+        // Configuración inicial
+        this.cambiarTipoCliente();
     }
 
     configurarBuscadorProductos() {
@@ -610,8 +639,186 @@ class SistemaVentas {
     }
 
     mostrarHistorial() {
-        // TODO: Implementar historial de ventas
-        mostrarAlerta('Función de historial en desarrollo', 'info');
+        const modal = document.getElementById('modal-historial');
+        
+        // Configurar fechas por defecto (últimos 30 días)
+        const hoy = new Date();
+        const hace30Dias = new Date();
+        hace30Dias.setDate(hoy.getDate() - 30);
+        
+        document.getElementById('filtro-fecha-desde').value = hace30Dias.toISOString().split('T')[0];
+        document.getElementById('filtro-fecha-hasta').value = hoy.toISOString().split('T')[0];
+        
+        // Mostrar modal
+        modal.classList.add('active');
+        
+        // Configurar event listeners
+        this.configurarModalHistorial();
+        
+        // Cargar datos iniciales
+        this.cargarHistorialVentas();
+    }
+
+    configurarModalHistorial() {
+        const modal = document.getElementById('modal-historial');
+        const btnCerrar = document.getElementById('btn-cerrar-modal-historial');
+        const btnFiltrar = document.getElementById('btn-filtrar-historial');
+        
+        // Solo configurar una vez
+        if (modal && modal.dataset.configured) return;
+        if (modal) modal.dataset.configured = 'true';
+        
+        // Cerrar modal
+        const cerrarModal = () => {
+            modal.classList.remove('active');
+        };
+        
+        // Event listeners
+        if (btnCerrar && !btnCerrar.dataset.configured) {
+            btnCerrar.dataset.configured = 'true';
+            btnCerrar.addEventListener('click', cerrarModal);
+        }
+        
+        if (btnFiltrar && !btnFiltrar.dataset.configured) {
+            btnFiltrar.dataset.configured = 'true';
+            btnFiltrar.addEventListener('click', () => {
+                this.cargarHistorialVentas();
+            });
+        }
+        
+        // Cerrar al hacer clic fuera del modal
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    cerrarModal();
+                }
+            });
+        }
+    }
+
+    async cargarHistorialVentas() {
+        const historialBody = document.getElementById('historial-body');
+        const fechaDesde = document.getElementById('filtro-fecha-desde').value;
+        const fechaHasta = document.getElementById('filtro-fecha-hasta').value;
+        
+        try {
+            // Mostrar estado de carga
+            historialBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="cargando">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="m12 1 0 6"></path>
+                            <path d="m12 17 0 6"></path>
+                        </svg>
+                        Cargando historial...
+                    </td>
+                </tr>
+            `;
+            
+            console.log('📊 Cargando historial de ventas...');
+            
+            // Construir URL con filtros
+            let url = '/api/ventas?limit=50';
+            if (fechaDesde) url += `&fecha_desde=${fechaDesde}`;
+            if (fechaHasta) url += `&fecha_hasta=${fechaHasta}`;
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data.success && data.ventas) {
+                this.mostrarHistorialEnTabla(data.ventas);
+            } else {
+                throw new Error(data.message || 'Error al cargar historial');
+            }
+            
+        } catch (error) {
+            console.error('Error cargando historial:', error);
+            historialBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="cargando" style="color: #dc3545;">
+                        Error al cargar el historial: ${error.message}
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    mostrarHistorialEnTabla(ventas) {
+        const historialBody = document.getElementById('historial-body');
+        
+        if (ventas.length === 0) {
+            historialBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="cargando">No se encontraron ventas en el período seleccionado</td>
+                </tr>
+            `;
+            return;
+        }
+        
+        historialBody.innerHTML = ventas.map(venta => `
+            <tr>
+                <td>${new Date(venta.fecha_venta).toLocaleDateString('es-CO')}</td>
+                <td>${venta.numero_factura || venta.numero_venta}</td>
+                <td>${venta.cliente_nombre || 'Consumidor Final'}</td>
+                <td>$${this.formatearPrecio(venta.total)}</td>
+                <td>
+                    <span class="estado-${venta.estado || 'completada'}">
+                        ${venta.estado ? venta.estado.charAt(0).toUpperCase() + venta.estado.slice(1) : 'Completada'}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn-ver-detalle" data-venta-id="${venta.id}" title="Ver detalle">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                    <button class="btn-reimprimir" data-venta-id="${venta.id}" title="Reimprimir">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 6,2 18,2 18,9"></polyline>
+                            <path d="m6 18 4 4 4-4"></path>
+                            <rect x="2" y="9" width="20" height="9"></rect>
+                        </svg>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+        
+        // Agregar event listeners a los botones de acción
+        historialBody.querySelectorAll('.btn-ver-detalle').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const ventaId = e.currentTarget.dataset.ventaId;
+                this.verDetalleVenta(ventaId);
+            });
+        });
+        
+        historialBody.querySelectorAll('.btn-reimprimir').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const ventaId = e.currentTarget.dataset.ventaId;
+                this.reimprimirVenta(ventaId);
+            });
+        });
+    }
+
+    async verDetalleVenta(ventaId) {
+        try {
+            console.log('👁️ Ver detalle de venta:', ventaId);
+            mostrarAlerta('Función de detalle en desarrollo', 'info');
+        } catch (error) {
+            console.error('Error viendo detalle:', error);
+            mostrarAlerta('Error al cargar detalle de la venta', 'error');
+        }
+    }
+
+    async reimprimirVenta(ventaId) {
+        try {
+            console.log('🖨️ Reimprimir venta:', ventaId);
+            mostrarAlerta('Función de reimpresión en desarrollo', 'info');
+        } catch (error) {
+            console.error('Error reimprimiendo:', error);
+            mostrarAlerta('Error al reimprimir la venta', 'error');
+        }
     }
 
     generarNumeroFactura() {
@@ -629,6 +836,316 @@ class SistemaVentas {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         }).format(precio);
+    }
+
+    // ===== MÉTODOS DE GESTIÓN AVANZADA DE CLIENTES =====
+    
+    cambiarTipoCliente() {
+        const tipoCliente = document.getElementById('tipo-cliente').value;
+        const documento = document.getElementById('documento-cliente');
+        const nombre = document.getElementById('nombre-cliente');
+        const telefono = document.getElementById('telefono-cliente');
+        const grupoBuscador = document.getElementById('grupo-buscador');
+        const panelInfo = document.getElementById('panel-cliente-info');
+        
+        if (tipoCliente === 'consumidor_final') {
+            // Consumidor final
+            documento.value = '';
+            nombre.value = 'Consumidor Final';
+            telefono.value = '';
+            documento.disabled = true;
+            nombre.disabled = true;
+            telefono.disabled = true;
+            
+            grupoBuscador.style.display = 'none';
+            panelInfo.style.display = 'none';
+            
+            // Limpiar datos del cliente
+            this.clienteActual = {
+                tipo: 'consumidor_final',
+                nombre: 'Consumidor Final',
+                documento: '',
+                telefono: ''
+            };
+        } else {
+            // Cliente registrado
+            documento.disabled = false;
+            nombre.disabled = false;
+            telefono.disabled = false;
+            nombre.value = '';
+            documento.value = '';
+            telefono.value = '';
+            
+            grupoBuscador.style.display = 'block';
+            
+            // Limpiar datos del cliente
+            this.clienteActual = {};
+        }
+    }
+    
+    async buscarClientesRegistrados(termino) {
+        const resultadosDiv = document.getElementById('resultados-clientes');
+        
+        if (!termino || termino.length < 2) {
+            resultadosDiv.style.display = 'none';
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/api/ventas/clientes/buscar?q=${encodeURIComponent(termino)}`);
+            const data = await response.json();
+            
+            if (data.success && data.clientes.length > 0) {
+                this.mostrarResultadosClientes(data.clientes);
+            } else {
+                resultadosDiv.innerHTML = '<div class="resultado-cliente">No se encontraron clientes</div>';
+                resultadosDiv.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error buscando clientes:', error);
+            mostrarAlerta('Error al buscar clientes', 'error');
+        }
+    }
+    
+    mostrarResultadosClientes(clientes) {
+        const resultadosDiv = document.getElementById('resultados-clientes');
+        
+        resultadosDiv.innerHTML = clientes.map(cliente => `
+            <div class="resultado-cliente" data-cliente='${JSON.stringify(cliente)}'>
+                <div class="cliente-nombre">${cliente.nombre}</div>
+                <div class="cliente-documento">${cliente.documento}</div>
+            </div>
+        `).join('');
+        
+        // Agregar event listeners a los resultados
+        resultadosDiv.querySelectorAll('.resultado-cliente').forEach(elemento => {
+            elemento.addEventListener('click', () => {
+                const clienteData = JSON.parse(elemento.dataset.cliente);
+                this.seleccionarCliente(clienteData);
+            });
+        });
+        
+        resultadosDiv.style.display = 'block';
+    }
+    
+    async seleccionarCliente(cliente) {
+        try {
+            // Llenar campos del formulario
+            document.getElementById('documento-cliente').value = cliente.documento;
+            document.getElementById('nombre-cliente').value = cliente.nombre;
+            document.getElementById('telefono-cliente').value = cliente.telefono || '';
+            
+            // Ocultar buscador y mostrar panel de info
+            document.getElementById('resultados-clientes').style.display = 'none';
+            document.getElementById('buscar-cliente').value = cliente.nombre;
+            
+            // Cargar estadísticas del cliente
+            await this.cargarEstadisticasCliente(cliente.id);
+            
+            // Actualizar cliente actual
+            this.clienteActual = {
+                id: cliente.id,
+                tipo: 'registrado',
+                documento: cliente.documento,
+                nombre: cliente.nombre,
+                telefono: cliente.telefono || ''
+            };
+            
+            mostrarAlerta('Cliente seleccionado correctamente', 'success');
+            
+        } catch (error) {
+            console.error('Error seleccionando cliente:', error);
+            mostrarAlerta('Error al seleccionar cliente', 'error');
+        }
+    }
+    
+    async cargarEstadisticasCliente(clienteId) {
+        try {
+            const response = await fetch(`/api/ventas/clientes/${clienteId}/estadisticas`);
+            const data = await response.json();
+            
+            if (data.success) {
+                this.mostrarInfoCliente(data.cliente, data.estadisticas);
+            }
+        } catch (error) {
+            console.error('Error cargando estadísticas:', error);
+        }
+    }
+    
+    mostrarInfoCliente(cliente, estadisticas) {
+        const panelInfo = document.getElementById('panel-cliente-info');
+        
+        document.getElementById('cliente-nombre-display').textContent = cliente.nombre_completo;
+        document.getElementById('cliente-documento-display').textContent = `Doc: ${cliente.numero_documento}`;
+        document.getElementById('cliente-contacto-display').textContent = 
+            cliente.telefono ? `Tel: ${cliente.telefono}` : 'Sin teléfono';
+        
+        document.getElementById('cliente-total-compras').textContent = estadisticas.total_compras;
+        
+        if (estadisticas.ultima_compra) {
+            const fecha = new Date(estadisticas.ultima_compra).toLocaleDateString('es-CO');
+            document.getElementById('cliente-ultima-compra').textContent = fecha;
+        } else {
+            document.getElementById('cliente-ultima-compra').textContent = 'Primera compra';
+        }
+        
+        panelInfo.style.display = 'block';
+    }
+    
+    limpiarClienteSeleccionado() {
+        // Limpiar formulario
+        document.getElementById('buscar-cliente').value = '';
+        document.getElementById('documento-cliente').value = '';
+        document.getElementById('nombre-cliente').value = '';
+        document.getElementById('telefono-cliente').value = '';
+        
+        // Ocultar panel de información
+        document.getElementById('panel-cliente-info').style.display = 'none';
+        document.getElementById('resultados-clientes').style.display = 'none';
+        
+        // Limpiar cliente actual
+        this.clienteActual = {};
+        
+        mostrarAlerta('Cliente removido de la venta', 'info');
+    }
+    
+    abrirModalNuevoCliente() {
+        const modal = document.getElementById('modal-nuevo-cliente');
+        const form = document.getElementById('form-nuevo-cliente');
+        
+        // Limpiar formulario
+        form.reset();
+        
+        // Mostrar modal
+        modal.classList.add('active');
+        
+        // Focus en el primer campo
+        document.getElementById('nuevo-documento').focus();
+        
+        // Configurar event listeners si no están configurados
+        this.configurarModalNuevoCliente();
+    }
+
+    configurarModalNuevoCliente() {
+        const modal = document.getElementById('modal-nuevo-cliente');
+        const form = document.getElementById('form-nuevo-cliente');
+        const btnCerrar = document.getElementById('btn-cerrar-modal-cliente');
+        const btnCancelar = document.getElementById('btn-cancelar-cliente');
+        
+        // Solo configurar una vez
+        if (modal && modal.dataset.configured) return;
+        if (modal) modal.dataset.configured = 'true';
+        
+        // Cerrar modal
+        const cerrarModal = () => {
+            modal.classList.remove('active');
+        };
+        
+        // Event listeners
+        if (btnCerrar && !btnCerrar.dataset.configured) {
+            btnCerrar.dataset.configured = 'true';
+            btnCerrar.addEventListener('click', cerrarModal);
+        }
+        
+        if (btnCancelar && !btnCancelar.dataset.configured) {
+            btnCancelar.dataset.configured = 'true';
+            btnCancelar.addEventListener('click', cerrarModal);
+        }
+        
+        // Cerrar al hacer clic fuera del modal
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    cerrarModal();
+                }
+            });
+        }
+        
+        // Envío del formulario
+        if (form && !form.dataset.configured) {
+            form.dataset.configured = 'true';
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await this.guardarNuevoCliente(form);
+            });
+        }
+    }
+
+    async guardarNuevoCliente(form) {
+        const btnGuardar = document.getElementById('btn-guardar-cliente');
+        const textoOriginal = btnGuardar.innerHTML;
+        
+        try {
+            // Mostrar estado de carga
+            btnGuardar.disabled = true;
+            btnGuardar.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="m12 1 0 6"></path>
+                    <path d="m12 17 0 6"></path>
+                </svg>
+                Guardando...
+            `;
+            
+            // Recopilar datos del formulario
+            const formData = new FormData(form);
+            const clienteData = {
+                tipo_documento: formData.get('tipo_documento'),
+                numero_documento: formData.get('numero_documento'),
+                nombre: formData.get('nombres'),
+                apellido: formData.get('apellidos') || '',
+                telefono: formData.get('telefono') || '',
+                email: formData.get('email') || '',
+                direccion: formData.get('direccion') || ''
+            };
+            
+            console.log('📝 Creando nuevo cliente:', clienteData);
+            
+            // Enviar al servidor
+            const response = await fetch('/api/clientes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(clienteData)
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok && result.success) {
+                // Cliente creado exitosamente
+                mostrarAlerta('Cliente creado correctamente', 'success');
+                
+                // Seleccionar el nuevo cliente automáticamente
+                const nuevoCliente = {
+                    id: result.cliente.id,
+                    documento: clienteData.numero_documento,
+                    nombre: `${clienteData.nombre} ${clienteData.apellido}`.trim(),
+                    nombres: clienteData.nombre,
+                    apellidos: clienteData.apellido,
+                    telefono: clienteData.telefono
+                };
+                
+                // Cambiar a cliente registrado y seleccionarlo
+                document.getElementById('tipo-cliente').value = 'registrado';
+                this.cambiarTipoCliente();
+                await this.seleccionarCliente(nuevoCliente);
+                
+                // Cerrar modal
+                document.getElementById('modal-nuevo-cliente').classList.remove('active');
+                
+            } else {
+                throw new Error(result.message || 'Error al crear cliente');
+            }
+            
+        } catch (error) {
+            console.error('Error creando cliente:', error);
+            mostrarAlerta('Error al crear cliente: ' + error.message, 'error');
+        } finally {
+            // Restaurar botón
+            btnGuardar.disabled = false;
+            btnGuardar.innerHTML = textoOriginal;
+        }
     }
 }
 

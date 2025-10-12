@@ -52,6 +52,122 @@ class VentaController {
             });
         }
     }
+
+    // Buscar clientes para autocompletado en ventas
+    static async buscarClientes(req, res) {
+        try {
+            const { q } = req.query;
+            
+            if (!q || q.length < 2) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: 'El término de búsqueda debe tener al menos 2 caracteres' 
+                });
+            }
+            
+            console.log(`🔍 Buscando clientes con término: "${q}"`);
+            
+            const query = `
+                SELECT 
+                    id,
+                    codigo_cliente,
+                    numero_documento,
+                    nombres,
+                    apellidos,
+                    telefono,
+                    email,
+                    activo
+                FROM clientes 
+                WHERE (nombres ILIKE $1 OR apellidos ILIKE $1 OR numero_documento ILIKE $1)
+                AND activo = true
+                ORDER BY nombres, apellidos
+                LIMIT 10
+            `;
+            
+            const result = await pool.query(query, [`%${q}%`]);
+            
+            const clientes = result.rows.map(c => ({
+                id: c.id,
+                codigo: c.codigo_cliente,
+                documento: c.numero_documento,
+                nombre: `${c.nombres} ${c.apellidos || ''}`.trim(),
+                nombres: c.nombres,
+                apellidos: c.apellidos,
+                telefono: c.telefono,
+                email: c.email
+            }));
+            
+            console.log(`✅ Encontrados ${clientes.length} clientes`);
+            res.json({ success: true, clientes });
+            
+        } catch (error) {
+            console.error('Error buscando clientes:', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Error al buscar clientes' 
+            });
+        }
+    }
+
+    // Obtener estadísticas de un cliente
+    static async obtenerEstadisticasCliente(req, res) {
+        try {
+            const { id } = req.params;
+            
+            console.log(`📊 Obteniendo estadísticas del cliente ID: ${id}`);
+            
+            // Obtener información básica del cliente
+            const clienteQuery = `
+                SELECT nombres, apellidos, numero_documento, telefono, email
+                FROM clientes 
+                WHERE id = $1 AND activo = true
+            `;
+            
+            const clienteResult = await pool.query(clienteQuery, [id]);
+            
+            if (clienteResult.rows.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Cliente no encontrado'
+                });
+            }
+            
+            const cliente = clienteResult.rows[0];
+            
+            // Obtener estadísticas de ventas
+            const statsQuery = `
+                SELECT 
+                    COUNT(*) as total_compras,
+                    COALESCE(SUM(total), 0) as monto_total,
+                    MAX(fecha_venta) as ultima_compra
+                FROM ventas 
+                WHERE cliente_id = $1
+            `;
+            
+            const statsResult = await pool.query(statsQuery, [id]);
+            const stats = statsResult.rows[0];
+            
+            res.json({
+                success: true,
+                cliente: {
+                    ...cliente,
+                    nombre_completo: `${cliente.nombres} ${cliente.apellidos || ''}`.trim()
+                },
+                estadisticas: {
+                    total_compras: parseInt(stats.total_compras) || 0,
+                    monto_total: parseFloat(stats.monto_total) || 0,
+                    ultima_compra: stats.ultima_compra || null
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error obteniendo estadísticas del cliente:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener estadísticas del cliente'
+            });
+        }
+    }
     
     // Procesar una nueva venta (versión robusta)
     static async crearVenta(req, res) {

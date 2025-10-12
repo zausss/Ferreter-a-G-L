@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Filtros - Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .cliente { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .activo { background-color: #e8f5e8; }
+        .inactivo { background-color: #f5e8e8; }
+        button { margin: 5px; padding: 10px; }
+        .log { background: #f0f0f0; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Debug de Filtros de Clientes</h1>
+    
+    <div>
+        <h3>Filtros:</h3>
+        <button onclick="filtrarPor('todos')">Todos</button>
+        <button onclick="filtrarPor('activo')">Activos</button>
+        <button onclick="filtrarPor('inactivo')">Inactivos</button>
+        <button onclick="filtrarPor('suspendido')">Suspendidos</button>
+    </div>
+
+    <div id="log" class="log">
+        <h4>Log de depuración:</h4>
+        <div id="logContent"></div>
+    </div>
+
+    <div id="clientes">
+        <h3>Clientes:</h3>
+        <div id="clientesContainer"></div>
+    </div>
+
+    <script>
+        let todosLosClientes = [];
+        let filtroActual = 'todos';
+
+        function log(mensaje) {
+            const logDiv = document.getElementById('logContent');
+            logDiv.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + mensaje + '</div>';
+            console.log(mensaje);
+        }
+
+        async function cargarClientes() {
+            try {
+                log('🔄 Cargando clientes desde API...');
+                
+                const response = await fetch('/api/clientes');
+                const data = await response.json();
+                
+                if (data.success) {
+                    todosLosClientes = data.clientes;
+                    log(`✅ ${todosLosClientes.length} clientes cargados`);
+                    
+                    // Mostrar cada cliente y sus propiedades
+                    todosLosClientes.forEach((cliente, index) => {
+                        log(`Cliente ${index + 1}: ${cliente.nombre} | estado="${cliente.estado}" | activo=${cliente.activo}`);
+                    });
+                    
+                    mostrarClientes();
+                } else {
+                    log('❌ Error en la respuesta: ' + data.message);
+                }
+            } catch (error) {
+                log('❌ Error al cargar: ' + error.message);
+            }
+        }
+
+        function filtrarPor(estado) {
+            filtroActual = estado;
+            log(`🔍 Filtrando por: "${estado}"`);
+            
+            const clientesFiltrados = todosLosClientes.filter(cliente => {
+                let cumple = false;
+                
+                if (estado === 'todos') {
+                    cumple = true;
+                } else if (estado === 'activo') {
+                    cumple = cliente.estado === 'activo';
+                } else if (estado === 'inactivo') {
+                    cumple = cliente.estado === 'inactivo';
+                } else if (estado === 'suspendido') {
+                    cumple = cliente.estado === 'inactivo'; // Por ahora igual que inactivo
+                }
+                
+                log(`  ${cliente.nombre}: estado="${cliente.estado}", filtro="${estado}", cumple=${cumple}`);
+                return cumple;
+            });
+            
+            log(`📊 Resultado: ${clientesFiltrados.length} de ${todosLosClientes.length} clientes`);
+            mostrarClientes(clientesFiltrados);
+        }
+
+        function mostrarClientes(clientes = todosLosClientes) {
+            const container = document.getElementById('clientesContainer');
+            
+            if (clientes.length === 0) {
+                container.innerHTML = '<div>No hay clientes para mostrar</div>';
+                return;
+            }
+            
+            container.innerHTML = clientes.map(cliente => `
+                <div class="cliente ${cliente.estado}">
+                    <strong>${cliente.nombre} ${cliente.apellido || ''}</strong><br>
+                    Estado: <span style="font-weight: bold; color: ${cliente.estado === 'activo' ? 'green' : 'red'}">${cliente.estado}</span><br>
+                    Activo: ${cliente.activo}<br>
+                    ID: ${cliente.id}
+                </div>
+            `).join('');
+        }
+
+        // Cargar clientes al iniciar
+        cargarClientes();
+    </script>
+</body>
+</html>

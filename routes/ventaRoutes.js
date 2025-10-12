@@ -11,7 +11,9 @@ router.use(verificarToken);
 // Rutas para productos (búsqueda para ventas)
 router.get('/productos/buscar', asyncHandler(VentaController.buscarProductos));
 
-// Rutas para clientes
+// Rutas para clientes en ventas
+router.get('/clientes/buscar', asyncHandler(VentaController.buscarClientes));
+router.get('/clientes/:id/estadisticas', asyncHandler(VentaController.obtenerEstadisticasCliente));
 router.get('/clientes/buscar/:documento', asyncHandler(VentaController.buscarCliente));
 
 // Rutas principales de ventas

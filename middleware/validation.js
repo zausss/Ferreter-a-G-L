@@ -296,6 +296,218 @@ const asyncHandler = (fn) => (req, res, next) => {
     Promise.resolve(fn(req, res, next)).catch(next);
 };
 
+// ===== VALIDACIONES PARA CLIENTES =====
+
+// Validar creación de cliente
+const validarCliente = [
+    body('numero_documento')
+        .notEmpty()
+        .withMessage('El número de documento es requerido')
+        .isLength({ min: 5, max: 20 })
+        .withMessage('El número de documento debe tener entre 5 y 20 caracteres')
+        .matches(/^[0-9A-Za-z-]+$/)
+        .withMessage('El número de documento solo puede contener números, letras y guiones'),
+    
+    body('tipo_documento')
+        .optional()
+        .isIn(['CC', 'CE', 'NIT', 'PAS', 'TI'])
+        .withMessage('Tipo de documento no válido'),
+    
+    body('nombres')
+        .optional()
+        .isLength({ min: 2, max: 255 })
+        .withMessage('Los nombres deben tener entre 2 y 255 caracteres')
+        .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/)
+        .withMessage('Los nombres solo pueden contener letras y espacios'),
+    
+    body('apellidos')
+        .optional()
+        .isLength({ max: 255 })
+        .withMessage('Los apellidos no pueden superar los 255 caracteres')
+        .custom((value) => {
+            if (value && !/^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/.test(value)) {
+                throw new Error('Los apellidos solo pueden contener letras y espacios');
+            }
+            return true;
+        }),
+    
+    body('razon_social')
+        .optional()
+        .isLength({ max: 255 })
+        .withMessage('La razón social no puede superar los 255 caracteres'),
+    
+    body('telefono')
+        .optional()
+        .isLength({ max: 20 })
+        .withMessage('El teléfono no puede superar los 20 caracteres')
+        .custom((value) => {
+            if (value && !/^[\d\s\-\+\(\)]+$/.test(value)) {
+                throw new Error('El teléfono tiene un formato inválido');
+            }
+            return true;
+        }),
+    
+    body('email')
+        .optional()
+        .isEmail()
+        .withMessage('El email debe tener un formato válido')
+        .isLength({ max: 150 })
+        .withMessage('El email no puede superar los 150 caracteres'),
+    
+    body('direccion')
+        .optional()
+        .isLength({ max: 200 })
+        .withMessage('La dirección no puede superar los 200 caracteres'),
+    
+    body('ciudad')
+        .optional()
+        .isLength({ max: 100 })
+        .withMessage('La ciudad no puede superar los 100 caracteres')
+        .custom((value) => {
+            if (value && !/^[a-zA-ZÀ-ÿ\u00f1\u00d1\s\-\.]+$/.test(value)) {
+                throw new Error('La ciudad solo puede contener letras, espacios, guiones y puntos');
+            }
+            return true;
+        }),
+    
+    body('fecha_nacimiento')
+        .optional()
+        .isISO8601()
+        .withMessage('La fecha de nacimiento debe tener formato válido (YYYY-MM-DD)')
+        .custom((value) => {
+            if (value) {
+                const fecha = new Date(value);
+                const hoy = new Date();
+                const hace150Years = new Date();
+                hace150Years.setFullYear(hoy.getFullYear() - 150);
+                
+                if (fecha > hoy) {
+                    throw new Error('La fecha de nacimiento no puede ser futura');
+                }
+                if (fecha < hace150Years) {
+                    throw new Error('La fecha de nacimiento no puede ser tan antigua');
+                }
+            }
+            return true;
+        }),
+    
+    body('notas')
+        .optional()
+        .isLength({ max: 500 })
+        .withMessage('Las notas no pueden superar los 500 caracteres'),
+    
+    manejarErroresValidacion
+];
+
+// Validar actualización de cliente (campos opcionales)
+const validarActualizacionCliente = [
+    param('id')
+        .isInt({ min: 1 })
+        .withMessage('ID de cliente inválido'),
+    
+    body('numero_documento')
+        .optional()
+        .isLength({ min: 5, max: 20 })
+        .withMessage('El número de documento debe tener entre 5 y 20 caracteres')
+        .matches(/^[0-9A-Za-z-]+$/)
+        .withMessage('El número de documento solo puede contener números, letras y guiones'),
+    
+    body('tipo_documento')
+        .optional()
+        .isIn(['CC', 'CE', 'NIT', 'PAS', 'TI'])
+        .withMessage('Tipo de documento no válido'),
+    
+    body('nombres')
+        .optional()
+        .isLength({ min: 2, max: 255 })
+        .withMessage('Los nombres deben tener entre 2 y 255 caracteres')
+        .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/)
+        .withMessage('Los nombres solo pueden contener letras y espacios'),
+    
+    body('apellidos')
+        .optional()
+        .isLength({ max: 255 })
+        .withMessage('Los apellidos no pueden superar los 255 caracteres')
+        .custom((value) => {
+            if (value && !/^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/.test(value)) {
+                throw new Error('Los apellidos solo pueden contener letras y espacios');
+            }
+            return true;
+        }),
+    
+    body('razon_social')
+        .optional()
+        .isLength({ max: 255 })
+        .withMessage('La razón social no puede superar los 255 caracteres'),
+    
+    body('telefono')
+        .optional()
+        .isLength({ max: 20 })
+        .withMessage('El teléfono no puede superar los 20 caracteres')
+        .custom((value) => {
+            if (value && !/^[\d\s\-\+\(\)]+$/.test(value)) {
+                throw new Error('El teléfono tiene un formato inválido');
+            }
+            return true;
+        }),
+    
+    body('email')
+        .optional()
+        .isEmail()
+        .withMessage('El email debe tener un formato válido')
+        .isLength({ max: 150 })
+        .withMessage('El email no puede superar los 150 caracteres'),
+    
+    body('direccion')
+        .optional()
+        .isLength({ max: 200 })
+        .withMessage('La dirección no puede superar los 200 caracteres'),
+    
+    body('ciudad')
+        .optional()
+        .isLength({ max: 100 })
+        .withMessage('La ciudad no puede superar los 100 caracteres')
+        .custom((value) => {
+            if (value && !/^[a-zA-ZÀ-ÿ\u00f1\u00d1\s\-\.]+$/.test(value)) {
+                throw new Error('La ciudad solo puede contener letras, espacios, guiones y puntos');
+            }
+            return true;
+        }),
+    
+    body('fecha_nacimiento')
+        .optional()
+        .isISO8601()
+        .withMessage('La fecha de nacimiento debe tener formato válido (YYYY-MM-DD)')
+        .custom((value) => {
+            if (value) {
+                const fecha = new Date(value);
+                const hoy = new Date();
+                const hace150Years = new Date();
+                hace150Years.setFullYear(hoy.getFullYear() - 150);
+                
+                if (fecha > hoy) {
+                    throw new Error('La fecha de nacimiento no puede ser futura');
+                }
+                if (fecha < hace150Years) {
+                    throw new Error('La fecha de nacimiento no puede ser tan antigua');
+                }
+            }
+            return true;
+        }),
+    
+    body('activo')
+        .optional()
+        .isBoolean()
+        .withMessage('El estado activo debe ser true o false'),
+    
+    body('notas')
+        .optional()
+        .isLength({ max: 500 })
+        .withMessage('Las notas no pueden superar los 500 caracteres'),
+    
+    manejarErroresValidacion
+];
+
 module.exports = {
     validarEntrada,
     authLimiter,
@@ -305,5 +517,7 @@ module.exports = {
     configurarSeguridad,
     asyncHandler,
     logSeguridad,
-    prevenirInyeccionSQL
+    prevenirInyeccionSQL,
+    validarCliente,
+    validarActualizacionCliente
 };

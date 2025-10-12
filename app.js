@@ -11,6 +11,7 @@ const productoRoutes = require('./routes/productoRoutes');
 const movimientoRoutes = require('./routes/movimientoRoutes');
 const ventaRoutes = require('./routes/ventaRoutes');
 const facturaRoutes = require('./routes/facturaRoutes');
+const clienteRoutes = require('./routes/clienteRoutes');
 
 // Importar controladores adicionales
 const CargoController = require('./controllers/cargoController');
@@ -69,6 +70,7 @@ app.use('/api/productos', productoRoutes);
 app.use('/api/movimientos', movimientoRoutes);
 app.use('/api/ventas', ventaRoutes);
 app.use('/api/facturas', facturaRoutes);
+app.use('/api/clientes', clienteRoutes);
 
 // Rutas adicionales para registro
 app.get('/api/cargos', CargoController.obtenerCargos);
@@ -130,6 +132,10 @@ app.get('/venta.html', verificarToken, (req, res) => {
 
 app.get('/facturas.html', verificarToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'facturas.html'));
+});
+
+app.get('/clientes.html', verificarToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'clientes.html'));
 });
 
 // Manejo de rutas no encontradas (404)

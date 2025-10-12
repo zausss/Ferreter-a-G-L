@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Estado Cliente</title>
+</head>
+<body>
+    <h1>Prueba de Cambio de Estado</h1>
+    
+    <button onclick="probarCambioEstado()">Probar cambio de estado</button>
+    
+    <div id="resultado"></div>
+
+    <script>
+        async function probarCambioEstado() {
+            const resultado = document.getElementById('resultado');
+            
+            try {
+                console.log('🧪 Iniciando prueba de cambio de estado...');
+                
+                // Primero obtener la lista de clientes
+                const responseClientes = await fetch('/api/clientes');
+                const clientes = await responseClientes.json();
+                console.log('📋 Clientes obtenidos:', clientes);
+                
+                if (clientes.length === 0) {
+                    resultado.innerHTML = '❌ No hay clientes para probar';
+                    return;
+                }
+                
+                // Tomar el primer cliente
+                const cliente = clientes[0];
+                console.log('👤 Cliente seleccionado:', cliente);
+                
+                // Cambiar su estado
+                const nuevoEstado = !cliente.activo;
+                console.log(`🔄 Cambiando estado de ${cliente.activo} a ${nuevoEstado}`);
+                
+                const responseEstado = await fetch(`/api/clientes/${cliente.id}/estado`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ activo: nuevoEstado })
+                });
+                
+                const resultadoEstado = await responseEstado.json();
+                console.log('✅ Resultado del cambio:', resultadoEstado);
+                
+                resultado.innerHTML = `
+                    <h3>✅ Prueba exitosa</h3>
+                    <p><strong>Cliente:</strong> ${cliente.nombres} ${cliente.apellidos}</p>
+                    <p><strong>Estado anterior:</strong> ${cliente.activo ? 'Activo' : 'Inactivo'}</p>
+                    <p><strong>Estado nuevo:</strong> ${nuevoEstado ? 'Activo' : 'Inactivo'}</p>
+                    <p><strong>Respuesta del servidor:</strong> ${JSON.stringify(resultadoEstado, null, 2)}</p>
+                `;
+                
+            } catch (error) {
+                console.error('❌ Error en la prueba:', error);
+                resultado.innerHTML = `
+                    <h3>❌ Error en la prueba</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

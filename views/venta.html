@@ -138,7 +138,19 @@
                 <!-- Información del Cliente -->
                 <div class="seccion-cliente">
                     <div class="info-cliente">
-                        <h3>Información del Cliente</h3>
+                        <div class="header-cliente">
+                            <h3>Información del Cliente</h3>
+                            <button class="btn-nuevo-cliente" id="btn-nuevo-cliente" title="Agregar cliente rápido">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <line x1="19" y1="8" x2="19" y2="14"></line>
+                                    <line x1="22" y1="11" x2="16" y2="11"></line>
+                                </svg>
+                                Nuevo
+                            </button>
+                        </div>
+                        
                         <div class="form-cliente">
                             <div class="campo-grupo">
                                 <label>Tipo Cliente:</label>
@@ -147,6 +159,16 @@
                                     <option value="registrado">Cliente Registrado</option>
                                 </select>
                             </div>
+                            
+                            <!-- Buscador de clientes registrados -->
+                            <div class="campo-grupo buscador-clientes" id="grupo-buscador" style="display: none;">
+                                <label>Buscar Cliente:</label>
+                                <div class="buscador-cliente-container">
+                                    <input type="text" id="buscar-cliente" placeholder="Buscar por nombre o documento...">
+                                    <div class="resultados-clientes" id="resultados-clientes"></div>
+                                </div>
+                            </div>
+                            
                             <div class="campo-grupo">
                                 <label>Documento:</label>
                                 <input type="text" id="documento-cliente" placeholder="Cédula o NIT">
@@ -158,6 +180,33 @@
                             <div class="campo-grupo">
                                 <label>Teléfono:</label>
                                 <input type="tel" id="telefono-cliente" placeholder="Teléfono">
+                            </div>
+                        </div>
+                        
+                        <!-- Panel de información del cliente seleccionado -->
+                        <div class="panel-cliente-info" id="panel-cliente-info" style="display: none;">
+                            <div class="cliente-seleccionado">
+                                <div class="cliente-datos">
+                                    <h4 id="cliente-nombre-display"></h4>
+                                    <p id="cliente-documento-display"></p>
+                                    <p id="cliente-contacto-display"></p>
+                                </div>
+                                <div class="cliente-estadisticas">
+                                    <div class="stat-item">
+                                        <span class="stat-label">Compras:</span>
+                                        <span class="stat-value" id="cliente-total-compras">0</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">Última compra:</span>
+                                        <span class="stat-value" id="cliente-ultima-compra">-</span>
+                                    </div>
+                                </div>
+                                <button class="btn-limpiar-cliente" id="btn-limpiar-cliente" title="Cambiar cliente">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -342,6 +391,152 @@
                 </button>
                 <button class="btn-nueva-venta-modal" id="btn-nueva-venta-modal">Nueva Venta</button>
                 <button class="btn-cerrar-modal" id="btn-cerrar-modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nuevo Cliente -->
+    <div class="modal-overlay" id="modal-nuevo-cliente">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <line x1="19" y1="8" x2="19" y2="14"></line>
+                        <line x1="22" y1="11" x2="16" y2="11"></line>
+                    </svg>
+                    Agregar Cliente Rápido
+                </h3>
+                <button class="btn-cerrar-modal-cliente" id="btn-cerrar-modal-cliente">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="form-nuevo-cliente">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nuevo-tipo-documento">Tipo Documento *</label>
+                            <select id="nuevo-tipo-documento" name="tipo_documento" required>
+                                <option value="CC">Cédula de Ciudadanía</option>
+                                <option value="CE">Cédula de Extranjería</option>
+                                <option value="NIT">NIT</option>
+                                <option value="PAS">Pasaporte</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="nuevo-documento">Número Documento *</label>
+                            <input type="text" id="nuevo-documento" name="numero_documento" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nuevo-nombres">Nombres *</label>
+                            <input type="text" id="nuevo-nombres" name="nombres" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nuevo-apellidos">Apellidos</label>
+                            <input type="text" id="nuevo-apellidos" name="apellidos">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nuevo-telefono">Teléfono</label>
+                            <input type="tel" id="nuevo-telefono" name="telefono">
+                        </div>
+                        <div class="form-group">
+                            <label for="nuevo-email">Email</label>
+                            <input type="email" id="nuevo-email" name="email">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nueva-direccion">Dirección</label>
+                        <input type="text" id="nueva-direccion" name="direccion">
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" id="btn-cancelar-cliente">Cancelar</button>
+                <button type="submit" form="form-nuevo-cliente" class="btn-guardar" id="btn-guardar-cliente">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17,21 17,13 7,13 7,21"></polyline>
+                        <polyline points="7,3 7,8 15,8"></polyline>
+                    </svg>
+                    Guardar Cliente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Historial de Ventas -->
+    <div class="modal-overlay" id="modal-historial">
+        <div class="modal-container modal-grande">
+            <div class="modal-header">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3h18v18H3zM9 9h6v6H9z"></path>
+                    </svg>
+                    Historial de Ventas
+                </h3>
+                <button class="btn-cerrar-modal-historial" id="btn-cerrar-modal-historial">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="filtros-historial">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="filtro-fecha-desde">Desde:</label>
+                            <input type="date" id="filtro-fecha-desde">
+                        </div>
+                        <div class="form-group">
+                            <label for="filtro-fecha-hasta">Hasta:</label>
+                            <input type="date" id="filtro-fecha-hasta">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn-filtrar" id="btn-filtrar-historial">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.35-4.35"></path>
+                                </svg>
+                                Buscar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tabla-historial-container">
+                    <table class="tabla-historial">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Factura</th>
+                                <th>Cliente</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historial-body">
+                            <tr>
+                                <td colspan="6" class="cargando">Cargando historial...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
