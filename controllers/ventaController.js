@@ -647,73 +647,68 @@ class VentaController {
     // Obtener historial de ventas
     static async obtenerVentas(req, res) {
         try {
+            console.log('🔍 Iniciando obtenerVentas...');
+            
             const { page = 1, limit = 20, desde, hasta } = req.query;
             const offset = (page - 1) * limit;
             
-            let whereConditions = [];
-            let queryParams = [];
-            let paramCount = 0;
-            
-            // Filtros de fecha
-            if (desde) {
-                paramCount++;
-                whereConditions.push(`fecha_venta >= $${paramCount}`);
-                queryParams.push(desde);
-            }
-            if (hasta) {
-                paramCount++;
-                whereConditions.push(`fecha_venta <= $${paramCount}`);
-                queryParams.push(hasta);
-            }
-            
-            const whereClause = whereConditions.length > 0 ? 
-                `WHERE ${whereConditions.join(' AND ')}` : '';
-            
-            // Query para obtener ventas con información del usuario y cliente
+            // Consulta con las columnas REALES de la tabla ventas
             const ventasQuery = `
-                SELECT v.*, u.nombre as usuario_nombre, u.email as usuario_email,
-                       c.documento as cliente_documento, c.nombre as cliente_nombre,
-                       c.telefono as cliente_telefono
-                FROM ventas v
-                LEFT JOIN usuarios u ON v.usuario_id = u.id
-                LEFT JOIN clientes c ON v.cliente_id = c.id
-                ${whereClause}
-                ORDER BY v.fecha_venta DESC
-                LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}
+                SELECT id, numero_factura, cliente_id, usuario_id, fecha_venta, 
+                       subtotal, descuento, iva, total, metodo_pago, estado, 
+                       observaciones, fecha_creacion
+                FROM ventas
+                ORDER BY fecha_venta DESC
+                LIMIT $1 OFFSET $2
             `;
             
-            queryParams.push(limit, offset);
+            const countQuery = `SELECT COUNT(*) as total FROM ventas`;
             
-            // Query para contar total
-            const countQuery = `
-                SELECT COUNT(*) as total
-                FROM ventas v
-                ${whereClause}
-            `;
-            
+            console.log('📝 Ejecutando consultas...');
             const [ventasResult, countResult] = await Promise.all([
-                pool.query(ventasQuery, queryParams),
-                pool.query(countQuery, queryParams.slice(0, paramCount))
+                pool.query(ventasQuery, [limit, offset]),
+                pool.query(countQuery)
             ]);
             
             const ventas = ventasResult.rows;
             const total = parseInt(countResult.rows[0].total);
             
-            // Procesar datos de cliente desde observaciones si no hay cliente_id
+            console.log(`✅ Obtenidas ${ventas.length} ventas de ${total} total`);
+            
+            // Procesar datos de cada venta
             for (const venta of ventas) {
-                // Si no hay cliente registrado, extraer de observaciones
-                if (!venta.cliente_id && venta.observaciones) {
+                // Inicializar valores por defecto para el display
+                venta.cliente_documento = 'N/A';
+                venta.cliente_nombre = 'Cliente General';
+                venta.cliente_telefono = 'N/A';
+                venta.monto_recibido = null;
+                venta.cambio = null;
+
+                // Extraer información del cliente desde observaciones (JSON)
+                if (venta.observaciones) {
                     try {
                         const observaciones = JSON.parse(venta.observaciones);
-                        venta.cliente_documento = observaciones.cliente_documento;
-                        venta.cliente_nombre = observaciones.cliente_nombre;
-                        venta.cliente_telefono = observaciones.cliente_telefono;
-                        venta.monto_recibido = observaciones.monto_recibido;
-                        venta.cambio = observaciones.cambio;
+                        
+                        // Información del cliente
+                        if (observaciones.cliente) {
+                            venta.cliente_documento = observaciones.cliente.documento || 'N/A';
+                            venta.cliente_nombre = observaciones.cliente.nombre || 'Cliente General';
+                            venta.cliente_telefono = observaciones.cliente.telefono || 'N/A';
+                        }
+                        
+                        // Información del pago
+                        if (observaciones.pago) {
+                            venta.monto_recibido = observaciones.pago.monto_recibido;
+                            venta.cambio = observaciones.pago.cambio;
+                        }
+                        
                     } catch (e) {
-                        // Observaciones no está en formato JSON
+                        console.log('⚠️ Error parseando observaciones para venta ID:', venta.id, e.message);
                     }
                 }
+
+                // Para compatibilidad, asignar numero_venta = numero_factura
+                venta.numero_venta = venta.numero_factura;
                 
                 // Obtener detalles de la venta
                 try {
@@ -754,16 +749,15 @@ class VentaController {
     static async obtenerVentaPorId(req, res) {
         try {
             const { id } = req.params;
+            console.log(`🔍 Buscando venta con ID: ${id}`);
             
-            // Obtener información de la venta con cliente
+            // Obtener información de la venta (usando estructura real)
             const ventaQuery = `
-                SELECT v.*, u.nombre as usuario_nombre, u.email as usuario_email,
-                       c.documento as cliente_documento, c.nombre as cliente_nombre,
-                       c.telefono as cliente_telefono
-                FROM ventas v
-                LEFT JOIN usuarios u ON v.usuario_id = u.id
-                LEFT JOIN clientes c ON v.cliente_id = c.id
-                WHERE v.id = $1
+                SELECT id, numero_factura, cliente_id, usuario_id, fecha_venta, 
+                       subtotal, descuento, iva, total, metodo_pago, estado, 
+                       observaciones, fecha_creacion
+                FROM ventas 
+                WHERE id = $1
             `;
             
             const ventaResult = await pool.query(ventaQuery, [id]);
@@ -777,21 +771,42 @@ class VentaController {
             
             const venta = ventaResult.rows[0];
             
-            // Procesar observaciones si no hay cliente registrado
-            if (!venta.cliente_id && venta.observaciones) {
+            // Inicializar valores por defecto
+            venta.cliente_documento = 'N/A';
+            venta.cliente_nombre = 'Cliente General';
+            venta.cliente_telefono = 'N/A';
+            venta.monto_recibido = null;
+            venta.cambio = null;
+            venta.usuario_nombre = 'Usuario';
+            
+            // Extraer datos del cliente y pago desde observaciones (JSON)
+            if (venta.observaciones) {
                 try {
                     const observaciones = JSON.parse(venta.observaciones);
-                    venta.cliente_documento = observaciones.cliente_documento;
-                    venta.cliente_nombre = observaciones.cliente_nombre;
-                    venta.cliente_telefono = observaciones.cliente_telefono;
-                    venta.monto_recibido = observaciones.monto_recibido;
-                    venta.cambio = observaciones.cambio;
+                    console.log('📋 Observaciones parseadas:', observaciones);
+                    
+                    // Información del cliente
+                    if (observaciones.cliente) {
+                        venta.cliente_documento = observaciones.cliente.documento || 'N/A';
+                        venta.cliente_nombre = observaciones.cliente.nombre || 'Cliente General';
+                        venta.cliente_telefono = observaciones.cliente.telefono || 'N/A';
+                    }
+                    
+                    // Información del pago
+                    if (observaciones.pago) {
+                        venta.monto_recibido = observaciones.pago.monto_recibido;
+                        venta.cambio = observaciones.pago.cambio;
+                    }
+                    
                 } catch (e) {
-                    // Observaciones no está en formato JSON
+                    console.log('⚠️ Error parseando observaciones:', e.message);
                 }
             }
             
-            // Obtener detalles de la venta
+            // Para compatibilidad con el frontend
+            venta.numero_venta = venta.numero_factura;
+            
+            // Obtener detalles de la venta (productos)
             try {
                 const detalleQuery = `
                     SELECT dv.*, p.codigo_producto as codigo, p.nombre, 'unidad' as unidad_medida
@@ -801,7 +816,33 @@ class VentaController {
                 `;
                 const detalleResult = await pool.query(detalleQuery, [id]);
                 venta.detalle_ventas = detalleResult.rows;
+                
+                console.log(`📦 Productos desde detalle_ventas: ${detalleResult.rows.length}`);
+                
+                // Si no hay productos en detalle_ventas, buscar en observaciones
+                if (detalleResult.rows.length === 0 && venta.observaciones) {
+                    try {
+                        const observaciones = JSON.parse(venta.observaciones);
+                        if (observaciones.productos && Array.isArray(observaciones.productos)) {
+                            venta.detalle_ventas = observaciones.productos.map((producto, index) => ({
+                                id: index + 1,
+                                producto_id: producto.id || index + 1,
+                                cantidad: producto.cantidad,
+                                precio_unitario: producto.precio,
+                                subtotal: producto.subtotal || (producto.cantidad * producto.precio),
+                                codigo: producto.codigo || producto.id,
+                                nombre: producto.nombre,
+                                unidad_medida: 'unidad'
+                            }));
+                            console.log(`📦 Productos desde observaciones: ${venta.detalle_ventas.length}`);
+                        }
+                    } catch (e) {
+                        console.log('⚠️ Error extrayendo productos de observaciones:', e.message);
+                    }
+                }
+                
             } catch (error) {
+                console.log('⚠️ Error obteniendo detalles:', error.message);
                 venta.detalle_ventas = [];
             }
             

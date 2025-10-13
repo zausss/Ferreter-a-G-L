@@ -10,6 +10,11 @@ class SistemaVentas {
     }
 
     init() {
+        console.log('🔄 Iniciando sistema de ventas...');
+        
+        // Asegurar que los modales estén cerrados al inicializar
+        this.forzarCierreInicial();
+        
         this.configurarEventListeners();
         this.configurarFormularioCliente();
         this.configurarBuscadorProductos();
@@ -19,6 +24,182 @@ class SistemaVentas {
         this.configurarModalNuevoCliente();
         this.configurarModalHistorial();
         this.actualizarTotales();
+        
+        console.log('✅ Sistema de ventas inicializado correctamente');
+        
+        // DESHABILITADO TEMPORALMENTE: Observador puede estar causando apertura automática
+        // this.configurarObservadorModales();
+    }
+    
+    configurarObservadorModales() {
+        const modalFactura = document.getElementById('modal-factura');
+        const modalNuevoCliente = document.getElementById('modal-nuevo-cliente');
+        const modalHistorial = document.getElementById('modal-historial');
+        
+        // Observer para modal-nuevo-cliente
+        if (modalNuevoCliente) {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        if (modalNuevoCliente.classList.contains('active') && !modalNuevoCliente.classList.contains('modal-force-close')) {
+                            console.log('🔍 Modal nuevo cliente se abrió - cerrando otros modales');
+                            // Cerrar otros modales SUAVEMENTE
+                            setTimeout(() => {
+                                if (modalFactura && modalFactura.style.display !== 'none') {
+                                    modalFactura.style.display = 'none';
+                                }
+                                if (modalHistorial && modalHistorial.classList.contains('active')) {
+                                    modalHistorial.classList.remove('active');
+                                }
+                            }, 50);
+                        }
+                    }
+                });
+            });
+            observer.observe(modalNuevoCliente, { attributes: true });
+        }
+        
+        // Observer para modal-historial
+        if (modalHistorial) {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        if (modalHistorial.classList.contains('active') && !modalHistorial.classList.contains('modal-force-close')) {
+                            console.log('🔍 Modal historial se abrió - cerrando otros modales');
+                            // Cerrar otros modales SUAVEMENTE
+                            setTimeout(() => {
+                                if (modalFactura && modalFactura.style.display !== 'none') {
+                                    modalFactura.style.display = 'none';
+                                }
+                                if (modalNuevoCliente && modalNuevoCliente.classList.contains('active')) {
+                                    modalNuevoCliente.classList.remove('active');
+                                }
+                            }, 50);
+                        }
+                    }
+                });
+            });
+            observer.observe(modalHistorial, { attributes: true });
+        }
+        
+        // Observer para modal-factura
+        if (modalFactura) {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'style' && modalFactura.style.display === 'block') {
+                        console.log('🔍 Modal factura se abrió - cerrando otros modales');
+                        // Cerrar otros modales SUAVEMENTE
+                        setTimeout(() => {
+                            if (modalNuevoCliente && modalNuevoCliente.classList.contains('active')) {
+                                modalNuevoCliente.classList.remove('active');
+                            }
+                            if (modalHistorial && modalHistorial.classList.contains('active')) {
+                                modalHistorial.classList.remove('active');
+                            }
+                        }, 50);
+                    }
+                });
+            });
+            observer.observe(modalFactura, { attributes: true });
+        }
+        
+        console.log('🔍 Observador de modales configurado');
+    }
+    
+    // *** FUNCIÓN DE EMERGENCIA TOTAL ***
+    emergenciaTotal() {
+        console.log('🚨 EMERGENCIA TOTAL - Reseteando toda la interfaz de modales...');
+        
+        // 1. Remover TODAS las clases que puedan mantener modales abiertos
+        document.querySelectorAll('*[class*="modal"], *[class*="active"], *[class*="open"], *[class*="show"]').forEach(el => {
+            el.classList.remove('active', 'open', 'show', 'visible');
+            el.style.display = 'none';
+            el.style.visibility = 'hidden';
+            el.style.opacity = '0';
+        });
+        
+        // 2. Resetear específicamente todos los modales conocidos
+        const modalIds = ['modal-factura', 'modal-nuevo-cliente', 'modal-historial', 'modal-detalle-venta'];
+        modalIds.forEach(id => {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.style.display = 'none';
+                modal.style.visibility = 'hidden';
+                modal.style.opacity = '0';
+                modal.classList.remove('active', 'open', 'show');
+                modal.classList.add('modal-force-close');
+            }
+        });
+        
+        // 3. Restaurar body
+        document.body.style.overflow = 'auto';
+        document.body.style.position = 'static';
+        
+        // 4. Limpiar estilos de emergencia después de resetear
+        setTimeout(() => {
+            document.querySelectorAll('.modal-force-close').forEach(modal => {
+                modal.classList.remove('modal-force-close');
+            });
+        }, 1000);
+        
+        // 5. Mostrar confirmación
+        setTimeout(() => {
+            if (window.customAlert) {
+                window.customAlert.alert('✅ Emergencia Total Ejecutada - Todos los modales han sido reseteados', 'Sistema', 'success');
+            } else {
+                alert('✅ EMERGENCIA TOTAL: Todos los modales reseteados');
+            }
+        }, 100);
+        
+        console.log('✅ Emergencia total completada');
+    }
+    
+    // Función específica para el cierre inicial (más simple y directa)
+    forzarCierreInicial() {
+        console.log('🔒 Forzando cierre inicial de modales...');
+        
+        // Método directo sin timeouts ni observadores
+        const modalFactura = document.getElementById('modal-factura');
+        const modalNuevoCliente = document.getElementById('modal-nuevo-cliente');
+        const modalHistorial = document.getElementById('modal-historial');
+        
+        if (modalFactura) {
+            modalFactura.classList.remove('show');
+            modalFactura.style.display = 'none';
+            modalFactura.style.visibility = 'hidden';
+        }
+        
+        if (modalNuevoCliente) {
+            modalNuevoCliente.classList.remove('active');
+            modalNuevoCliente.style.display = 'none';
+            modalNuevoCliente.style.visibility = 'hidden';
+        }
+        
+        if (modalHistorial) {
+            modalHistorial.classList.remove('active');
+            modalHistorial.style.display = 'none';
+            modalHistorial.style.visibility = 'hidden';
+        }
+        
+        // Limpiar cualquier modal dinámico
+        const modalDetalle = document.getElementById('modal-detalle-venta');
+        if (modalDetalle) {
+            modalDetalle.remove();
+        }
+        
+        // Restaurar después de limpiar
+        setTimeout(() => {
+            if (modalNuevoCliente) {
+                modalNuevoCliente.style.display = '';
+                modalNuevoCliente.style.visibility = '';
+            }
+            if (modalHistorial) {
+                modalHistorial.style.display = '';
+                modalHistorial.style.visibility = '';
+            }
+        }, 100);
+        
+        console.log('✅ Cierre inicial completado');
     }
 
     configurarEventListeners() {
@@ -42,15 +223,39 @@ class SistemaVentas {
         // Monto recibido
         document.getElementById('monto-recibido').addEventListener('input', () => this.calcularCambio());
         
+        // *** TECLAS DE EMERGENCIA ***
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F11') {
+                e.preventDefault();
+                this.emergenciaTotal();
+            } else if (e.key === 'F10') {
+                e.preventDefault();
+                this.cerrarModalForzado();
+            }
+        });
+        
         // Modal
         document.getElementById('btn-imprimir').addEventListener('click', () => this.imprimirFactura());
         document.getElementById('btn-nueva-venta-modal').addEventListener('click', () => this.nuevaVentaDesdeModal());
         document.getElementById('btn-cerrar-modal').addEventListener('click', () => this.cerrarModal());
         
-        // Cerrar modal con ESC
+        // Cerrar modal con ESC (mejorado para todos los modales)
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && document.getElementById('modal-factura').style.display === 'block') {
-                this.cerrarModal();
+            if (e.key === 'Escape') {
+                const modalFactura = document.getElementById('modal-factura');
+                const modalNuevoCliente = document.getElementById('modal-nuevo-cliente');
+                const modalHistorial = document.getElementById('modal-historial');
+                const modalDetalle = document.getElementById('modal-detalle-venta');
+                
+                // Verificar si algún modal está abierto
+                const modalFacturaAbierto = modalFactura && modalFactura.style.display === 'block';
+                const modalClienteAbierto = modalNuevoCliente && modalNuevoCliente.classList.contains('active');
+                const modalHistorialAbierto = modalHistorial && modalHistorial.classList.contains('active');
+                const modalDetalleAbierto = modalDetalle && modalDetalle.style.display !== 'none';
+                
+                if (modalFacturaAbierto || modalClienteAbierto || modalHistorialAbierto || modalDetalleAbierto) {
+                    this.cerrarModal();
+                }
             }
         });
     }
@@ -564,7 +769,8 @@ class SistemaVentas {
         }
         
         // Mostrar modal
-        document.getElementById('modal-factura').style.display = 'block';
+        const modalFactura = document.getElementById('modal-factura');
+        modalFactura.classList.add('show');
         document.body.style.overflow = 'hidden';
     }
 
@@ -581,9 +787,90 @@ class SistemaVentas {
         }, 1000);
     }
 
-    cerrarModal() {
-        document.getElementById('modal-factura').style.display = 'none';
+    cerrarModal(modalEspecifico = null) {
+        console.log('🔒 Cerrando modales...', modalEspecifico ? `específico: ${modalEspecifico}` : 'todos');
+        
+        if (modalEspecifico) {
+            // Cerrar solo un modal específico
+            const modal = document.getElementById(modalEspecifico);
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('active');
+                console.log(`✅ Modal ${modalEspecifico} cerrado`);
+            }
+            return;
+        }
+        
+        // Cerrar todos los modales (método suave)
+        const modalFactura = document.getElementById('modal-factura');
+        if (modalFactura && modalFactura.classList.contains('show')) {
+            modalFactura.classList.remove('show');
+        }
+
+        const modalNuevoCliente = document.getElementById('modal-nuevo-cliente');
+        if (modalNuevoCliente && modalNuevoCliente.classList.contains('active')) {
+            modalNuevoCliente.classList.remove('active');
+        }
+
+        const modalHistorial = document.getElementById('modal-historial');
+        if (modalHistorial && modalHistorial.classList.contains('active')) {
+            modalHistorial.classList.remove('active');
+        }
+
+        // Cerrar cualquier modal de detalle de venta que haya sido creado dinámicamente
+        const modalDetalle = document.getElementById('modal-detalle-venta');
+        if (modalDetalle) {
+            modalDetalle.remove();
+        }
+
+        // Restaurar scroll del body
         document.body.style.overflow = 'auto';
+
+        console.log('✅ Modales cerrados (método suave)');
+    }
+    
+    // Nueva función para cierre forzado (solo para emergencias)
+    cerrarModalForzado() {
+        console.log('🚨 Iniciando cierre FORZADO de todos los modales...');
+        
+        // *** MÉTODO AGRESIVO: Usar clases de emergencia CSS ***
+        document.querySelectorAll('.modal-overlay, .modal, [id*="modal"]').forEach(modal => {
+            modal.classList.remove('active');
+            modal.classList.add('modal-force-close');
+            if (modal.style) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Restaurar scroll del body
+        document.body.style.overflow = 'auto';
+
+        // Limpiar clases de emergencia después de un momento
+        setTimeout(() => {
+            document.querySelectorAll('.modal-force-close').forEach(modal => {
+                modal.classList.remove('modal-force-close');
+            });
+        }, 500);
+
+        console.log('✅ Cierre FORZADO completado');
+    }
+
+    // Función auxiliar para verificar modales abiertos (útil para debugging)
+    verificarModalesAbiertos() {
+        const modalFactura = document.getElementById('modal-factura');
+        const modalNuevoCliente = document.getElementById('modal-nuevo-cliente');
+        const modalHistorial = document.getElementById('modal-historial');
+        const modalDetalle = document.getElementById('modal-detalle-venta');
+        
+        const estados = {
+            factura: modalFactura ? modalFactura.style.display === 'block' : false,
+            nuevoCliente: modalNuevoCliente ? modalNuevoCliente.classList.contains('active') : false,
+            historial: modalHistorial ? modalHistorial.classList.contains('active') : false,
+            detalle: modalDetalle ? true : false
+        };
+        
+        console.log('📋 Estado de modales:', estados);
+        return estados;
     }
 
     nuevaVentaDesdeModal() {
@@ -639,7 +926,25 @@ class SistemaVentas {
     }
 
     mostrarHistorial() {
+        console.log('📊 Abriendo modal de historial...');
+        
+        // *** CERRAR SOLO OTROS MODALES, NO ESTE ***
+        const modalFactura = document.getElementById('modal-factura');
+        const modalNuevoCliente = document.getElementById('modal-nuevo-cliente');
+        
+        if (modalFactura) {
+            modalFactura.style.display = 'none';
+            modalFactura.classList.remove('modal-force-close');
+        }
+        if (modalNuevoCliente) {
+            modalNuevoCliente.classList.remove('active');
+            modalNuevoCliente.classList.remove('modal-force-close');
+        }
+        
         const modal = document.getElementById('modal-historial');
+        
+        // Asegurar que el modal esté limpio
+        modal.classList.remove('modal-force-close');
         
         // Configurar fechas por defecto (últimos 30 días)
         const hoy = new Date();
@@ -651,6 +956,7 @@ class SistemaVentas {
         
         // Mostrar modal
         modal.classList.add('active');
+        console.log('✅ Modal historial abierto');
         
         // Configurar event listeners
         this.configurarModalHistorial();
@@ -804,7 +1110,27 @@ class SistemaVentas {
     async verDetalleVenta(ventaId) {
         try {
             console.log('👁️ Ver detalle de venta:', ventaId);
-            mostrarAlerta('Función de detalle en desarrollo', 'info');
+            
+            // Obtener detalles de la venta desde el servidor
+            const response = await fetch(`/api/ventas/${ventaId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            if (!data.success) {
+                throw new Error(data.message);
+            }
+            
+            const venta = data.venta;
+            this.mostrarModalDetalles(venta);
+            
         } catch (error) {
             console.error('Error viendo detalle:', error);
             mostrarAlerta('Error al cargar detalle de la venta', 'error');
@@ -814,11 +1140,233 @@ class SistemaVentas {
     async reimprimirVenta(ventaId) {
         try {
             console.log('🖨️ Reimprimir venta:', ventaId);
-            mostrarAlerta('Función de reimpresión en desarrollo', 'info');
+            
+            // Obtener detalles de la venta para reimprimir
+            const response = await fetch(`/api/ventas/${ventaId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            if (!data.success) {
+                throw new Error(data.message);
+            }
+            
+            const venta = data.venta;
+            this.imprimirFacturaVenta(venta);
+            mostrarAlerta('Factura enviada a imprimir', 'success');
+            
         } catch (error) {
             console.error('Error reimprimiendo:', error);
             mostrarAlerta('Error al reimprimir la venta', 'error');
         }
+    }
+
+    mostrarModalDetalles(venta) {
+        // Crear el modal de detalles
+        const modalHTML = `
+            <div id="modal-detalle-venta" class="modal-overlay">
+                <div class="modal-detalle">
+                    <div class="modal-header">
+                        <h3>Detalle de Venta #${venta.numero_factura || venta.numero_venta}</h3>
+                        <button class="btn-cerrar-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="info-venta">
+                            <div class="info-grupo">
+                                <h4>Información General</h4>
+                                <p><strong>Fecha:</strong> ${new Date(venta.fecha_venta).toLocaleString()}</p>
+                                <p><strong>Estado:</strong> <span class="estado-${venta.estado}">${venta.estado}</span></p>
+                                <p><strong>Método de Pago:</strong> ${venta.metodo_pago}</p>
+                            </div>
+                            <div class="info-grupo">
+                                <h4>Cliente</h4>
+                                <p><strong>Documento:</strong> ${venta.cliente_documento || 'N/A'}</p>
+                                <p><strong>Nombre:</strong> ${venta.cliente_nombre || 'Cliente General'}</p>
+                                <p><strong>Teléfono:</strong> ${venta.cliente_telefono || 'N/A'}</p>
+                            </div>
+                            <div class="info-grupo">
+                                <h4>Totales</h4>
+                                <p><strong>Subtotal:</strong> $${this.formatearPrecio(venta.subtotal)}</p>
+                                ${venta.descuento ? `<p><strong>Descuento:</strong> $${this.formatearPrecio(venta.descuento)}</p>` : ''}
+                                <p><strong>IVA:</strong> $${this.formatearPrecio(venta.iva)}</p>
+                                <p><strong>Total:</strong> $${this.formatearPrecio(venta.total)}</p>
+                                ${venta.monto_recibido ? `<p><strong>Recibido:</strong> $${this.formatearPrecio(venta.monto_recibido)}</p>` : ''}
+                                ${venta.cambio ? `<p><strong>Cambio:</strong> $${this.formatearPrecio(venta.cambio)}</p>` : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="productos-detalle">
+                            <h4>Productos</h4>
+                            <table class="tabla-productos-detalle">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unit.</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${venta.detalle_ventas?.map(item => `
+                                        <tr>
+                                            <td>${item.codigo || item.producto_id}</td>
+                                            <td>${item.nombre}</td>
+                                            <td>${item.cantidad}</td>
+                                            <td>$${this.formatearPrecio(item.precio_unitario)}</td>
+                                            <td>$${this.formatearPrecio(item.subtotal)}</td>
+                                        </tr>
+                                    `).join('') || '<tr><td colspan="5">No hay productos registrados</td></tr>'}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-reimprimir-modal" data-venta-id="${venta.id}">
+                            🖨️ Imprimir
+                        </button>
+                        <button class="btn-cerrar">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Insertar modal en el DOM
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Event listeners
+        const modal = document.getElementById('modal-detalle-venta');
+        const btnCerrar = modal.querySelector('.btn-cerrar-modal');
+        const btnCerrarFooter = modal.querySelector('.btn-cerrar');
+        const btnReimprimir = modal.querySelector('.btn-reimprimir-modal');
+        
+        // Cerrar modal
+        [btnCerrar, btnCerrarFooter].forEach(btn => {
+            btn.addEventListener('click', () => {
+                modal.remove();
+            });
+        });
+        
+        // Cerrar al hacer clic fuera del modal
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+        
+        // Reimprimir desde el modal
+        btnReimprimir.addEventListener('click', () => {
+            this.imprimirFacturaVenta(venta);
+            mostrarAlerta('Factura enviada a imprimir', 'success');
+        });
+    }
+
+    imprimirFacturaVenta(venta) {
+        // Crear ventana de impresión
+        const ventanaImpresion = window.open('', '_blank');
+        
+        const facturaHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Factura #${venta.numero_factura || venta.numero_venta}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; font-size: 12px; }
+                    .factura-header { text-align: center; margin-bottom: 20px; }
+                    .empresa-info { margin-bottom: 15px; }
+                    .venta-info { display: flex; justify-content: space-between; margin-bottom: 15px; }
+                    .cliente-info { margin-bottom: 15px; }
+                    .productos-tabla { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+                    .productos-tabla th, .productos-tabla td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                    .productos-tabla th { background-color: #f5f5f5; }
+                    .totales { margin-top: 20px; text-align: right; }
+                    .total-final { font-size: 16px; font-weight: bold; }
+                    @media print {
+                        body { margin: 0; }
+                        .no-print { display: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="factura-header">
+                    <h2>FERRETERÍA J&L</h2>
+                    <p>Sistema de Ventas</p>
+                </div>
+                
+                <div class="venta-info">
+                    <div>
+                        <strong>Factura #:</strong> ${venta.numero_factura || venta.numero_venta}<br>
+                        <strong>Fecha:</strong> ${new Date(venta.fecha_venta).toLocaleString()}<br>
+                        <strong>Estado:</strong> ${venta.estado}
+                    </div>
+                    <div>
+                        <strong>Método de Pago:</strong> ${venta.metodo_pago}<br>
+                        ${venta.monto_recibido ? `<strong>Recibido:</strong> $${this.formatearPrecio(venta.monto_recibido)}<br>` : ''}
+                        ${venta.cambio ? `<strong>Cambio:</strong> $${this.formatearPrecio(venta.cambio)}` : ''}
+                    </div>
+                </div>
+                
+                <div class="cliente-info">
+                    <h3>Información del Cliente</h3>
+                    <p><strong>Documento:</strong> ${venta.cliente_documento || 'N/A'}</p>
+                    <p><strong>Nombre:</strong> ${venta.cliente_nombre || 'Cliente General'}</p>
+                    <p><strong>Teléfono:</strong> ${venta.cliente_telefono || 'N/A'}</p>
+                </div>
+                
+                <table class="productos-tabla">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Cant.</th>
+                            <th>Precio Unit.</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${venta.detalle_ventas?.map(item => `
+                            <tr>
+                                <td>${item.codigo || item.producto_id}</td>
+                                <td>${item.nombre}</td>
+                                <td>${item.cantidad}</td>
+                                <td>$${this.formatearPrecio(item.precio_unitario)}</td>
+                                <td>$${this.formatearPrecio(item.subtotal)}</td>
+                            </tr>
+                        `).join('') || '<tr><td colspan="5">No hay productos registrados</td></tr>'}
+                    </tbody>
+                </table>
+                
+                <div class="totales">
+                    <p><strong>Subtotal:</strong> $${this.formatearPrecio(venta.subtotal)}</p>
+                    ${venta.descuento ? `<p><strong>Descuento:</strong> $${this.formatearPrecio(venta.descuento)}</p>` : ''}
+                    <p><strong>IVA:</strong> $${this.formatearPrecio(venta.iva)}</p>
+                    <p class="total-final"><strong>TOTAL:</strong> $${this.formatearPrecio(venta.total)}</p>
+                </div>
+                
+                <div class="no-print" style="margin-top: 20px; text-align: center;">
+                    <button onclick="window.print()">Imprimir</button>
+                    <button onclick="window.close()">Cerrar</button>
+                </div>
+                
+                <script>
+                    window.onload = function() {
+                        window.print();
+                    };
+                </script>
+            </body>
+            </html>
+        `;
+        
+        ventanaImpresion.document.write(facturaHTML);
+        ventanaImpresion.document.close();
     }
 
     generarNumeroFactura() {
@@ -1010,14 +1558,33 @@ class SistemaVentas {
     }
     
     abrirModalNuevoCliente() {
+        console.log('👤 Abriendo modal de nuevo cliente...');
+        
+        // *** CERRAR SOLO OTROS MODALES, NO ESTE ***
+        const modalFactura = document.getElementById('modal-factura');
+        const modalHistorial = document.getElementById('modal-historial');
+        
+        if (modalFactura) {
+            modalFactura.style.display = 'none';
+            modalFactura.classList.remove('modal-force-close');
+        }
+        if (modalHistorial) {
+            modalHistorial.classList.remove('active');
+            modalHistorial.classList.remove('modal-force-close');
+        }
+        
         const modal = document.getElementById('modal-nuevo-cliente');
         const form = document.getElementById('form-nuevo-cliente');
+        
+        // Asegurar que el modal esté limpio
+        modal.classList.remove('modal-force-close');
         
         // Limpiar formulario
         form.reset();
         
         // Mostrar modal
         modal.classList.add('active');
+        console.log('✅ Modal nuevo cliente abierto');
         
         // Focus en el primer campo
         document.getElementById('nuevo-documento').focus();
@@ -1171,4 +1738,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Hacer la instancia accesible globalmente para debugging
     window.sistemaVentas = sistemaVentas;
+    
+    // FUNCIÓN DE EMERGENCIA: Cerrar todos los modales con tecla F12
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'F12') {
+            e.preventDefault();
+            console.log('🚨 EMERGENCIA: Cerrando todos los modales (F12)');
+            sistemaVentas.cerrarModal();
+        }
+    });
 });
