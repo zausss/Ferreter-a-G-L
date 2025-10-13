@@ -1397,13 +1397,20 @@ class SistemaVentas {
         const panelInfo = document.getElementById('panel-cliente-info');
         
         if (tipoCliente === 'consumidor_final') {
-            // Consumidor final
+            // Consumidor final - Campos editables con valores por defecto
             documento.value = '';
-            nombre.value = 'Consumidor Final';
+            nombre.value = '';
             telefono.value = '';
-            documento.disabled = true;
-            nombre.disabled = true;
-            telefono.disabled = true;
+            
+            // PERMITIR EDICIÓN - NO deshabilitar campos
+            documento.disabled = false;
+            nombre.disabled = false;
+            telefono.disabled = false;
+            
+            // Agregar placeholders informativos
+            documento.placeholder = 'Documento (opcional)';
+            nombre.placeholder = 'Nombre del cliente (opcional)';
+            telefono.placeholder = 'Teléfono (opcional)';
             
             grupoBuscador.style.display = 'none';
             panelInfo.style.display = 'none';
@@ -1411,10 +1418,12 @@ class SistemaVentas {
             // Limpiar datos del cliente
             this.clienteActual = {
                 tipo: 'consumidor_final',
-                nombre: 'Consumidor Final',
+                nombre: '',
                 documento: '',
                 telefono: ''
             };
+            
+            console.log('✅ Modo Consumidor Final activado - Campos editables');
         } else {
             // Cliente registrado
             documento.disabled = false;
@@ -1424,10 +1433,17 @@ class SistemaVentas {
             documento.value = '';
             telefono.value = '';
             
+            // Restaurar placeholders normales
+            documento.placeholder = 'Documento del cliente';
+            nombre.placeholder = 'Nombre del cliente';
+            telefono.placeholder = 'Teléfono del cliente';
+            
             grupoBuscador.style.display = 'block';
             
             // Limpiar datos del cliente
             this.clienteActual = {};
+            
+            console.log('✅ Modo Cliente Registrado activado - Buscador habilitado');
         }
     }
     

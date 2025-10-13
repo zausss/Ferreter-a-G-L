@@ -516,11 +516,24 @@ class FacturaController {
     static async imprimirFactura(req, res) {
         try {
             const { id } = req.params;
+            console.log(`🖨️ Iniciando impresión de factura ID: ${id}`);
+            
+            // Obtener información de la empresa
+            const empresaResult = await pool.query(`
+                SELECT * FROM empresa_info ORDER BY id DESC LIMIT 1
+            `);
+            
+            const empresa = empresaResult.rows[0] || {
+                nombre_empresa: 'Ferretería G&L',
+                nit: '900.123.456-7',
+                direccion: 'Dirección de la empresa',
+                telefono: '(57) 555-0123'
+            };
             
             // Obtener factura completa
             const facturaResult = await pool.query(`
                 SELECT f.*, fd.producto_id, fd.producto_codigo, fd.producto_nombre, 
-                       fd.cantidad, fd.precio_unitario, fd.subtotal as detalle_subtotal
+                       fd.cantidad, fd.precio_unitario, fd.subtotal_linea as detalle_subtotal
                 FROM facturas f
                 LEFT JOIN factura_detalles fd ON f.id = fd.factura_id
                 WHERE f.id = $1
@@ -528,17 +541,24 @@ class FacturaController {
             `, [id]);
 
             if (facturaResult.rows.length === 0) {
+                console.log(`❌ Factura ${id} no encontrada`);
                 return res.status(404).send('Factura no encontrada');
             }
+            
+            console.log(`✅ Factura ${id} encontrada con ${facturaResult.rows.length} detalles`);
 
             const factura = facturaResult.rows[0];
-            const detalles = facturaResult.rows.map(row => ({
-                codigo: row.producto_codigo,
-                nombre: row.producto_nombre,
-                cantidad: row.cantidad,
-                precio: row.precio_unitario,
-                subtotal: row.detalle_subtotal
-            }));
+            const detalles = facturaResult.rows
+                .filter(row => row.producto_id) // Solo filas con productos
+                .map(row => ({
+                    codigo: row.producto_codigo || 'N/A',
+                    nombre: row.producto_nombre || 'Producto',
+                    cantidad: row.cantidad || 0,
+                    precio: parseFloat(row.precio_unitario) || 0,
+                    subtotal: parseFloat(row.detalle_subtotal) || 0
+                }));
+
+            console.log(`📦 Procesando ${detalles.length} productos para impresión`);
 
             // Generar HTML para impresión
             const html = `
@@ -546,30 +566,88 @@ class FacturaController {
                 <html>
                 <head>
                     <title>Factura ${factura.numero_factura}</title>
+                    <meta charset="UTF-8">
                     <style>
-                        body { font-family: Arial, sans-serif; margin: 20px; }
-                        .header { text-align: center; margin-bottom: 20px; }
-                        .factura-info { margin-bottom: 20px; }
-                        table { width: 100%; border-collapse: collapse; }
-                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                        th { background-color: #f2f2f2; }
-                        .totales { text-align: right; margin-top: 20px; }
-                        @media print { body { margin: 0; } }
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            margin: 20px; 
+                            color: #333; 
+                        }
+                        .header { 
+                            text-align: center; 
+                            margin-bottom: 30px; 
+                            border-bottom: 2px solid #333; 
+                            padding-bottom: 20px; 
+                        }
+                        .header h1 { 
+                            color: #2c3e50; 
+                            margin-bottom: 5px; 
+                        }
+                        .factura-info { 
+                            margin-bottom: 20px; 
+                            display: flex; 
+                            justify-content: space-between; 
+                        }
+                        .factura-info div {
+                            flex: 1;
+                        }
+                        table { 
+                            width: 100%; 
+                            border-collapse: collapse; 
+                            margin-bottom: 20px; 
+                        }
+                        th, td { 
+                            border: 1px solid #ddd; 
+                            padding: 10px; 
+                            text-align: left; 
+                        }
+                        th { 
+                            background-color: #f8f9fa; 
+                            font-weight: bold; 
+                            color: #495057; 
+                        }
+                        .totales { 
+                            text-align: right; 
+                            margin-top: 20px; 
+                            font-size: 16px; 
+                        }
+                        .totales p { 
+                            margin: 5px 0; 
+                        }
+                        .total-final { 
+                            font-size: 18px; 
+                            font-weight: bold; 
+                            border-top: 2px solid #333; 
+                            padding-top: 10px; 
+                        }
+                        .text-right { text-align: right; }
+                        .text-center { text-align: center; }
+                        @media print { 
+                            body { margin: 0; } 
+                            .no-print { display: none; }
+                        }
                     </style>
                 </head>
                 <body>
                     <div class="header">
-                        <h1>${factura.empresa_nombre}</h1>
-                        <p>NIT: ${factura.empresa_nit}</p>
-                        <p>${factura.empresa_direccion}</p>
-                        <p>Tel: ${factura.empresa_telefono}</p>
+                        <h1>${empresa.nombre_empresa}</h1>
+                        <p><strong>NIT:</strong> ${empresa.nit}</p>
+                        <p><strong>Dirección:</strong> ${empresa.direccion}</p>
+                        <p><strong>Teléfono:</strong> ${empresa.telefono}</p>
                     </div>
                     
                     <div class="factura-info">
-                        <h2>Factura: ${factura.numero_factura}</h2>
-                        <p><strong>Fecha:</strong> ${new Date(factura.fecha_factura).toLocaleDateString()}</p>
-                        <p><strong>Cliente:</strong> ${factura.cliente_nombre}</p>
-                        <p><strong>Documento:</strong> ${factura.cliente_documento}</p>
+                        <div>
+                            <h2>FACTURA N° ${factura.numero_factura}</h2>
+                            <p><strong>Fecha:</strong> ${new Date(factura.fecha_factura).toLocaleDateString('es-ES')}</p>
+                            <p><strong>Método de Pago:</strong> ${factura.metodo_pago || 'No especificado'}</p>
+                        </div>
+                        <div>
+                            <h3>CLIENTE</h3>
+                            <p><strong>Nombre:</strong> ${factura.cliente_nombre || 'Cliente General'}</p>
+                            <p><strong>Documento:</strong> ${factura.cliente_documento || 'N/A'}</p>
+                            <p><strong>Teléfono:</strong> ${factura.cliente_telefono || 'N/A'}</p>
+                        </div>
                     </div>
 
                     <table>
@@ -577,41 +655,106 @@ class FacturaController {
                             <tr>
                                 <th>Código</th>
                                 <th>Producto</th>
-                                <th>Cantidad</th>
-                                <th>Precio Unit.</th>
-                                <th>Subtotal</th>
+                                <th class="text-center">Cantidad</th>
+                                <th class="text-right">Precio Unit.</th>
+                                <th class="text-right">Subtotal</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${detalles.map(det => `
+                            ${detalles.length > 0 ? detalles.map(det => `
                                 <tr>
                                     <td>${det.codigo}</td>
                                     <td>${det.nombre}</td>
-                                    <td>${det.cantidad}</td>
-                                    <td>$${det.precio}</td>
-                                    <td>$${det.subtotal}</td>
+                                    <td class="text-center">${det.cantidad}</td>
+                                    <td class="text-right">$${det.precio.toLocaleString('es-ES', {minimumFractionDigits: 2})}</td>
+                                    <td class="text-right">$${det.subtotal.toLocaleString('es-ES', {minimumFractionDigits: 2})}</td>
                                 </tr>
-                            `).join('')}
+                            `).join('') : `
+                                <tr>
+                                    <td colspan="5" class="text-center">No hay productos en esta factura</td>
+                                </tr>
+                            `}
                         </tbody>
                     </table>
 
                     <div class="totales">
-                        <p><strong>Subtotal: $${factura.subtotal}</strong></p>
-                        <p><strong>IVA: $${factura.iva}</strong></p>
-                        <p><strong>Total: $${factura.total}</strong></p>
+                        <p>Subtotal: $${parseFloat(factura.subtotal || 0).toLocaleString('es-ES', {minimumFractionDigits: 2})}</p>
+                        <p>IVA: $${parseFloat(factura.iva || 0).toLocaleString('es-ES', {minimumFractionDigits: 2})}</p>
+                        <p class="total-final">TOTAL: $${parseFloat(factura.total || 0).toLocaleString('es-ES', {minimumFractionDigits: 2})}</p>
                     </div>
 
-                    <script>window.print();</script>
+                    <div class="no-print" style="text-align: center; margin-top: 30px;">
+                        <p>Esta ventana se cerrará automáticamente después de imprimir</p>
+                    </div>
+
+                    <script>
+                        window.onload = function() {
+                            // Imprimir automáticamente al cargar
+                            setTimeout(() => {
+                                window.print();
+                                // Cerrar la ventana después de imprimir (si el usuario no cancela)
+                                setTimeout(() => {
+                                    window.close();
+                                }, 1000);
+                            }, 500);
+                        }
+                    </script>
                 </body>
                 </html>
             `;
 
-            res.setHeader('Content-Type', 'text/html');
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
             res.send(html);
+            console.log(`✅ Factura ${id} enviada para impresión`);
             
         } catch (error) {
-            console.error('Error imprimiendo factura:', error);
-            res.status(500).send('Error al generar la factura');
+            console.error('❌ Error imprimiendo factura:', error);
+            
+            // Enviar página de error HTML en lugar de texto plano
+            const errorHtml = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Error - Factura no disponible</title>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            margin: 50px; 
+                            text-align: center; 
+                            color: #dc3545; 
+                        }
+                        .error-container {
+                            border: 2px solid #dc3545;
+                            border-radius: 10px;
+                            padding: 30px;
+                            max-width: 500px;
+                            margin: 0 auto;
+                        }
+                        h1 { color: #dc3545; }
+                        .btn {
+                            background: #6c757d;
+                            color: white;
+                            padding: 10px 20px;
+                            border: none;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            margin-top: 20px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="error-container">
+                        <h1>⚠️ Error al Generar Factura</h1>
+                        <p>No se pudo generar la factura para impresión.</p>
+                        <p>Por favor, verifique que la factura existe y tiene productos asociados.</p>
+                        <button class="btn" onclick="window.close()">Cerrar Ventana</button>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            res.status(500).setHeader('Content-Type', 'text/html; charset=utf-8').send(errorHtml);
         }
     }
 }
