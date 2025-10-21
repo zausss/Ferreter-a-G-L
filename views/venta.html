@@ -541,6 +541,54 @@
         </div>
     </div>
 
+    <!-- Modal Venta Exitosa con Imprimir -->
+    <div class="modal-overlay" id="modal-venta-exitosa">
+        <div class="modal-container modal-venta-exitosa">
+            <div class="modal-header-exitosa">
+                <div class="icono-exito">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="3">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22,4 12,14.01 9,11.01"></polyline>
+                    </svg>
+                </div>
+                <h3>¡Venta Realizada Exitosamente!</h3>
+                <p class="numero-venta">Número de venta: <span id="numero-venta-exitosa"></span></p>
+            </div>
+            
+            <div class="modal-body-exitosa">
+                <div class="resumen-venta">
+                    <div class="info-venta">
+                        <p><strong>Cliente:</strong> <span id="cliente-venta-exitosa"></span></p>
+                        <p><strong>Total:</strong> <span id="total-venta-exitosa"></span></p>
+                        <p><strong>Fecha:</strong> <span id="fecha-venta-exitosa"></span></p>
+                    </div>
+                </div>
+                
+                <div class="acciones-venta-exitosa">
+                    <button class="btn-imprimir-inmediato" id="btn-imprimir-inmediato">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 6,2 18,2 18,9"></polyline>
+                            <path d="M6,18H4a2,2,0,0,1-2-2V11a2,2,0,0,1,2,2H20a2,2,0,0,1,2,2v5a2,2,0,0,1-2,2H18"></path>
+                            <rect x="6" y="14" width="12" height="8"></rect>
+                        </svg>
+                        Imprimir Factura
+                    </button>
+                    <button class="btn-nueva-venta-inmediato" id="btn-nueva-venta-inmediato">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                        Nueva Venta
+                    </button>
+                    <button class="btn-cerrar-venta-exitosa" id="btn-cerrar-venta-exitosa">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script src="/js/alerts.js"></script>
 <script src="/js/ventas.js"></script>
 <script src="/js/menu.js"></script>

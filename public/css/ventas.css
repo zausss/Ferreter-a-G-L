@@ -174,17 +174,19 @@
 }
 
 .resultado-item {
-    padding: 12px;
+    padding: 15px;
     border-bottom: 1px solid #e9ecef;
-    cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
+    background: white;
 }
 
 .resultado-item:hover {
     background: #f8f9fa;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .resultado-item:last-child {
@@ -193,26 +195,104 @@
 
 .producto-info {
     flex: 1;
+    margin-right: 15px;
 }
 
 .producto-nombre {
     font-weight: 600;
     color: #2c3e50;
+    font-size: 16px;
+    margin-bottom: 4px;
 }
 
 .producto-codigo {
     font-size: 12px;
     color: #6c757d;
-}
-
-.producto-precio {
-    font-weight: 600;
-    color: #28a745;
+    margin-bottom: 2px;
 }
 
 .producto-stock {
     font-size: 12px;
     color: #6c757d;
+    margin-bottom: 2px;
+}
+
+.producto-precio {
+    font-weight: 600;
+    color: #28a745;
+    font-size: 18px;
+}
+
+.producto-acciones {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.cantidad-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.cantidad-container label {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.input-cantidad {
+    width: 60px;
+    padding: 8px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 600;
+    transition: border-color 0.3s ease;
+}
+
+.input-cantidad:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+.btn-agregar {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-agregar:hover:not(:disabled) {
+    background: linear-gradient(135deg, #218838, #1aa179);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(40,167,69,0.3);
+}
+
+.btn-agregar:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.producto-sin-stock {
+    opacity: 0.6;
+    background: #f8f9fa !important;
+}
+
+.producto-sin-stock:hover {
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 /* Carrito de Compras */
@@ -1709,5 +1789,322 @@
     .tabla-productos-detalle th,
     .tabla-productos-detalle td {
         padding: 8px 4px;
+    }
+}
+
+/* ===== INDICADOR DE PROGRESO PARA VENTAS ===== */
+#indicador-progreso-venta {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    /* Permitir scroll de fondo */
+    pointer-events: auto;
+}
+
+.overlay-progreso {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    /* Permitir scroll - solo el modal captura eventos */
+    pointer-events: none;
+}
+
+.modal-progreso {
+    background: white;
+    padding: 40px 50px;
+    border-radius: 16px;
+    text-align: center;
+    min-width: 400px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    transform: scale(1);
+    animation: aparecerProgreso 0.4s ease-out;
+    /* Permitir interacción solo con el modal */
+    pointer-events: auto;
+    /* Centrado perfecto */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    z-index: 100000;
+    border: 3px solid #007bff;
+}
+
+@keyframes aparecerProgreso {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.7);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.progreso-contenido {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.progreso-texto {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    min-height: 25px;
+}
+
+.progreso-barra {
+    width: 100%;
+    height: 12px;
+    background: #e9ecef;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #dee2e6;
+}
+
+.progreso-relleno {
+    height: 100%;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    border-radius: 6px;
+    transition: width 0.4s ease;
+    position: relative;
+}
+
+.progreso-relleno::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: progreso-brillo 2s infinite;
+}
+
+@keyframes progreso-brillo {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.progreso-porcentaje {
+    font-size: 16px;
+    font-weight: 700;
+    color: #007bff;
+    margin-top: 5px;
+}
+
+/* ===== MODAL VENTA EXITOSA ===== */
+#modal-venta-exitosa {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none; /* Oculto por defecto */
+    align-items: center;
+    justify-content: center;
+    z-index: 100001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#modal-venta-exitosa.active {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-venta-exitosa {
+    max-width: 500px;
+    width: 90%;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    animation: aparecerExito 0.5s ease-out;
+}
+
+@keyframes aparecerExito {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-header-exitosa {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+}
+
+.icono-exito {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.modal-header-exitosa h3 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.numero-venta {
+    margin: 0;
+    font-size: 16px;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.modal-body-exitosa {
+    padding: 30px;
+}
+
+.resumen-venta {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-left: 4px solid #28a745;
+}
+
+.info-venta p {
+    margin: 8px 0;
+    font-size: 16px;
+    color: #2c3e50;
+}
+
+.info-venta span {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.acciones-venta-exitosa {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.btn-imprimir-inmediato {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.btn-imprimir-inmediato:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+.btn-nueva-venta-inmediato {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-nueva-venta-inmediato:hover {
+    background: linear-gradient(135deg, #218838, #1aa179);
+    transform: translateY(-1px);
+}
+
+.btn-cerrar-venta-exitosa {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cerrar-venta-exitosa:hover {
+    background: #5a6268;
+}
+
+/* Responsive para modal de venta exitosa */
+@media (max-width: 768px) {
+    .modal-venta-exitosa {
+        max-width: 95%;
+        margin: 20px;
+    }
+    
+    .modal-header-exitosa {
+        padding: 20px;
+    }
+    
+    .modal-header-exitosa h3 {
+        font-size: 20px;
+    }
+    
+    .modal-body-exitosa {
+        padding: 20px;
+    }
+    
+    .acciones-venta-exitosa {
+        gap: 12px;
+    }
+    
+    .btn-imprimir-inmediato {
+        padding: 12px 20px;
+        font-size: 16px;
     }
 }

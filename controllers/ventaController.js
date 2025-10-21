@@ -219,34 +219,39 @@ class VentaController {
             await client.query('BEGIN');
             console.log('🔄 Transacción iniciada');
             
-            // Verificar stock de productos de forma más segura
+            // Verificar stock de productos de forma optimizada (una sola consulta)
             console.log('📦 Verificando stock...');
+            const productIds = productos.map(p => p.id);
+            const stockQuery = `
+                SELECT id, nombre, stock_actual 
+                FROM productos 
+                WHERE id = ANY($1)
+            `;
+            const stockResult = await client.query(stockQuery, [productIds]);
+            
+            // Verificar que todos los productos existen y tienen stock suficiente
+            const stockMap = {};
+            stockResult.rows.forEach(row => {
+                stockMap[row.id] = {
+                    nombre: row.nombre,
+                    stock: parseInt(row.stock_actual)
+                };
+            });
+            
             for (const item of productos) {
-                try {
-                    const stockQuery = 'SELECT stock_actual FROM productos WHERE id = $1';
-                    const stockResult = await client.query(stockQuery, [item.id]);
-                    
-                    if (stockResult.rows.length === 0) {
-                        throw new Error(`Producto con ID ${item.id} no encontrado`);
-                    }
-                    
-                    const stockDisponible = parseInt(stockResult.rows[0].stock_actual);
-                    const cantidadSolicitada = parseInt(item.cantidad);
-                    
-                    if (stockDisponible < cantidadSolicitada) {
-                        throw new Error(`Stock insuficiente para ${item.nombre}. Disponible: ${stockDisponible}, solicitado: ${cantidadSolicitada}`);
-                    }
-                    
-                    console.log(`✅ Stock verificado para ${item.nombre}: ${stockDisponible} >= ${cantidadSolicitada}`);
-                } catch (stockError) {
-                    await client.query('ROLLBACK');
-                    console.error('❌ Error verificando stock:', stockError.message);
-                    return res.status(400).json({ 
-                        success: false, 
-                        message: stockError.message
-                    });
+                const stockInfo = stockMap[item.id];
+                
+                if (!stockInfo) {
+                    throw new Error(`Producto con ID ${item.id} no encontrado`);
+                }
+                
+                const cantidadSolicitada = parseInt(item.cantidad);
+                if (stockInfo.stock < cantidadSolicitada) {
+                    throw new Error(`Stock insuficiente para ${stockInfo.nombre}. Disponible: ${stockInfo.stock}, solicitado: ${cantidadSolicitada}`);
                 }
             }
+            
+            console.log('✅ Stock verificado para todos los productos');
             
             // Generar número de factura simple y seguro
             const numeroFactura = await VentaController.generarNumeroFacturaSeguro();
@@ -305,53 +310,42 @@ class VentaController {
             const venta = ventaResult.rows[0];
             console.log(`✅ Venta creada con ID: ${venta.id}`);
             
-            // Actualizar stock de productos
+            // Actualizar stock de productos de forma optimizada
             console.log('📦 Actualizando stock...');
-            for (const item of productos) {
-                try {
-                    const updateStockQuery = `
-                        UPDATE productos 
-                        SET stock_actual = stock_actual - $1 
-                        WHERE id = $2 AND stock_actual >= $1
-                        RETURNING stock_actual
-                    `;
-                    
-                    const updateResult = await client.query(updateStockQuery, [item.cantidad, item.id]);
-                    
-                    if (updateResult.rows.length === 0) {
-                        throw new Error(`No se pudo actualizar stock para producto ID ${item.id}`);
-                    }
-                    
-                    const nuevoStock = updateResult.rows[0].stock_actual;
-                    console.log(`✅ Stock actualizado para producto ${item.id}: nuevo stock = ${nuevoStock}`);
-                    
-                } catch (updateError) {
-                    await client.query('ROLLBACK');
-                    console.error('❌ Error actualizando stock:', updateError.message);
-                    return res.status(500).json({ 
-                        success: false, 
-                        message: `Error actualizando inventario: ${updateError.message}`
-                    });
-                }
+            
+            // Crear consulta para actualizar múltiples productos de una vez
+            const updateCases = productos.map((item, index) => 
+                `WHEN id = $${index * 2 + 1} THEN stock_actual - $${index * 2 + 2}`
+            ).join(' ');
+            
+            const updateValues = productos.flatMap(item => [item.id, item.cantidad]);
+            const productIdsForUpdate = productos.map(p => p.id);
+            
+            const updateStockQuery = `
+                UPDATE productos 
+                SET stock_actual = CASE 
+                    ${updateCases}
+                    ELSE stock_actual 
+                END
+                WHERE id = ANY($${updateValues.length + 1})
+                RETURNING id, stock_actual, nombre
+            `;
+            
+            const updateParams = [...updateValues, productIdsForUpdate];
+            const updateResult = await client.query(updateStockQuery, updateParams);
+            
+            // Verificar que se actualizaron todos los productos
+            if (updateResult.rows.length !== productos.length) {
+                throw new Error('Error: No se pudieron actualizar todos los productos');
             }
+            
+            console.log(`✅ Stock actualizado para ${updateResult.rows.length} productos`);
             
             // Confirmar transacción
             await client.query('COMMIT');
             console.log('✅ Transacción confirmada');
             
-            // Crear factura completa
-            console.log('📄 Creando factura para la venta...');
-            const facturaResult = await FacturaController.crearFacturaDesdeVenta({
-                cliente: cliente,
-                productos: productos,
-                metodoPago: metodoPago,
-                montoRecibido: montoRecibido,
-                subtotal: subtotal || (total - (iva || 0)),
-                iva: iva || 0,
-                total: total
-            }, venta.id);
-            
-            // Respuesta exitosa
+            // Respuesta exitosa inmediata (sin esperar factura)
             const respuesta = {
                 success: true,
                 message: 'Venta procesada exitosamente',
@@ -363,21 +357,31 @@ class VentaController {
                     metodo_pago: venta.metodo_pago,
                     estado: venta.estado
                 },
-                numeroFactura: numeroFactura,
-                factura: facturaResult.success ? {
-                    id: facturaResult.factura?.id,
-                    numero: facturaResult.numeroFactura
-                } : null
+                numeroVenta: numeroFactura,
+                numeroFactura: numeroFactura
             };
-            
-            if (facturaResult.success) {
-                console.log(`📄 Factura ${facturaResult.numeroFactura} creada exitosamente`);
-            } else {
-                console.log(`⚠️ Venta exitosa pero error creando factura: ${facturaResult.error}`);
-            }
             
             console.log('🎉 Venta procesada exitosamente');
             res.status(201).json(respuesta);
+            
+            // Crear factura en background (no bloquear respuesta)
+            setImmediate(async () => {
+                try {
+                    console.log('📄 Creando factura en background...');
+                    await FacturaController.crearFacturaDesdeVenta({
+                        cliente: cliente,
+                        productos: productos,
+                        metodoPago: metodoPago,
+                        montoRecibido: montoRecibido,
+                        subtotal: subtotal || (total - (iva || 0)),
+                        iva: iva || 0,
+                        total: total
+                    }, venta.id);
+                    console.log('📄 Factura creada en background exitosamente');
+                } catch (facturaError) {
+                    console.error('⚠️ Error creando factura en background:', facturaError.message);
+                }
+            });
             
         } catch (error) {
             // Manejar cualquier error

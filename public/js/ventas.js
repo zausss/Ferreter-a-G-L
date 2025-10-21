@@ -10,8 +10,6 @@ class SistemaVentas {
     }
 
     init() {
-        console.log('🔄 Iniciando sistema de ventas...');
-        
         // Asegurar que los modales estén cerrados al inicializar
         this.forzarCierreInicial();
         
@@ -24,92 +22,10 @@ class SistemaVentas {
         this.configurarModalNuevoCliente();
         this.configurarModalHistorial();
         this.actualizarTotales();
-        
-        console.log('✅ Sistema de ventas inicializado correctamente');
-        
-        // DESHABILITADO TEMPORALMENTE: Observador puede estar causando apertura automática
-        // this.configurarObservadorModales();
-    }
-    
-    configurarObservadorModales() {
-        const modalFactura = document.getElementById('modal-factura');
-        const modalNuevoCliente = document.getElementById('modal-nuevo-cliente');
-        const modalHistorial = document.getElementById('modal-historial');
-        
-        // Observer para modal-nuevo-cliente
-        if (modalNuevoCliente) {
-            const observer = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    if (mutation.attributeName === 'class') {
-                        if (modalNuevoCliente.classList.contains('active') && !modalNuevoCliente.classList.contains('modal-force-close')) {
-                            console.log('🔍 Modal nuevo cliente se abrió - cerrando otros modales');
-                            // Cerrar otros modales SUAVEMENTE
-                            setTimeout(() => {
-                                if (modalFactura && modalFactura.style.display !== 'none') {
-                                    modalFactura.style.display = 'none';
-                                }
-                                if (modalHistorial && modalHistorial.classList.contains('active')) {
-                                    modalHistorial.classList.remove('active');
-                                }
-                            }, 50);
-                        }
-                    }
-                });
-            });
-            observer.observe(modalNuevoCliente, { attributes: true });
-        }
-        
-        // Observer para modal-historial
-        if (modalHistorial) {
-            const observer = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    if (mutation.attributeName === 'class') {
-                        if (modalHistorial.classList.contains('active') && !modalHistorial.classList.contains('modal-force-close')) {
-                            console.log('🔍 Modal historial se abrió - cerrando otros modales');
-                            // Cerrar otros modales SUAVEMENTE
-                            setTimeout(() => {
-                                if (modalFactura && modalFactura.style.display !== 'none') {
-                                    modalFactura.style.display = 'none';
-                                }
-                                if (modalNuevoCliente && modalNuevoCliente.classList.contains('active')) {
-                                    modalNuevoCliente.classList.remove('active');
-                                }
-                            }, 50);
-                        }
-                    }
-                });
-            });
-            observer.observe(modalHistorial, { attributes: true });
-        }
-        
-        // Observer para modal-factura
-        if (modalFactura) {
-            const observer = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    if (mutation.attributeName === 'style' && modalFactura.style.display === 'block') {
-                        console.log('🔍 Modal factura se abrió - cerrando otros modales');
-                        // Cerrar otros modales SUAVEMENTE
-                        setTimeout(() => {
-                            if (modalNuevoCliente && modalNuevoCliente.classList.contains('active')) {
-                                modalNuevoCliente.classList.remove('active');
-                            }
-                            if (modalHistorial && modalHistorial.classList.contains('active')) {
-                                modalHistorial.classList.remove('active');
-                            }
-                        }, 50);
-                    }
-                });
-            });
-            observer.observe(modalFactura, { attributes: true });
-        }
-        
-        console.log('🔍 Observador de modales configurado');
     }
     
     // *** FUNCIÓN DE EMERGENCIA TOTAL ***
     emergenciaTotal() {
-        console.log('🚨 EMERGENCIA TOTAL - Reseteando toda la interfaz de modales...');
-        
         // 1. Remover TODAS las clases que puedan mantener modales abiertos
         document.querySelectorAll('*[class*="modal"], *[class*="active"], *[class*="open"], *[class*="show"]').forEach(el => {
             el.classList.remove('active', 'open', 'show', 'visible');
@@ -119,7 +35,7 @@ class SistemaVentas {
         });
         
         // 2. Resetear específicamente todos los modales conocidos
-        const modalIds = ['modal-factura', 'modal-nuevo-cliente', 'modal-historial', 'modal-detalle-venta'];
+        const modalIds = ['modal-factura', 'modal-nuevo-cliente', 'modal-historial', 'modal-detalle-venta', 'modal-venta-exitosa'];
         modalIds.forEach(id => {
             const modal = document.getElementById(id);
             if (modal) {
@@ -150,18 +66,15 @@ class SistemaVentas {
                 alert('✅ EMERGENCIA TOTAL: Todos los modales reseteados');
             }
         }, 100);
-        
-        console.log('✅ Emergencia total completada');
     }
     
     // Función específica para el cierre inicial (más simple y directa)
     forzarCierreInicial() {
-        console.log('🔒 Forzando cierre inicial de modales...');
-        
         // Método directo sin timeouts ni observadores
         const modalFactura = document.getElementById('modal-factura');
         const modalNuevoCliente = document.getElementById('modal-nuevo-cliente');
         const modalHistorial = document.getElementById('modal-historial');
+        const modalVentaExitosa = document.getElementById('modal-venta-exitosa');
         
         if (modalFactura) {
             modalFactura.classList.remove('show');
@@ -181,6 +94,12 @@ class SistemaVentas {
             modalHistorial.style.visibility = 'hidden';
         }
         
+        if (modalVentaExitosa) {
+            modalVentaExitosa.classList.remove('active');
+            modalVentaExitosa.style.display = 'none';
+            modalVentaExitosa.style.visibility = 'hidden';
+        }
+        
         // Limpiar cualquier modal dinámico
         const modalDetalle = document.getElementById('modal-detalle-venta');
         if (modalDetalle) {
@@ -197,9 +116,11 @@ class SistemaVentas {
                 modalHistorial.style.display = '';
                 modalHistorial.style.visibility = '';
             }
+            if (modalVentaExitosa) {
+                modalVentaExitosa.style.display = '';
+                modalVentaExitosa.style.visibility = '';
+            }
         }, 100);
-        
-        console.log('✅ Cierre inicial completado');
     }
 
     configurarEventListeners() {
@@ -238,6 +159,11 @@ class SistemaVentas {
         document.getElementById('btn-imprimir').addEventListener('click', () => this.imprimirFactura());
         document.getElementById('btn-nueva-venta-modal').addEventListener('click', () => this.nuevaVentaDesdeModal());
         document.getElementById('btn-cerrar-modal').addEventListener('click', () => this.cerrarModal());
+        
+        // Modal Venta Exitosa
+        document.getElementById('btn-imprimir-inmediato').addEventListener('click', () => this.imprimirFacturaInmediato());
+        document.getElementById('btn-nueva-venta-inmediato').addEventListener('click', () => this.nuevaVentaInmediato());
+        document.getElementById('btn-cerrar-venta-exitosa').addEventListener('click', () => this.cerrarModalVentaExitosa());
         
         // Cerrar modal con ESC (mejorado para todos los modales)
         document.addEventListener('keydown', (e) => {
@@ -367,11 +293,25 @@ class SistemaVentas {
                 }
             });
             
+            console.log('🔍 Respuesta de búsqueda:', response.status, response.statusText);
+            
             if (!response.ok) {
-                throw new Error('Error al buscar productos');
+                // Intentar leer el error como texto primero
+                const errorText = await response.text();
+                console.error('❌ Error del servidor:', errorText);
+                throw new Error(`Error ${response.status}: ${errorText || 'Error al buscar productos'}`);
+            }
+            
+            // Verificar que la respuesta es JSON válido
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                const responseText = await response.text();
+                console.error('❌ Respuesta no es JSON:', responseText);
+                throw new Error('El servidor no devolvió datos JSON válidos');
             }
             
             const productos = await response.json();
+            console.log('✅ Productos encontrados:', productos.length);
             this.mostrarResultadosBusqueda(productos);
             
         } catch (error) {
@@ -395,22 +335,52 @@ class SistemaVentas {
                 <div class="producto-info">
                     <div class="producto-nombre">${producto.nombre}</div>
                     <div class="producto-codigo">Código: ${producto.codigo}</div>
-                    <div class="producto-stock">Stock: ${producto.stock} ${producto.unidad_medida}</div>
+                    <div class="producto-stock">Stock: ${producto.stock} ${producto.unidad_medida || 'unidades'}</div>
+                    <div class="producto-precio">$${this.formatearPrecio(producto.precio)}</div>
                 </div>
-                <div class="producto-precio">$${this.formatearPrecio(producto.precio)}</div>
+                <div class="producto-acciones">
+                    <div class="cantidad-container">
+                        <label for="cantidad-${producto.id}">Cantidad:</label>
+                        <input type="number" 
+                               id="cantidad-${producto.id}"
+                               class="input-cantidad" 
+                               min="1" 
+                               max="${producto.stock}" 
+                               value="1"
+                               step="1">
+                    </div>
+                    <button class="btn btn-agregar" 
+                            onclick="sistemaVentas.agregarAlCarritoConCantidad(${producto.id})"
+                            ${producto.stock <= 0 ? 'disabled' : ''}>
+                        <i class="fas fa-plus"></i> Agregar
+                    </button>
+                </div>
             </div>
         `).join('');
         
         resultados.style.display = 'block';
         
-        // Agregar event listeners a los resultados
-        resultados.querySelectorAll('.resultado-item').forEach(item => {
-            if (!item.classList.contains('producto-sin-stock')) {
-                item.addEventListener('click', () => {
-                    const producto = JSON.parse(item.dataset.producto);
-                    this.agregarAlCarrito(producto);
-                });
-            }
+        // Agregar event listeners para validación de cantidad
+        resultados.querySelectorAll('.input-cantidad').forEach(input => {
+            input.addEventListener('input', (e) => {
+                const valor = parseInt(e.target.value);
+                const max = parseInt(e.target.max);
+                
+                if (valor > max) {
+                    e.target.value = max;
+                    mostrarAlerta(`Cantidad máxima disponible: ${max}`, 'warning');
+                } else if (valor < 1) {
+                    e.target.value = 1;
+                }
+            });
+            
+            // Permitir usar Enter para agregar al carrito
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const productId = input.id.replace('cantidad-', '');
+                    this.agregarAlCarritoConCantidad(parseInt(productId));
+                }
+            });
         });
     }
 
@@ -454,6 +424,47 @@ class SistemaVentas {
         document.getElementById('resultados-busqueda').style.display = 'none';
         
         mostrarAlerta('Producto agregado al carrito', 'success');
+    }
+
+    agregarAlCarritoConCantidad(productoId) {
+        console.log('📦 Agregando producto con cantidad:', productoId);
+        
+        // Buscar el producto en los resultados de búsqueda
+        const resultadoItem = document.querySelector(`[data-producto*='"id":${productoId}']`);
+        if (!resultadoItem) {
+            mostrarAlerta('Error: No se pudo encontrar el producto', 'error');
+            return;
+        }
+        
+        const producto = JSON.parse(resultadoItem.dataset.producto);
+        const inputCantidad = document.getElementById(`cantidad-${productoId}`);
+        const cantidad = parseInt(inputCantidad.value) || 1;
+        
+        console.log('📊 Datos del producto:', {
+            id: producto.id,
+            nombre: producto.nombre,
+            cantidad: cantidad,
+            stock: producto.stock
+        });
+        
+        // Validar cantidad
+        if (cantidad < 1) {
+            mostrarAlerta('La cantidad debe ser mayor a 0', 'warning');
+            inputCantidad.value = 1;
+            return;
+        }
+        
+        if (cantidad > producto.stock) {
+            mostrarAlerta(`Stock insuficiente. Disponible: ${producto.stock}`, 'warning');
+            inputCantidad.value = producto.stock;
+            return;
+        }
+        
+        // Usar la función existente agregarAlCarrito
+        this.agregarAlCarrito(producto, cantidad);
+        
+        // Resetear la cantidad del input a 1 para la próxima vez
+        inputCantidad.value = 1;
     }
 
     actualizarCarrito() {
@@ -645,11 +656,19 @@ class SistemaVentas {
         const btnProcesar = document.getElementById('btn-procesar');
         const textoOriginal = btnProcesar.textContent;
         
+        // Crear indicador de progreso mejorado
+        this.mostrarIndicadorProgreso();
+        
         try {
             // Mostrar estado de carga
             console.log('⏳ Cambiando estado del botón a "Procesando..."');
             btnProcesar.textContent = 'Procesando...';
             btnProcesar.disabled = true;
+            
+            // Pequeña pausa para que la UI se actualice
+            await new Promise(resolve => setTimeout(resolve, 50));
+            
+            this.actualizarProgreso('Preparando datos de venta...', 25);
             
             // Preparar datos de la venta con números correctamente formateados
             const subtotalCalculado = this.carrito.reduce((sum, item) => sum + item.subtotal, 0);
@@ -683,6 +702,8 @@ class SistemaVentas {
                 montoRecibido: ventaData.montoRecibido
             });
             
+            this.actualizarProgreso('Enviando venta al servidor...', 50);
+            
             const token = localStorage.getItem('token');
             const response = await fetch('/api/ventas', {
                 method: 'POST',
@@ -693,85 +714,189 @@ class SistemaVentas {
                 body: JSON.stringify(ventaData)
             });
             
+            this.actualizarProgreso('Procesando respuesta...', 75);
+            
+            console.log('📡 Respuesta recibida:', {
+                status: response.status,
+                statusText: response.statusText,
+                headers: Object.fromEntries(response.headers.entries()),
+                url: response.url
+            });
+            
+            // Verificar el content-type antes de intentar parsear JSON
+            const contentType = response.headers.get("content-type");
+            console.log('📄 Content-Type:', contentType);
+            
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Error al procesar la venta');
+                let errorMessage = `Error ${response.status}: ${response.statusText}`;
+                
+                try {
+                    if (contentType && contentType.includes("application/json")) {
+                        const error = await response.json();
+                        errorMessage = error.message || errorMessage;
+                    } else {
+                        // Si no es JSON, leer como texto para debugging
+                        const errorText = await response.text();
+                        console.error('❌ Respuesta de error (no JSON):', errorText.substring(0, 500));
+                        errorMessage = `Error del servidor: ${errorText.substring(0, 100)}...`;
+                    }
+                } catch (parseError) {
+                    console.error('❌ Error parseando respuesta de error:', parseError);
+                }
+                
+                throw new Error(errorMessage);
+            }
+            
+            // Verificar que la respuesta exitosa sea JSON válido
+            if (!contentType || !contentType.includes("application/json")) {
+                const responseText = await response.text();
+                console.error('❌ Respuesta exitosa no es JSON:', responseText.substring(0, 500));
+                throw new Error('El servidor devolvió una respuesta no válida (no JSON)');
             }
             
             const resultado = await response.json();
             console.log('✅ Respuesta del servidor:', resultado);
             
+            this.actualizarProgreso('Generando factura...', 90);
+            
             // Guardar información de la venta para la factura
             this.clienteActual = ventaData.cliente;
             this.ventaActual = {
                 ...ventaData,
-                numero: resultado.numeroVenta,
+                numero: resultado.numeroVenta || resultado.numeroFactura,
                 fecha: new Date().toLocaleDateString(),
                 hora: new Date().toLocaleTimeString()
             };
             
-            // Mostrar factura
-            this.mostrarFactura();
+            console.log('📋 Datos de venta actual preparados:', {
+                numero: this.ventaActual.numero,
+                cliente: this.clienteActual.nombre,
+                total: this.ventaActual.total
+            });
             
-            mostrarAlerta('Venta procesada exitosamente', 'success');
+            this.actualizarProgreso('Completando...', 100);
+            
+            // Pequeña pausa antes de mostrar el modal de éxito
+            await new Promise(resolve => setTimeout(resolve, 200));
+            
+            // Ocultar indicador de progreso
+            this.ocultarIndicadorProgreso();
+            
+            // Mostrar modal de venta exitosa con opción de imprimir
+            this.mostrarModalVentaExitosa();
+            
+            // Limpiar estado después de mostrar modal
+            setTimeout(() => {
+                this.limpiarEstadoPostVenta();
+            }, 300);
             
         } catch (error) {
             console.error('Error:', error);
+            this.ocultarIndicadorProgreso();
             mostrarAlerta(error.message || 'Error al procesar la venta', 'error');
         } finally {
             // Restaurar botón
             console.log('🔄 Restaurando botón:', textoOriginal);
             btnProcesar.textContent = textoOriginal;
             btnProcesar.disabled = false;
+            this.ocultarIndicadorProgreso();
         }
     }
 
     mostrarFactura() {
-        // Llenar información de la factura
-        document.getElementById('numero-factura').textContent = this.ventaActual.numero || this.numeroFactura;
-        document.getElementById('fecha-factura').textContent = this.ventaActual.fecha;
-        document.getElementById('hora-factura').textContent = this.ventaActual.hora;
-        
-        // Información del cliente
-        document.getElementById('factura-documento').textContent = this.clienteActual.documento || 'N/A';
-        document.getElementById('factura-nombre').textContent = this.clienteActual.nombre;
-        document.getElementById('factura-telefono').textContent = this.clienteActual.telefono || 'N/A';
-        
-        // Productos
-        const productosFactura = document.getElementById('factura-productos');
-        productosFactura.innerHTML = this.carrito.map(item => `
-            <tr>
-                <td>${item.codigo}</td>
-                <td>${item.nombre}</td>
-                <td>${item.cantidad}</td>
-                <td>$${this.formatearPrecio(item.precio)}</td>
-                <td>$${this.formatearPrecio(item.subtotal)}</td>
-            </tr>
-        `).join('');
-        
-        // Totales
-        document.getElementById('factura-subtotal').textContent = `$${this.formatearPrecio(this.ventaActual.subtotal)}`;
-        document.getElementById('factura-iva').textContent = `$${this.formatearPrecio(this.ventaActual.iva)}`;
-        document.getElementById('factura-total').textContent = `$${this.formatearPrecio(this.ventaActual.total)}`;
-        
-        // Información de pago
-        const metodoPago = this.ventaActual.tipo_pago || this.ventaActual.metodoPago || 'efectivo';
-        let textoMetodo = metodoPago.charAt(0).toUpperCase() + metodoPago.slice(1);
-        document.getElementById('factura-metodo-pago').textContent = textoMetodo;
-        
-        const infoEfectivo = document.getElementById('info-efectivo');
-        if (metodoPago === 'efectivo') {
-            document.getElementById('factura-recibido').textContent = `$${this.formatearPrecio(this.ventaActual.montoRecibido)}`;
-            document.getElementById('factura-cambio').textContent = `$${this.formatearPrecio(this.ventaActual.montoRecibido - this.ventaActual.total)}`;
-            infoEfectivo.style.display = 'block';
-        } else {
-            infoEfectivo.style.display = 'none';
+        console.log('🎫 Iniciando mostrarFactura()');
+        console.log('📋 Datos para factura:', {
+            ventaActual: this.ventaActual,
+            clienteActual: this.clienteActual,
+            carrito: this.carrito
+        });
+
+        try {
+            // Llenar información de la factura
+            console.log('📝 Llenando información básica...');
+            document.getElementById('numero-factura').textContent = this.ventaActual.numero || this.numeroFactura;
+            document.getElementById('fecha-factura').textContent = this.ventaActual.fecha;
+            document.getElementById('hora-factura').textContent = this.ventaActual.hora;
+            
+            // Información del cliente
+            console.log('👤 Llenando información del cliente...');
+            document.getElementById('factura-documento').textContent = this.clienteActual.documento || 'N/A';
+            document.getElementById('factura-nombre').textContent = this.clienteActual.nombre;
+            document.getElementById('factura-telefono').textContent = this.clienteActual.telefono || 'N/A';
+            
+            // Productos
+            console.log('🛒 Llenando productos del carrito...');
+            const productosFactura = document.getElementById('factura-productos');
+            productosFactura.innerHTML = this.carrito.map(item => `
+                <tr>
+                    <td>${item.codigo}</td>
+                    <td>${item.nombre}</td>
+                    <td>${item.cantidad}</td>
+                    <td>$${this.formatearPrecio(item.precio)}</td>
+                    <td>$${this.formatearPrecio(item.subtotal)}</td>
+                </tr>
+            `).join('');
+            
+            // Totales
+            console.log('💰 Llenando totales...');
+            document.getElementById('factura-subtotal').textContent = `$${this.formatearPrecio(this.ventaActual.subtotal)}`;
+            document.getElementById('factura-iva').textContent = `$${this.formatearPrecio(this.ventaActual.iva)}`;
+            document.getElementById('factura-total').textContent = `$${this.formatearPrecio(this.ventaActual.total)}`;
+            
+            // Información de pago
+            console.log('💳 Configurando método de pago...');
+            const metodoPago = this.ventaActual.tipo_pago || this.ventaActual.metodoPago || 'efectivo';
+            let textoMetodo = metodoPago.charAt(0).toUpperCase() + metodoPago.slice(1);
+            document.getElementById('factura-metodo-pago').textContent = textoMetodo;
+            
+            const infoEfectivo = document.getElementById('info-efectivo');
+            if (metodoPago === 'efectivo') {
+                document.getElementById('factura-recibido').textContent = `$${this.formatearPrecio(this.ventaActual.montoRecibido)}`;
+                document.getElementById('factura-cambio').textContent = `$${this.formatearPrecio(this.ventaActual.montoRecibido - this.ventaActual.total)}`;
+                infoEfectivo.style.display = 'block';
+            } else {
+                infoEfectivo.style.display = 'none';
+            }
+            
+            // Mostrar modal
+            console.log('🖥️ Mostrando modal de factura...');
+            const modalFactura = document.getElementById('modal-factura');
+            
+            if (!modalFactura) {
+                console.error('❌ Modal de factura no encontrado en el DOM');
+                throw new Error('Modal de factura no encontrado');
+            }
+            
+            modalFactura.classList.add('show');
+            console.log('✅ Clase "show" agregada al modal');
+            
+            // Verificar botón de imprimir
+            const btnImprimir = document.getElementById('btn-imprimir');
+            if (btnImprimir) {
+                console.log('✅ Botón de imprimir encontrado y disponible');
+                btnImprimir.style.display = 'flex'; // Asegurar que esté visible
+            } else {
+                console.error('❌ Botón de imprimir no encontrado');
+            }
+            
+            // Verificar que el modal esté visible
+            setTimeout(() => {
+                const isVisible = modalFactura.classList.contains('show');
+                console.log('🔍 Estado del modal después de 100ms:', {
+                    hasShowClass: isVisible,
+                    display: modalFactura.style.display,
+                    visibility: modalFactura.style.visibility
+                });
+            }, 100);
+            
+            // NO bloquear scroll aquí - el modal de factura debe permitir scroll de fondo
+            
+            console.log('✅ mostrarFactura() completado exitosamente');
+            
+        } catch (error) {
+            console.error('❌ Error en mostrarFactura():', error);
+            mostrarAlerta('Error al mostrar la factura: ' + error.message, 'error');
         }
-        
-        // Mostrar modal
-        const modalFactura = document.getElementById('modal-factura');
-        modalFactura.classList.add('show');
-        document.body.style.overflow = 'hidden';
     }
 
     imprimirFactura() {
@@ -805,6 +930,10 @@ class SistemaVentas {
         const modalFactura = document.getElementById('modal-factura');
         if (modalFactura && modalFactura.classList.contains('show')) {
             modalFactura.classList.remove('show');
+            // Si se está cerrando la factura, preparar para nueva venta
+            setTimeout(() => {
+                this.prepararNuevaVenta();
+            }, 300);
         }
 
         const modalNuevoCliente = document.getElementById('modal-nuevo-cliente');
@@ -876,6 +1005,61 @@ class SistemaVentas {
     nuevaVentaDesdeModal() {
         this.cerrarModal();
         this.nuevaVenta();
+    }
+
+    limpiarEstadoPostVenta() {
+        console.log('🧹 Limpiando estado post-venta...');
+        
+        try {
+            // Asegurar que no hay estados pendientes
+            const btnProcesar = document.getElementById('btn-procesar');
+            if (btnProcesar) {
+                btnProcesar.disabled = false;
+                if (btnProcesar.textContent === 'Procesando...') {
+                    btnProcesar.textContent = 'Procesar Venta';
+                }
+            }
+            
+            // Limpiar cualquier timeout pendiente
+            clearTimeout(this.timeoutId);
+            
+            // Verificar que el modal de factura esté visible
+            const modalFactura = document.getElementById('modal-factura');
+            if (modalFactura && !modalFactura.classList.contains('show')) {
+                console.log('⚠️ Modal de factura no visible, reintentando...');
+                modalFactura.classList.add('show');
+            }
+            
+            console.log('✅ Estado post-venta limpiado');
+            
+        } catch (error) {
+            console.error('❌ Error limpiando estado post-venta:', error);
+        }
+    }
+
+    prepararNuevaVenta() {
+        console.log('🆕 Preparando para nueva venta...');
+        
+        try {
+            // Limpiar datos de venta anterior
+            this.ventaActual = null;
+            this.clienteActual = {};
+            
+            // Asegurar que el botón de procesar esté disponible
+            const btnProcesar = document.getElementById('btn-procesar');
+            if (btnProcesar) {
+                btnProcesar.disabled = false;
+                btnProcesar.textContent = 'Procesar Venta';
+            }
+            
+            // Reset del cliente al estado por defecto
+            this.cambiarTipoCliente();
+            
+            console.log('✅ Preparación para nueva venta completada');
+            
+        } catch (error) {
+            console.error('❌ Error preparando nueva venta:', error);
+        }
     }
 
     nuevaVenta() {
@@ -1730,6 +1914,166 @@ class SistemaVentas {
             btnGuardar.innerHTML = textoOriginal;
         }
     }
+
+    // Funciones para indicador de progreso
+    mostrarIndicadorProgreso() {
+        // Eliminar indicador existente si hay uno
+        this.ocultarIndicadorProgreso();
+        
+        const indicador = document.createElement('div');
+        indicador.id = 'indicador-progreso-venta';
+        indicador.innerHTML = `
+            <div class="overlay-progreso">
+                <div class="modal-progreso">
+                    <div class="progreso-contenido">
+                        <h3 style="margin: 0 0 15px 0; color: #007bff; font-size: 20px;">Procesando Venta</h3>
+                        <div class="spinner"></div>
+                        <div class="progreso-texto">Iniciando procesamiento...</div>
+                        <div class="progreso-barra">
+                            <div class="progreso-relleno" style="width: 0%"></div>
+                        </div>
+                        <div class="progreso-porcentaje">0%</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(indicador);
+        
+        // Aplicar estilos inline optimizados para centrado perfecto
+        const overlay = indicador.querySelector('.overlay-progreso');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 99999;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+        
+        const modal = indicador.querySelector('.modal-progreso');
+        modal.style.cssText = `
+            background: white;
+            padding: 40px 50px;
+            border-radius: 16px;
+            text-align: center;
+            min-width: 400px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100000;
+            pointer-events: auto;
+            border: 3px solid #007bff;
+            animation: aparecerProgreso 0.4s ease-out;
+        `;
+    }
+
+    actualizarProgreso(texto, porcentaje) {
+        const indicador = document.getElementById('indicador-progreso-venta');
+        if (!indicador) return;
+        
+        const textoElement = indicador.querySelector('.progreso-texto');
+        const rellenoElement = indicador.querySelector('.progreso-relleno');
+        const porcentajeElement = indicador.querySelector('.progreso-porcentaje');
+        
+        if (textoElement) textoElement.textContent = texto;
+        if (rellenoElement) rellenoElement.style.width = `${porcentaje}%`;
+        if (porcentajeElement) porcentajeElement.textContent = `${porcentaje}%`;
+    }
+
+    ocultarIndicadorProgreso() {
+        const indicador = document.getElementById('indicador-progreso-venta');
+        if (indicador) {
+            indicador.remove();
+        }
+    }
+
+    // ===== FUNCIONES PARA MODAL DE VENTA EXITOSA =====
+    
+    mostrarModalVentaExitosa() {
+        // Llenar información del modal
+        document.getElementById('numero-venta-exitosa').textContent = this.ventaActual.numero;
+        document.getElementById('cliente-venta-exitosa').textContent = this.clienteActual.nombre;
+        document.getElementById('total-venta-exitosa').textContent = `$${this.formatearPrecio(this.ventaActual.total)}`;
+        document.getElementById('fecha-venta-exitosa').textContent = this.ventaActual.fecha + ' ' + this.ventaActual.hora;
+        
+        // Mostrar modal
+        const modalVentaExitosa = document.getElementById('modal-venta-exitosa');
+        
+        // Limpiar cualquier estilo inline que pueda interferir
+        modalVentaExitosa.style.display = '';
+        modalVentaExitosa.style.visibility = '';
+        
+        // Activar el modal
+        modalVentaExitosa.classList.add('active');
+    }
+
+    imprimirFacturaInmediato() {
+        // Verificar que tenemos la venta actual disponible
+        if (!this.ventaActual || !this.ventaActual.numero) {
+            console.error('❌ No hay venta actual para imprimir');
+            mostrarAlerta('Error: No hay venta disponible para imprimir', 'error');
+            return;
+        }
+
+        // Cerrar el modal de venta exitosa
+        this.cerrarModalVentaExitosa();
+        
+        // Construir objeto venta compatible con imprimirFacturaVenta
+        const ventaParaImprimir = {
+            numero_factura: this.ventaActual.numero,
+            numero_venta: this.ventaActual.numero,
+            fecha_venta: this.ventaActual.fecha + ' ' + this.ventaActual.hora,
+            estado: 'Completada',
+            metodo_pago: this.ventaActual.metodoPago || 'Efectivo',
+            monto_recibido: this.ventaActual.montoRecibido,
+            cambio: this.ventaActual.cambio,
+            cliente_documento: this.clienteActual.documento,
+            cliente_nombre: this.clienteActual.nombre,
+            cliente_telefono: this.clienteActual.telefono,
+            detalle_ventas: this.carrito.map(item => ({
+                codigo: item.codigo,
+                producto_id: item.id,
+                nombre: item.nombre,
+                cantidad: item.cantidad,
+                precio_unitario: item.precio,
+                subtotal: item.precio * item.cantidad
+            })),
+            subtotal: this.ventaActual.subtotal || this.ventaActual.total,
+            descuento: this.ventaActual.descuento || 0,
+            iva: this.ventaActual.iva || 0,
+            total: this.ventaActual.total
+        };
+        
+        // Usar la función específica para imprimir facturas
+        this.imprimirFacturaVenta(ventaParaImprimir);
+        
+        console.log('✅ Factura enviada a imprimir');
+    }
+
+    nuevaVentaInmediato() {
+        // Cerrar modal de venta exitosa
+        this.cerrarModalVentaExitosa();
+        
+        // Iniciar nueva venta
+        this.nuevaVenta();
+        
+        mostrarAlerta('Nueva venta iniciada', 'success');
+    }
+
+    cerrarModalVentaExitosa() {
+        const modalVentaExitosa = document.getElementById('modal-venta-exitosa');
+        modalVentaExitosa.classList.remove('active');
+    }
 }
 
 // Función global para mostrar alertas
@@ -1755,11 +2099,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hacer la instancia accesible globalmente para debugging
     window.sistemaVentas = sistemaVentas;
     
-    // FUNCIÓN DE EMERGENCIA: Cerrar todos los modales con tecla F12
+    // FUNCIÓN DE EMERGENCIA: Cerrar todos los modales con Ctrl+F12
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'F12') {
+        if (e.key === 'F12' && e.ctrlKey) {
             e.preventDefault();
-            console.log('🚨 EMERGENCIA: Cerrando todos los modales (F12)');
+            console.log('🚨 EMERGENCIA: Cerrando todos los modales (Ctrl+F12)');
             sistemaVentas.cerrarModal();
         }
     });
