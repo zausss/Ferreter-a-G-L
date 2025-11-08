@@ -1093,7 +1093,7 @@
 #modal-nuevo-cliente .modal-container {
     max-width: 700px;
     width: 95%;
-    min-width: 500px;
+    min-width: 200px;
 }
 
 /* Asegurar que los campos no se salgan del modal */
