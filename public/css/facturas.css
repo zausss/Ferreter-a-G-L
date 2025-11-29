@@ -545,19 +545,11 @@ body.facturas-page .area-contenido {
 }
 
 /* ---- NAVEGACIÓN ACTIVA ---- */
-.navegacion-barra-lateral .ventas-activo > .item-navegacion {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    color: #ffffff !important;
-    border-left: 4px solid #4ecdc4 !important;
-    padding-left: 16px !important;
-}
-
 #submenu-ventas {
     display: block !important;
 }
 
 #submenu-ventas .facturas-activo {
-    background: linear-gradient(135deg, #4CAF50, #45a049) !important;
     color: white !important;
     border-radius: 8px;
     font-weight: 600;
