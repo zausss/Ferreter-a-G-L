@@ -623,7 +623,6 @@
 /* ==========================================
    REGLAS ESPECÍFICAS PARA PÁGINAS CON VARIABLES
    ========================================== */
-@import 'variables.css';
 
 /* Override definitivo para categorías - Mayor especificidad */
 body .area-contenido {
