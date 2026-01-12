@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Venta</title>
+    <title>Proveedores - Ferretería J&L</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/tema-moderno.css">
     <link rel="stylesheet" href="/css/alerts.css">
-    <link rel="stylesheet" href="/css/ventas.css">
+    <link rel="stylesheet" href="/css/proveedores.css">
     <link rel="stylesheet" href="/css/responsive.css">
 </head>
 <body>
@@ -15,7 +15,7 @@
         <aside class="barra-lateral">
             <div class="encabezado-barra-lateral">
                 <img src="/img/logo.jpg" alt="Logo Ferretería J&L" class="logo">
-                </div>
+            </div>
             <nav class="navegacion-barra-lateral">
                 <ul>
                     <li>
@@ -186,7 +186,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
                                             <path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q17 0 28.5 11.5T520-840q0 17-11.5 28.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160q133 0 226.5-93.5T800-480q0-17 11.5-28.5T840-520q17 0 28.5 11.5T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Z"/>
                                         </svg>
-                                        Cargando clientes...
+                                        Cargando proveedores...
                             </div>
                             </td>
                         </tr>
@@ -202,17 +202,117 @@
         </main>
     </div>
     <!-- Modal de cliente -->
+<div class="modal-overlay" id="modal-proveedores">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 id="modal-titulo"><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                        <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"/>
+                    </svg>
+                    Nuevo Proveedor
+                </h3>
+                <button class="boton-cerrar" data-action="cerrar-modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                        <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                    </svg>
+                    </button>
+        </div>
 
+        <div class="modal-body">
+            <form id="formulario-grid">
+                <input type="hidden" id="proveedor-id">
+                <div class="formulario-grid">
+                    <!-- informacion del proveedor -->
+                    <div class="campo-grupo">
+                        <label for="tipo-documento">Tipo de Identificación</label>
+                        <select id="tipo-documento"  name="tipo-documento" required>
+                            <option value="NIT">NIT (Número de Identificación Tributaria)</option>
+                            <option value="RUT">RUT (Registro Único Tributario)</option>
+                            <option value="RUC">RUC (Registro Único de Contribuyentes)</option>
+                        </select>
+                    </div>
 
+                    <div class="campo-grupo">
+                        <label for="numero-documento">Número de Identificación
+                            <span class="opcional">(Opcional)</span>
+                        </label>
+                        <input type="text" id="numero-documento" name="numero-documento" placeholder="Ej: 900123456-7 (Dejar vacío si no aplica)">
+                    </div>
 
+                    <div class="campo-grupo">
+                        <label for="nombre">Nombre Proveedor
+                            <span class="requerido">*</span>
+                        </label>
+                        <input type="text" id="nombre" name="nombre" required placeholder="Ej:Proveedor S.A.">
+                    </div>
 
+                    <!--informacion del contacto-->
+                    <div class="campo-grupo">
+                        <label for="telefono">Teléfono
+                            <span class="requerido">*</span>
+                        </label>
+                        <input type="tel" id="telefono" name="telefono" required placeholder="Ej:3001234567"> 
+                    </div>
 
+                    <div class="campo-grupo">
+                        <label for="email">Email
+                            <span class="requerido">*</span>
+                        </label>
+                        <input type="email" id="email" name="email" required placeholder="Ej:correo@ejemplo.com">
+                    </div>
 
+                    <!--informacion adicional-->
+                    <div class="campo-grupo">
+                        <label for="ciudad">Ciudad
+                            <span class="requerido">*</span>
+                        </label>
+                        <input type="text" id="ciudad" name="ciudad" required placeholder="Ej:Bogotá">
+                    </div>
 
+                    <div class="campo-grupo">
+                        <label for="direccion">Dirección
+                            <span class="requerido">*</span>
+                        </label>
+                        <input type="text" id="direccion" name="direccion" required placeholder="Ej:Calle 123 #45-67">
+                    </div>
 
+                    <div class="campo-grupo">
+                        <label for="estado">Estado
+                            <span class="requerido">*</span>
+                        </label>
+                        <select id="estado" name="estado" required>
+                            <option value="activo" selected>Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                            <option value="suspendido">Suspendido</option>
+                        </select>
+                    </div>  
+                    <!--nota-->
+                    <div class="campo-grupo campo-grande">
+                        <label for="nota">Nota Adicional</label>
+                        <textarea id="nota" name="nota" rows="4" placeholder="Agrega una nota adicional sobre el proveedor..."></textarea> 
+                    </div>
+                </div>
+            </form>
+        </div>
 
+        <div class="modal-footer">
+            <button type="button" class="boton boton-secundario" data-action="cerrar-modal">
+                <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                    <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                </svg>
+                Cancelar
+            </button>
+            <button type="submit" form="formulario-grid" class="boton boton-primario" id="btn-guardar-proveedor">
+                <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                    <path d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM480-240q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"/>
+                </svg>
+                Guardar Proveedor
+            </button>
+        </div>
+    </div>
+</div>
 
 <script src="/js/alerts.js"></script>
+<script src="/js/proveedores.js"></script>
 <script src="/js/menu.js"></script>
 </body>
 </html>

@@ -12,6 +12,7 @@ const movimientoRoutes = require('./routes/movimientoRoutes');
 const ventaRoutes = require('./routes/ventaRoutes');
 const facturaRoutes = require('./routes/facturaRoutes');
 const clienteRoutes = require('./routes/clienteRoutes');
+const proveedorRoutes = require('./routes/proveedorRoutes');
 
 // Importar controladores adicionales
 const CargoController = require('./controllers/cargoController');
@@ -71,6 +72,7 @@ app.use('/api/movimientos', movimientoRoutes);
 app.use('/api/ventas', ventaRoutes);
 app.use('/api/facturas', facturaRoutes);
 app.use('/api/clientes', clienteRoutes);
+app.use('/api/proveedores', proveedorRoutes);
 
 // Rutas adicionales para registro
 app.get('/api/cargos', CargoController.obtenerCargos);
