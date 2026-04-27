@@ -2,6 +2,63 @@ const { pool } = require('../config/database');
 const FacturaController = require('./facturaController');
 
 class VentaController {
+    // Estadísticas para el dashboard (ventas del día)
+    static async obtenerEstadisticasDashboard(req, res) {
+        try {
+            // Nota: algunas instalaciones guardan el detalle en `detalle_ventas` y otras sólo en JSON
+            // dentro de `ventas.observaciones`. Para no dejar el contador en 0, calculamos:
+            //  - vendidos_por_detalle: SUM(dv.cantidad)
+            //  - vendidos_por_json:    SUM(cantidades dentro de observaciones.productos)
+            // y tomamos la suma.
+            const query = `
+                WITH ventas_hoy AS (
+                    SELECT v.id, v.total, v.fecha_venta, v.observaciones
+                    FROM ventas v
+                    WHERE v.fecha_venta::date = CURRENT_DATE
+                ),
+                por_detalle AS (
+                    SELECT COALESCE(SUM(dv.cantidad), 0) AS vendidos_por_detalle
+                    FROM ventas_hoy v
+                    LEFT JOIN detalle_ventas dv ON dv.venta_id = v.id
+                ),
+                por_json AS (
+                    SELECT COALESCE(SUM(
+                        COALESCE((p->>'cantidad')::int, 0)
+                    ), 0) AS vendidos_por_json
+                    FROM ventas_hoy v
+                    LEFT JOIN LATERAL (
+                        SELECT (v.observaciones::jsonb->'productos') AS productos
+                    ) o ON true
+                    LEFT JOIN LATERAL jsonb_array_elements(
+                        COALESCE(o.productos, '[]'::jsonb)
+                    ) p ON true
+                )
+                SELECT
+                    COALESCE((SELECT SUM(total) FROM ventas_hoy), 0) AS ventas_hoy,
+                    COALESCE((SELECT COUNT(*) FROM ventas_hoy), 0) AS total_ventas,
+                    (SELECT vendidos_por_detalle FROM por_detalle) + (SELECT vendidos_por_json FROM por_json) AS productos_vendidos;
+            `;
+
+            const result = await pool.query(query);
+            const row = result.rows?.[0] || {};
+
+            res.json({
+                exito: true,
+                estadisticas: {
+                    ventas_hoy: parseFloat(row.ventas_hoy) || 0,
+                    total_ventas: parseInt(row.total_ventas) || 0,
+                    productos_vendidos: parseInt(row.productos_vendidos) || 0
+                }
+            });
+        } catch (error) {
+            console.error('Error obteniendo estadísticas de ventas:', error);
+            res.status(500).json({
+                exito: false,
+                mensaje: 'Error interno del servidor'
+            });
+        }
+    }
+
     // Buscar productos para la venta
     static async buscarProductos(req, res) {
         try {

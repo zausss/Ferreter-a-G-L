@@ -19,6 +19,9 @@ router.get('/clientes/buscar/:documento', asyncHandler(VentaController.buscarCli
 // Rutas principales de ventas
 router.post('/', validarEntrada.venta, asyncHandler(VentaController.crearVenta));
 router.get('/', validarEntrada.paginacion, asyncHandler(VentaController.obtenerVentas));
+
+// Estadísticas para dashboard
+router.get('/estadisticas', asyncHandler(VentaController.obtenerEstadisticasDashboard));
 router.get('/:id', validarEntrada.id, asyncHandler(VentaController.obtenerVentaPorId));
 
 // Rutas para reportes

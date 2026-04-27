@@ -12,6 +12,9 @@ router.get('/', verificarToken, ClienteController.listarClientes);
 // Buscar clientes (para autocompletar)
 router.get('/buscar', verificarToken, ClienteController.buscarClientes);
 
+// Estadísticas para dashboard
+router.get('/estadisticas', verificarToken, ClienteController.obtenerEstadisticas);
+
 // Obtener cliente específico por ID
 router.get('/:id', verificarToken, ClienteController.obtenerCliente);
 

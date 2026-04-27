@@ -146,6 +146,34 @@ class ClienteController {
         }
     }
 
+    // Obtener estadísticas de clientes para el dashboard
+    static async obtenerEstadisticas(req, res) {
+        try {
+            // Para el panel, por ahora contamos clientes activos.
+            const query = `
+                SELECT COUNT(*)::int AS total_clientes
+                FROM clientes
+                WHERE activo = true;
+            `;
+
+            const result = await pool.query(query);
+            const total = result.rows?.[0]?.total_clientes ?? 0;
+
+            res.json({
+                exito: true,
+                estadisticas: {
+                    total_clientes: Number(total) || 0
+                }
+            });
+        } catch (error) {
+            console.error('❌ Error obteniendo estadísticas de clientes:', error);
+            res.status(500).json({
+                exito: false,
+                mensaje: 'Error interno del servidor'
+            });
+        }
+    }
+
     // Obtener cliente por ID
     static async obtenerCliente(req, res) {
         try {
