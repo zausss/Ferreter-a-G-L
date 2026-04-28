@@ -13,4 +13,7 @@ router.post('/', validarEntrada.movimiento, asyncHandler(MovimientoController.cr
 // GET /api/movimientos - Obtener historial de movimientos
 router.get('/', validarEntrada.paginacion, asyncHandler(MovimientoController.obtenerMovimientos));
 
+// GET /api/movimientos/recientes - Obtener pedidos recientes (entradas del día)
+router.get('/recientes', asyncHandler(MovimientoController.obtenerRecientes));
+
 module.exports = router;

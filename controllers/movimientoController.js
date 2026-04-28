@@ -5,7 +5,7 @@ class MovimientoController {
     // Crear un nuevo movimiento de stock
     static async crearMovimiento(req, res) {
         try {
-            const { producto_id, tipo_movimiento, cantidad, motivo, observaciones } = req.body;
+            const { producto_id, tipo_movimiento, cantidad, motivo, proveedor_id, observaciones } = req.body;
             
             // Validaciones básicas
             if (!producto_id || !tipo_movimiento || !cantidad) {
@@ -86,7 +86,10 @@ class MovimientoController {
                     producto.stock_actual,
                     nuevoStock,
                     motivo || null,
-                    observaciones || null
+                    // Si existe proveedor_id, agregarlo a las observaciones
+                    (proveedor_id || observaciones) ? 
+                        (proveedor_id ? `Proveedor ID: ${proveedor_id}${observaciones ? '\n' + observaciones : ''}` : observaciones) : 
+                        null
                 ]);
                 
                 // Actualizar el stock del producto
@@ -177,6 +180,60 @@ class MovimientoController {
             res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor'
+            });
+        }
+    }
+
+    // Obtener pedidos recientes (movimientos de entrada del día)
+    static async obtenerRecientes(req, res) {
+        try {
+            const { limite } = req.query;
+            const limit = Math.min(Math.max(parseInt(limite || '5', 10) || 5, 1), 100);
+
+            const query = `
+                SELECT
+                    m.id,
+                    m.producto_id,
+                    m.tipo_movimiento,
+                    m.cantidad,
+                    m.fecha_movimiento AS fecha,
+                    m.observaciones,
+                    p.nombre AS producto_nombre,
+                    p.codigo_producto,
+                    p.precio_unitario
+                FROM movimientos_stock m
+                LEFT JOIN productos p ON p.id = m.producto_id
+                WHERE m.tipo_movimiento = 'entrada'
+                AND m.fecha_movimiento::date = CURRENT_DATE
+                ORDER BY m.fecha_movimiento DESC
+                LIMIT $1
+            `;
+
+            const result = await pool.query(query, [limit]);
+
+            // Formatear datos para el frontend
+            const pedidos = result.rows.map(row => ({
+                id: row.id,
+                descripcion: `Pedido: ${row.producto_nombre} (${row.codigo_producto})`,
+                cantidad: row.cantidad,
+                producto_nombre: row.producto_nombre,
+                codigo_producto: row.codigo_producto,
+                precio_unitario: row.precio_unitario,
+                total: row.cantidad * (row.precio_unitario || 0),
+                fecha: row.fecha,
+                estado: 'completado'
+            }));
+
+            res.json({
+                exito: true,
+                pedidos: pedidos
+            });
+
+        } catch (error) {
+            console.error('Error obteniendo pedidos recientes:', error);
+            res.status(500).json({
+                exito: false,
+                mensaje: 'Error interno del servidor'
             });
         }
     }

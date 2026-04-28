@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Variables globales
     let productosData = [];
     let categoriasData = [];
+    let proveedoresData = [];
     let paginaActual = 1;
     const productosPorPagina = 10;
     let filtros = {
@@ -44,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
         tipoMovimiento: document.getElementById('tipo-movimiento'),
         cantidadMovimiento: document.getElementById('cantidad-movimiento'),
         motivoMovimiento: document.getElementById('motivo-movimiento'),
+        proveedorMovimiento: document.getElementById('proveedor-movimiento'),
         observacionesMovimiento: document.getElementById('observaciones-movimiento'),
         btnCerrarModal: document.querySelector('.btn-cerrar-modal'),
         btnCancelarMovimiento: document.getElementById('btn-cancelar-movimiento')
@@ -63,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
             await Promise.all([
                 cargarEstadisticas(),
                 cargarCategorias(),
+                cargarProveedores(),
                 cargarProductos()
             ]);
             
@@ -129,6 +132,67 @@ document.addEventListener('DOMContentLoaded', function() {
             option.textContent = categoria.nombre_categoria;
             elementos.filtroCategoria.appendChild(option);
         });
+    }
+
+    // Cargar proveedores para el modal de movimiento
+    async function cargarProveedores() {
+        try {
+            console.log('Iniciando carga de proveedores...');
+            const response = await fetch('/api/proveedores', {
+                credentials: 'include'
+            });
+
+            console.log('Respuesta de proveedores:', response.status, response.ok);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Datos de proveedores recibidos:', data);
+                
+                // El endpoint puede retornar exito o success, y los datos pueden estar en diferentes propiedades
+                const proveedores = data.data || data.proveedores || [];
+                const esExitoso = data.exito || data.success;
+                
+                if (esExitoso && proveedores && proveedores.length > 0) {
+                    proveedoresData = proveedores;
+                    console.log('Proveedores asignados:', proveedoresData.length);
+                    llenarSelectProveedores();
+                } else if (!proveedores || proveedores.length === 0) {
+                    console.warn('No hay proveedores disponibles');
+                    // Aún así llenar el select con la opción vacía
+                    llenarSelectProveedores();
+                } else {
+                    console.warn('Respuesta sin datos válidos:', data);
+                }
+            } else {
+                console.error('Error en respuesta de proveedores:', response.status);
+            }
+        } catch (error) {
+            console.error('Error cargando proveedores:', error);
+        }
+    }
+
+    // Llenar el select de proveedores en el modal
+    function llenarSelectProveedores() {
+        if (!elementos.proveedorMovimiento) {
+            console.error('Elemento proveedor-movimiento no encontrado en el DOM');
+            return;
+        }
+        
+        elementos.proveedorMovimiento.innerHTML = '<option value="">Seleccionar proveedor...</option>';
+        
+        if (!proveedoresData || proveedoresData.length === 0) {
+            console.warn('No hay proveedores para mostrar');
+            return;
+        }
+        
+        proveedoresData.forEach(proveedor => {
+            const option = document.createElement('option');
+            option.value = proveedor.id;
+            option.textContent = proveedor.nombre;
+            elementos.proveedorMovimiento.appendChild(option);
+        });
+        
+        console.log('Proveedores cargados:', proveedoresData.length);
     }
 
     // Cargar productos
@@ -472,6 +536,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tipo_movimiento: formData.get('tipo'),
             cantidad: parseInt(formData.get('cantidad')),
             motivo: formData.get('motivo') || null,
+            proveedor_id: formData.get('proveedor') ? parseInt(formData.get('proveedor')) : null,
             observaciones: formData.get('observaciones') || null
         };
         
@@ -492,6 +557,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify(datosMovimiento)
             });
             

@@ -115,12 +115,60 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ==========================
+    // Modal: Pedidos recientes
+    // ==========================
+    const btnVerPedidos = document.getElementById('btn-ver-pedidos');
+    if (btnVerPedidos) {
+        btnVerPedidos.addEventListener('click', abrirModalPedidos);
+    }
+
+    // Abrir modal al hacer click en el encabezado de la sección
+    const encabezadoPedidos = document.getElementById('encabezado-pedidos');
+    if (encabezadoPedidos) {
+        encabezadoPedidos.addEventListener('click', function() {
+            abrirModalPedidos();
+        });
+    }
+
+    // Fallback: abrir modal si hacen click en la caja completa (excepto botones/enlaces)
+    const cajaPedidos = document.querySelector('.caja-seccion.pedidos-recientes');
+    if (cajaPedidos) {
+        cajaPedidos.addEventListener('click', function(e) {
+            // No interceptar clicks en botones o enlaces
+            if (e.target.closest('button, a')) return;
+            // Tampoco si el click fue dentro del encabezado-tabla o contenido
+            if (e.target.closest('.encabezado-tabla, .contenido-seccion')) return;
+            abrirModalPedidos();
+        });
+    }
+
+    const cerrarModalPedidosBtn = document.getElementById('cerrar-modal-pedidos');
+    if (cerrarModalPedidosBtn) {
+        cerrarModalPedidosBtn.addEventListener('click', cerrarModalPedidos);
+    }
+
+    const btnCerrarPedidos = document.getElementById('btn-cerrar-pedidos');
+    if (btnCerrarPedidos) {
+        btnCerrarPedidos.addEventListener('click', cerrarModalPedidos);
+    }
+
+    const modalPedidos = document.getElementById('modal-pedidos');
+    if (modalPedidos) {
+        modalPedidos.addEventListener('click', function(e) {
+            if (e.target === modalPedidos) {
+                cerrarModalPedidos();
+            }
+        });
+    }
+
     // Cerrar con ESC
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             cerrarReporteCompleto();
             cerrarModalBajoStock();
             cerrarModalActividades();
+            cerrarModalPedidos();
         }
     });
     
@@ -227,7 +275,7 @@ async function cargarActividadesDelDiaModal() {
         contenedor.innerHTML = '';
         actividades.forEach(actividad => {
             const fecha = actividad.fecha ? new Date(actividad.fecha) : null;
-            const hora = fecha ? fecha.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : '—';
+            const hora = fecha ? fecha.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Bogota' }) : '—';
             const estado = (actividad.estado || 'pendiente').toString();
             const estadoLabel = estado.charAt(0).toUpperCase() + estado.slice(1);
 
@@ -370,9 +418,10 @@ async function cargarEstadisticasDashboard() {
             totalProductosElement.textContent = 'Error';
         }
     } finally {
-        // Actividades no deberían depender de la carga de productos.
+        // Actividades y pedidos no deberían depender de la carga de productos.
         // Así evitamos que se quede la información estática en pantalla.
         cargarActividadesRecientes();
+        cargarPedidosRecientes();
     }
 }
 
@@ -818,4 +867,121 @@ function llenarTablaBajoStock() {
         `;
         contenidoTabla.appendChild(fila);
     });
+}
+
+// ================================
+// Funciones para Modal: Pedidos recientes
+// ================================
+
+function abrirModalPedidos() {
+    const modal = document.getElementById('modal-pedidos');
+    if (!modal) return;
+    modal.classList.add('activo');
+    cargarPedidosDelDiaModal();
+}
+
+function cerrarModalPedidos() {
+    const modal = document.getElementById('modal-pedidos');
+    if (!modal) return;
+    modal.classList.remove('activo');
+}
+
+async function cargarPedidosDelDiaModal() {
+    const contenedor = document.getElementById('contenido-pedidos-modal');
+    if (!contenedor) return;
+
+    contenedor.innerHTML = `
+        <div class="fila-datos">
+            <div class="celda" style="grid-column: 1 / -1;">Cargando pedidos...</div>
+        </div>
+    `;
+
+    try {
+        const response = await fetch('/api/movimientos/recientes', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            contenedor.innerHTML = `
+                <div class="fila-datos">
+                    <div class="celda" style="grid-column: 1 / -1;">No se pudieron cargar los pedidos.</div>
+                </div>
+            `;
+            return;
+        }
+
+        const data = await response.json();
+        const pedidos = Array.isArray(data.pedidos) ? data.pedidos : [];
+
+        if (!data.exito || pedidos.length === 0) {
+            contenedor.innerHTML = `
+                <div class="fila-datos">
+                    <div class="celda" style="grid-column: 1 / -1;">No hay pedidos registrados para hoy.</div>
+                </div>
+            `;
+            return;
+        }
+
+        contenedor.innerHTML = '';
+        pedidos.forEach(pedido => {
+            const fecha = pedido.fecha ? new Date(pedido.fecha) : null;
+            const hora = fecha ? fecha.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Bogota' }) : '—';
+            const total = typeof pedido.total === 'number' ? `$${pedido.total.toLocaleString('es-CO')}` : '—';
+
+            const filaHtml = `
+                <div class="fila-datos">
+                    <div class="celda">${pedido.producto_nombre ?? '—'}</div>
+                    <div class="celda">${pedido.cantidad ?? 0}</div>
+                    <div class="celda">${total}</div>
+                    <div class="celda">${hora}</div>
+                </div>
+            `;
+            contenedor.insertAdjacentHTML('beforeend', filaHtml);
+        });
+    } catch (error) {
+        console.error('Error cargando pedidos del día (modal):', error);
+        contenedor.innerHTML = `
+            <div class="fila-datos">
+                <div class="celda" style="grid-column: 1 / -1;">Ocurrió un error cargando los pedidos.</div>
+            </div>
+        `;
+    }
+}
+
+// Función para cargar pedidos recientes
+async function cargarPedidosRecientes() {
+    try {
+        const response = await fetch('/api/movimientos/recientes', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.exito && data.pedidos) {
+                // Actualizar la sección de pedidos
+                const contenidoPedidos = document.querySelector('.pedidos-recientes .contenido-seccion');
+                if (contenidoPedidos && data.pedidos.length > 0) {
+                    // Limpiar contenido actual
+                    contenidoPedidos.innerHTML = '';
+                    
+                    // Agregar nuevos pedidos (máximo 5)
+                    data.pedidos.slice(0, 5).forEach(pedido => {
+                        const total = typeof pedido.total === 'number' ? `$${pedido.total.toLocaleString('es-CO')}` : '—';
+                        const filaHtml = `
+                            <div class="fila-datos">
+                                <div class="celda">${pedido.producto_nombre ?? '—'}</div>
+                                <div class="celda">${pedido.cantidad ?? 0}</div>
+                                <div class="celda precio">${total}</div>
+                            </div>
+                        `;
+                        contenidoPedidos.insertAdjacentHTML('beforeend', filaHtml);
+                    });
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error cargando pedidos recientes:', error);
+    }
 }

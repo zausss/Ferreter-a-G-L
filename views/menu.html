@@ -168,49 +168,34 @@
 
             <section class="secciones-inferiores">
                 <div class="caja-seccion pedidos-recientes">
-                    <div class="encabezado-seccion">
+                    <div class="encabezado-seccion" id="encabezado-pedidos" style="cursor: pointer;">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-160-60q25 0 42.5-17.5T700-480q0-25-17.5-42.5T640-540q-25 0-42.5 17.5T580-480q0 25 17.5 42.5T640-420Z"/></svg>
                         <h3>Pedidos recientes</h3>
                     </div>
                     <div class="encabezado-tabla">
                         <div class="columna-encabezado">Producto</div>
                         <div class="columna-encabezado">Cantidad</div>
-                        <div class="columna-encabezado">Precio</div>
+                        <div class="columna-encabezado">Total</div>
                     </div>
 
                     <!-- Contenido de pedidos recientes -->
                     <div class="contenido-seccion">
                         <div class="fila-datos">
-                            <div class="celda">Martillo 16oz</div>
-                            <div class="celda">5</div>
-                            <div class="celda precio">$125.00</div>
-                        </div>
-                        <div class="fila-datos">
-                            <div class="celda">Destornillador Phillips</div>
-                            <div class="celda">10</div>
-                            <div class="celda precio">$85.00</div>
-                        </div>
-                        <div class="fila-datos">
-                            <div class="celda">Clavos 2"</div>
-                            <div class="celda">100</div>
-                            <div class="celda precio">$45.00</div>
-                        </div>
-                        <div class="fila-datos">
-                            <div class="celda">Taladro eléctrico</div>
-                            <div class="celda">2</div>
-                            <div class="celda precio">$890.00</div>
-                        </div>
-                        <div class="fila-datos">
-                            <div class="celda">Tornillos 1/4"</div>
-                            <div class="celda">50</div>
-                            <div class="celda precio">$32.50</div>
+                            <div class="celda" style="grid-column: 1 / -1;">Cargando pedidos...</div>
                         </div>
                     </div>
 
-                    <button class="boton-accion boton-primario">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
-                        Agregar pedido
-                    </button>
+                    <div class="acciones-seccion" style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button class="boton-accion boton-secundario" id="btn-ver-pedidos">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-80q-42 0-71-29t-29-71q0-42 29-71t71-29q42 0 71 29t29 71q0 42-29 71t-71 29ZM480-160q-146 0-264-81T40-500q78-138 196-219t264-81q146 0 264 81t196 219q-78 138-196 219t-264 81Zm0-80q113 0 207.5-59T832-500q-50-101-144.5-160T480-720q-113 0-207.5 59T128-500q50 101 144.5 160T480-240Zm0-260Z"/></svg>
+                            Ver todos
+                        </button>
+
+                        <button class="boton-accion boton-primario">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                            Agregar pedido
+                        </button>
+                    </div>
                 </div>
 
                 <div class="caja-seccion actividades-recientes">
@@ -268,6 +253,35 @@
 
                         <div class="pie-modal">
                             <button class="btn-modal primario" id="btn-cerrar-actividades">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Pedidos del día -->
+                <div class="modal" id="modal-pedidos" aria-hidden="true">
+                    <div class="contenedor-modal">
+                        <div class="encabezado-modal">
+                            <h2>Pedidos del día</h2>
+                            <button class="btn-cerrar-modal" id="cerrar-modal-pedidos">&times;</button>
+                        </div>
+
+                        <div class="contenido-modal">
+                            <div class="encabezado-tabla" style="margin-top: 0;">
+                                <div class="columna-encabezado">Producto</div>
+                                <div class="columna-encabezado">Cantidad</div>
+                                <div class="columna-encabezado">Total</div>
+                                <div class="columna-encabezado">Hora</div>
+                            </div>
+
+                            <div id="contenido-pedidos-modal" class="contenido-seccion">
+                                <div class="fila-datos">
+                                    <div class="celda" style="grid-column: 1 / -1;">Cargando pedidos...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pie-modal">
+                            <button class="btn-modal primario" id="btn-cerrar-pedidos">Cerrar</button>
                         </div>
                     </div>
                 </div>
